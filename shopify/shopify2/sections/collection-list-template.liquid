@@ -1,0 +1,499 @@
+{% paginate collection.products by section.settings.num_products %}
+
+{% include 'breadcrumb' %}
+
+{% assign has_sidebar = false %}
+{% if collection.all_tags.size > 0 %}
+  {% assign has_sidebar = true %}
+{% endif %}
+
+<div class="grid grid-border text-center">
+
+  {% if has_sidebar %}
+  <div class="grid-item large--one-fifth collection-filters" id="collectionFilters">
+    {% include 'collection-sidebar' %}
+  </div>
+  {% endif %}
+
+  <div class="grid-item{% if has_sidebar %} large--four-fifths grid-border--left{% endif %}">
+
+    {% comment %}
+      Different markup if description is set
+    {% endcomment %}
+    {% if collection.description != blank %}
+      <header class="section-header">
+        <h1 class="section-header--title">{{ collection.title }}</h1>
+        <div class="rte rte--header">
+          {{ collection.description }}
+        </div>
+      </header>
+      <hr{% if has_sidebar %} class="hr--offset-left"{% endif %}>
+      <div class="section-header">
+        <div class="section-header--right">
+          {% include 'collection-sorting' %}
+          {% include 'collection-views' %}
+          {% include 'toggle-filters' %}
+        </div>
+      </div>
+    {% else %}
+    <header class="section-header">
+      <h1 class="section-header--title section-header--left">{{ collection.title }}</h1>
+      <div class="section-header--right">
+        {% include 'collection-sorting' %}
+        {% include 'collection-views' %}
+        {% include 'toggle-filters' %}
+      </div>
+    </header>
+    {% endif %}
+
+    <div class="grid-uniform">
+
+      {% for product in collection.products %}
+
+        {% include 'product-list-item' %}
+
+      {% else %}
+
+        <div class="grid-item">
+          <p>{{ 'collections.general.no_matches' | t }}</p>
+        </div>
+
+      {% endfor %}
+
+    </div>
+
+  </div>
+
+  {% if paginate.pages > 1 %}
+  <div class="grid-item pagination-border-top">
+    <div class="grid">
+      <div class="grid-item{% if has_sidebar %} large--four-fifths push--large--one-fifth{% endif %}">
+          <div class="text-center">
+            {% include 'pagination-custom' %}
+          </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endpaginate %}
+
+
+
+{% schema %}
+{
+  "name": {
+    "cs": "Kolekce",
+    "da": "Kollektion",
+    "de": "Kategorie",
+    "en": "Collection",
+    "es": "Colección",
+    "fi": "Kokoelma",
+    "fr": "Collection",
+    "hi": "कलेक्शन",
+    "it": "Collezione",
+    "ja": "コレクション",
+    "ko": "컬렉션",
+    "nb": "Samling",
+    "nl": "Collectie",
+    "pl": "Kolekcja",
+    "pt-BR": "Coleção",
+    "pt-PT": "Coleção",
+    "sv": "Produktserie",
+    "th": "คอลเลกชัน",
+    "tr": "Koleksiyon",
+    "vi": "Bộ sưu tập",
+    "zh-CN": "收藏",
+    "zh-TW": "商品系列"
+  },
+  "class": "collection-template-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "num_products",
+      "label": {
+        "cs": "Počet produktů na stránku",
+        "da": "Produkter pr. side",
+        "de": "Produkte pro Seite",
+        "en": "Products per page",
+        "es": "Productos por página",
+        "fi": "Tuotteita sivulla",
+        "fr": "Produits par page",
+        "hi": "प्रति पेज उत्पाद",
+        "it": "Prodotti per pagina",
+        "ja": "ページあたりの商品数",
+        "ko": "페이지 별 제품",
+        "nb": "Produkter per side",
+        "nl": "Producten per pagina",
+        "pl": "Liczba produktów na stronę",
+        "pt-BR": "Produtos por página",
+        "pt-PT": "Produtos por página",
+        "sv": "Produkter per rad",
+        "th": "สินค้าต่อหน้า",
+        "tr": "Sayfa başına ürün",
+        "vi": "Sản phẩm trên một trang",
+        "zh-CN": "每页产品数",
+        "zh-TW": "每頁產品數"
+      },
+      "default": "20",
+      "options": [
+        {
+          "value": "10",
+          "label": {
+            "cs": "10",
+            "da": "10",
+            "de": "10",
+            "en": "10",
+            "es": "10",
+            "fi": "10",
+            "fr": "10",
+            "hi": "10",
+            "it": "10",
+            "ja": "10",
+            "ko": "10",
+            "nb": "10",
+            "nl": "10",
+            "pl": "10",
+            "pt-BR": "10",
+            "pt-PT": "10",
+            "sv": "10",
+            "th": "10",
+            "tr": "10",
+            "vi": "10",
+            "zh-CN": "10",
+            "zh-TW": "10"
+          }
+        },
+        {
+          "value": "15",
+          "label": {
+            "cs": "15",
+            "da": "15",
+            "de": "15",
+            "en": "15",
+            "es": "15",
+            "fi": "15",
+            "fr": "15",
+            "hi": "15",
+            "it": "15",
+            "ja": "15",
+            "ko": "15",
+            "nb": "15",
+            "nl": "15",
+            "pl": "15",
+            "pt-BR": "15",
+            "pt-PT": "15",
+            "sv": "15",
+            "th": "15",
+            "tr": "15",
+            "vi": "15",
+            "zh-CN": "15",
+            "zh-TW": "15"
+          }
+        },
+        {
+          "value": "20",
+          "label": {
+            "cs": "20",
+            "da": "20",
+            "de": "20",
+            "en": "20",
+            "es": "20",
+            "fi": "20",
+            "fr": "20",
+            "hi": "20",
+            "it": "20",
+            "ja": "20",
+            "ko": "20",
+            "nb": "20",
+            "nl": "20",
+            "pl": "20",
+            "pt-BR": "20",
+            "pt-PT": "20",
+            "sv": "20",
+            "th": "20",
+            "tr": "20",
+            "vi": "20",
+            "zh-CN": "20",
+            "zh-TW": "八折"
+          }
+        },
+        {
+          "value": "25",
+          "label": {
+            "cs": "25",
+            "da": "25",
+            "de": "25",
+            "en": "25",
+            "es": "25",
+            "fi": "25",
+            "fr": "25",
+            "hi": "25",
+            "it": "25",
+            "ja": "25",
+            "ko": "25",
+            "nb": "25",
+            "nl": "25",
+            "pl": "25",
+            "pt-BR": "25",
+            "pt-PT": "25",
+            "sv": "25",
+            "th": "25",
+            "tr": "25",
+            "vi": "25",
+            "zh-CN": "25",
+            "zh-TW": "25"
+          }
+        },
+        {
+          "value": "30",
+          "label": {
+            "cs": "30",
+            "da": "30",
+            "de": "30",
+            "en": "30",
+            "es": "30",
+            "fi": "30",
+            "fr": "30",
+            "hi": "30",
+            "it": "30",
+            "ja": "30",
+            "ko": "30",
+            "nb": "30",
+            "nl": "30",
+            "pl": "30",
+            "pt-BR": "30",
+            "pt-PT": "30",
+            "sv": "30",
+            "th": "30",
+            "tr": "30",
+            "vi": "30",
+            "zh-CN": "30",
+            "zh-TW": "30"
+          }
+        }
+      ]
+    },
+    {
+      "type": "radio",
+      "id": "collection_sidebar_filters",
+      "label": {
+        "cs": "Filtry produktů v postranní liště",
+        "da": "Produktfiltre i sidebjælke",
+        "de": "Produktfilter in Seitenleiste",
+        "en": "Sidebar product filters",
+        "es": "Filtros de productos de la barra lateral",
+        "fi": "Sivupalkin tuotesuodattimet",
+        "fr": "Filtres de produits de la barre latérale",
+        "hi": "साइडबार उत्पाद फ़िल्टर",
+        "it": "Filtri prodotto sidebar",
+        "ja": "サイドバーの商品絞り込み",
+        "ko": "사이드 바 제품 필터",
+        "nb": "Produktfiltre i sidefelt",
+        "nl": "Filters voor zijbalk",
+        "pl": "Filtry produktów w pasku bocznym",
+        "pt-BR": "Filtros de produto na barra lateral",
+        "pt-PT": "Filtros de produto na barra lateral",
+        "sv": "Sidofältets produktfilter",
+        "th": "ตัวกรองสินค้าในแถบด้านข้าง",
+        "tr": "Kenar çubuğu ürün filtreleri",
+        "vi": "Bộ lọc sản phẩm thanh bên",
+        "zh-CN": "侧边栏产品筛选器",
+        "zh-TW": "側邊欄產品篩選條件"
+      },
+      "options": [
+        {
+          "value": "tags",
+          "label": {
+            "cs": "Podle štítku",
+            "da": "Efter tag",
+            "de": "Nach Tag",
+            "en": "By tag",
+            "es": "Por etiqueta",
+            "fi": "Tunnisteen mukaan",
+            "fr": "Par balise",
+            "hi": "टैग द्वारा",
+            "it": "Per tag",
+            "ja": "タグ別",
+            "ko": "태그 별",
+            "nb": "Etter tagg",
+            "nl": "Per tag",
+            "pl": "Wg tagu",
+            "pt-BR": "Por tag",
+            "pt-PT": "Por etiqueta",
+            "sv": "Efter tagg",
+            "th": "ตามแถบป้าย",
+            "tr": "Etikete göre",
+            "vi": "Theo thẻ",
+            "zh-CN": "按标签",
+            "zh-TW": "依標籤"
+          }
+        },
+        {
+          "value": "groups",
+          "label": {
+            "cs": "Podle skupiny",
+            "da": "Efter gruppe",
+            "de": "Nach Gruppe",
+            "en": "By group",
+            "es": "Por grupo",
+            "fi": "Ryhmän mukaan",
+            "fr": "Par groupe",
+            "hi": "समूह द्वारा",
+            "it": "Per gruppo",
+            "ja": "グループ別",
+            "ko": "그룹 별",
+            "nb": "Etter gruppe",
+            "nl": "Per groep",
+            "pl": "Wg grupy",
+            "pt-BR": "Por grupo",
+            "pt-PT": "Por grupo",
+            "sv": "Efter grupp",
+            "th": "ตามกลุ่ม",
+            "tr": "Gruba göre",
+            "vi": "Theo nhóm",
+            "zh-CN": "按组",
+            "zh-TW": "依群組"
+          }
+        }
+      ],
+      "info": {
+        "cs": "[Zjistěte, jak nastavit skupiny filtrů](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "da": "[Få mere at vide om, hvordan du konfigurerer filtergrupper](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "de": "[Erfahre, wie du Filtergruppen einrichtest](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "en": "[Learn how to set up filter groups](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "es": "[Obtén información sobre cómo configurar los grupos de filtros](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "fi": "[Lisätietoja suodatinryhmien määrittämisestä](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "fr": "[Apprendre à configurer des groupes de filtres](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "hi": "[जानें कि फ़िल्टर समूह कैसे सेट करें](https://help.shopify.com/manual/use-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "it": "[Maggiori informazioni su come configurare i gruppi di filtri](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "ja": "[グループの絞り込みフィルターの設定方法を確認する](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific)",
+        "ko": "[필터 그룹을 설정하는 방법에 대해 알아보십시오](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "nb": "[Lær hvordan du setter opp filtergrupper](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "nl": "[Leer hoe je groepsfilters instelt](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "pl": "[Dowiedz się, jak konfigurować grupy filtrów](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "pt-BR": "[Saiba como configurar grupos de filtros](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "pt-PT": "[Aprenda a configurar os grupos de filtragem](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "sv": "[Lär dig hur du ställer in filtergrupper](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "th": "[ดูวิธีตั้งค่ากลุ่มตัวกรอง](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific)",
+        "tr": "[Filtre gruplarını nasıl ayarlayacağınızı öğrenin](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "vi": "[Tìm hiểu cách thiết lập nhóm lọc](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "zh-CN": "[了解如何设置筛选条件组](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific).",
+        "zh-TW": "[瞭解如何設定篩選條件群組](https://help.shopify.com/manual/using-themes/themes-by-shopify/supply#product-tips-tips-specific)。"
+      }
+    },
+    {
+      "type": "checkbox",
+      "id": "product_show_compare_at_price",
+      "label": {
+        "cs": "Zobrazit původní cenu",
+        "da": "Vis sammenligningspris",
+        "de": "Vergleichspreis anzeigen",
+        "en": "Show compare at price",
+        "es": "Mostrar precio de comparación",
+        "fi": "Näytä vertailuhinta",
+        "fr": "Afficher le prix normal",
+        "hi": "मूल्य पर तुलना दिखाएं",
+        "it": "Mostra Prezzo di confronto",
+        "ja": "割引前価格を表示する",
+        "ko": "비교가 표시",
+        "nb": "Vis prissammenligning",
+        "nl": "Prijsvergelijking weergeven",
+        "pl": "Pokaż cenę do porównania",
+        "pt-BR": "Exibir Comparação de preços",
+        "pt-PT": "Mostrar preço comparado",
+        "sv": "Visa ursprungspris",
+        "th": "แสดงราคาเปรียบเทียบ",
+        "tr": "Karşılaştırma fiyatını göster",
+        "vi": "Hiển thị giá gốc",
+        "zh-CN": "显示原价",
+        "zh-TW": "顯示售價"
+      },
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "product_show_saved_amount",
+      "label": {
+        "cs": "Zobrazit uloženou částku",
+        "da": "Vis besparelse",
+        "de": "Gesparten Betrag anzeigen",
+        "en": "Show saved amount",
+        "es": "Mostrar monto ahorrado",
+        "fi": "Näytä säästetty summa",
+        "fr": "Afficher le montant économisé",
+        "hi": "सहेजी गई राशि दिखाएं",
+        "it": "Mostra importo risparmiato",
+        "ja": "保存された金額を表示",
+        "ko": "저장 금액 표시",
+        "nb": "Vis spart beløp",
+        "nl": "Bespaard bedrag weergeven",
+        "pl": "Pokaż zaoszczędzoną kwotę",
+        "pt-BR": "Exibir valor salvo",
+        "pt-PT": "Mostrar valor poupado",
+        "sv": "Visa sparade belopp",
+        "th": "แสดงจำนวนที่บันทึกไว้",
+        "tr": "Tasarruf edilen tutarı göster",
+        "vi": "Hiển thị số tiền đã lưu",
+        "zh-CN": "显示已保存的金额",
+        "zh-TW": "顯示省下金額"
+      },
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "product_reviews_enable",
+      "label": {
+        "cs": "Povolit recenze produktů",
+        "da": "Aktivér produktanmeldelser",
+        "de": "Produktbewertungen aktivieren",
+        "en": "Enable product reviews",
+        "es": "Habilitar reseñas de productos",
+        "fi": "Ota tuotearvostelut käyttöön",
+        "fr": "Activer les avis sur les produits",
+        "hi": "उत्पाद समीक्षा सक्षम करें",
+        "it": "Abilita recensioni di prodotto",
+        "ja": "商品レビューを有効にする",
+        "ko": "제품 리뷰 사용",
+        "nb": "Aktiver produktanmeldelser",
+        "nl": "Productbeoordelingen inschakelen",
+        "pl": "Włącz recenzje produktów",
+        "pt-BR": "Habilitar as avaliações de produtos",
+        "pt-PT": "Ativar as análises de produtos",
+        "sv": "Aktivera produktrecensioner",
+        "th": "เปิดรีวิวสินค้า",
+        "tr": "Ürün değerlendirmelerini etkinleştir",
+        "vi": "Bật đánh giá sản phẩm",
+        "zh-CN": "启用产品评论",
+        "zh-TW": "啟用產品評論"
+      },
+      "info": {
+        "cs": "Nainstalujte si zdarma aplikaci Shopify [Product Reviews](https://apps.shopify.com/product-reviews), která umožňuje přidávání recenzí produktů.",
+        "da": "Installer den gratis Shopify-app [Product Reviews](https://apps.shopify.com/product-reviews) for at tilføje produktanmeldelser.",
+        "de": "Installiere die kostenlose Shopify-App [Product Reviews](https://apps.shopify.com/product-reviews), um Produktbewertungen hinzuzufügen.",
+        "en": "Install the free Shopify [Product Reviews](https://apps.shopify.com/product-reviews) app to add product reviews.",
+        "es": "Instala la aplicación gratis de Shopify [Product Reviews](https://apps.shopify.com/product-reviews) para agregar reseñas de productos.",
+        "fi": "Asenna ilmainen Shopify [tuotearvostelut](https://apps.shopify.com/product-reviews) ‑sovellus lisätäksesi tuotearvostelut.",
+        "fr": "Installez l'application Shopify gratuite [Avis produits](https://apps.shopify.com/product-reviews) pour ajouter des avis produits.",
+        "hi": "नि: शुल्क Shopify इंस्टाल करें [उत्पाद समीक्षा](https://apps.shopify.com/product-reviews) उत्पाद समीक्षा जोड़ने के लिए ऐप.",
+        "it": "Installa l'app gratuita di Shopify [Product Reviews](https://apps.shopify.com/product-reviews) per aggiungere recensioni ai prodotti.",
+        "ja": "Shopify [商品レビュー](https://apps.shopify.com/product-reviews) アプリを無料でイントールして、商品レビューを追加しましょう。",
+        "ko": "제품 리뷰를 추가하려면 무료 Shopify [제품 리뷰](https://apps.shopify.com/product-reviews) 앱을 설치하십시오.",
+        "nb": "Installer den gratis Shopify [Product Reviews](https://apps.shopify.com/product-reviews)-appen for å legge til produktomtaler.",
+        "nl": "Installeer de gratis Shopify [Productbeoordelingne](https://apps.shopify.com/product-reviews)-app om productbeoordelingen toe te voegen.",
+        "pl": "Zainstaluj darmową aplikację Shopify [Product Reviews](https://apps.shopify.com/product-reviews), aby dodawać recenzje produktów.",
+        "pt-BR": "Instale o app gratuito [Product Reviews](https://apps.shopify.com/product-reviews) da Shopify para adicionar avaliações aos produtos.",
+        "pt-PT": "Instale a aplicação gratuita da Shopify [Avaliações de produtos](https://apps.shopify.com/product-reviews) para adicionar avaliações de produtos.",
+        "sv": "Installera den kostnadsfria Shopify [Produktrecensioner](https://apps.shopify.com/product-reviews)-appen för att lägga till produktrecensioner.",
+        "th": "ติดตั้ง [แอปรีวิวสินค้า](https://apps.shopify.com/product-reviews) ของ Shopify ฟรีเพื่อเพิ่มรีวิวสินค้า",
+        "tr": "Ürün değerlendirmeleri eklemek için ücretsiz Shopify [Product Reviews](https://apps.shopify.com/product-reviews) uygulamasını yükleyin.",
+        "vi": "Cài đặt ứng dụng [Product Reviews](https://apps.shopify.com/product-reviews) miễn phí của Shopify để thêm đánh giá sản phẩm.",
+        "zh-CN": "安装免费 Shopify [产品评论](https://apps.shopify.com/product-reviews) 应用以添加产品评论。",
+        "zh-TW": "免費安裝 Shopify [產品評論](https://apps.shopify.com/product-reviews) 應用程式以新增產品評論。"
+      }
+    }
+  ]
+}
+{% endschema %}

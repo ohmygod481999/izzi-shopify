@@ -1,0 +1,146 @@
+{% capture form_class %}
+  product-form
+  {% unless section.settings.enable_dynamic_checkout %} product-form--payment-button-disabled{% endunless %}
+  form
+{% endcapture %}
+
+{%- form 'product', product, class: form_class, novalidate: 'novalidate', data-product-form: '', data-product-id: product.id, data-product-handle: product.handle -%}
+  <div class="form__error-message-wrapper hidden"
+    data-error-message-wrapper
+    role="alert"
+  >
+    <span class="visually-hidden">{{ 'general.accessibility.error' | t }} </span>
+    {% render 'icon-error' %}
+    <span class="form__error-message" data-error-message>{{ 'products.product.quantity_minimum_message' | t }}</span>
+  </div>
+
+  {%- if section.settings.show_quantity_selector -%}
+    <div class="form__input-wrapper form__input-wrapper--select" data-quantity-input-wrapper>
+      <label class="form__select-label" for="Quantity-{{ section.id }}">
+        {{ 'products.product.quantity' | t }}
+      </label>
+
+      <div class="quantity-input">
+        <button
+          class="quantity-input__button"
+          type="button"
+          aria-label="{{ 'products.product.decrease_quantity' | t: title: product.title }}"
+          data-quantity-selector
+          data-product-id="{{ product.id }}"
+        >
+          {%- render 'icon-minus' -%}
+        </button>
+        <input
+          class="quantity-input__element"
+          type="number"
+          name="quantity"
+          id="Quantity-{{ section.id }}"
+          value="{{ quantity | default: 1 }}"
+          min="1"
+          aria-live="polite"
+          aria-label="{{ 'products.product.product_quantity' | t }}"
+          data-quantity-input
+          data-product-id="{{ product.id }}"
+        >
+        <button
+          class="quantity-input__button"
+          type="button"
+          aria-label="{{ 'products.product.increase_quantity' | t: title: product.title }}"
+          data-quantity-selector
+          data-quantity-selector-increase
+          data-product-id="{{ product.id }}"
+        >
+          {%- render 'icon-plus' -%}
+        </button>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- unless product.has_only_default_variant -%}
+    {%- for option in product.options_with_values -%}
+      <div class="product-form__select form__input-wrapper form__input-wrapper--select">
+        <label class="product-form__select-label form__select-label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+          {{ option.name }}
+        </label>
+
+        <select
+          id="Option-{{ section.id }}-{{ forloop.index0 }}"
+          class="form__input form__input--select"
+          style="background-image: url({{ 'icon-select.svg' | asset_url }});"
+          name="options[{{ option.name | escape }}]"
+        >
+          {% for value in option.values %}
+            <option
+              value="{{ value | escape }}"
+              {% if option.selected_value == value %}selected="selected"{% endif %}>
+                {{ value }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    {%- endfor -%}
+  {%- endunless -%}
+
+  <select name="id" class="form__input no-js" data-product-master-select>
+    {% for variant in product.variants %}
+      <option
+        {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+        {% unless variant.available %}disabled="disabled"{% endunless %}
+        value="{{ variant.id }}">
+          {{ variant.title }} {%- unless variant.available %} - {{ 'products.product.sold_out' | t }}{% endunless %}
+      </option>
+    {% endfor %}
+  </select>
+
+  <div class="product-form__buttons">
+    <button
+      type="submit"
+      name="add"
+      class="product-form__add-to-cart"
+      data-add-to-cart
+      aria-haspopup="dialog"
+      {% unless current_variant.available %} aria-disabled="true"{% endunless %}
+      aria-label="{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+        <span data-add-to-cart-text>
+          {%- unless current_variant.available -%}
+            {{ 'products.product.sold_out' | t }}
+          {%- else -%}
+            {{ 'products.product.add_to_cart' | t }}
+          {%- endunless -%}
+        </span>
+    </button>
+
+    <span class="product__success-message hidden" data-product-success-message tabindex="-1">
+      {{ 'products.product.product_added_to_cart' | t }}
+      <a href="{{ routes.cart_url }}" class="product__success-message-link"{% if settings.show_cart_drawer %} data-product-view-cart-link data-popup-open="cart" aria-haspopup="dialog"{% endif %}>{{ 'products.product.view_cart' | t }}</a>
+    </span>
+
+    {%- if section.settings.enable_dynamic_checkout -%}
+      {{ form | payment_button }}
+    {%- endif -%}
+
+    <button
+      type="submit"
+      name="add"
+      class="product-form__add-to-cart no-js"
+      data-add-to-cart
+      {% unless current_variant.available %} disabled{% endunless %}
+      aria-label="{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}">
+        <span data-add-to-cart-text>
+          {%- unless current_variant.available -%}
+            {{ 'products.product.sold_out' | t }}
+          {%- else -%}
+            {{ 'products.product.add_to_cart' | t }}
+          {%- endunless -%}
+        </span>
+    </button>
+  </div>
+
+  {%- comment -%}
+    Live region for announcing updated price and availability to screen readers
+  {%- endcomment -%}
+  <p class="visually-hidden" data-product-status
+    aria-live="polite"
+    role="status"
+  ></p>
+{%- endform -%}
