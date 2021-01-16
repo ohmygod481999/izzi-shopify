@@ -37,6 +37,8 @@ const build = async (inputFolderPath) => {
     const raw = utils.getSection(inputFolderPath, 'blog')
     // console.log(raw)
     // console.log(utils.getSchemaFromLiquidSection(raw))
+
+    utils.getContentForIndex(inputFolderPath, engine, {})
 };
 
 if (process.argv.length < 3) {

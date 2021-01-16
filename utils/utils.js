@@ -106,6 +106,104 @@ const getSchemaFromLiquidSection = function (liquidSection) {
     return JSON.parse(schemaLiquid.substring(indexStart, indexEnd));
 };
 
+const getContentForIndex = async (inputFolderPath, engine, parseData) => {
+    const settings = getSettings(inputFolderPath);
+    const content_for_index = settings.current.content_for_index;
+    const sections = content_for_index.map((idSection) => ({
+        id: idSection,
+        sectionSettings: settings.current.sections[idSection],
+    }));
+    const sectionsLiquid = [];
+    for (let section of sections) {
+        const { id, sectionSettings } = section;
+        const { type } = sectionSettings;
+        let liquidSection = getSection(inputFolderPath, type);
+
+        // Schema in the liquid Section
+        // const schema = getSchemaFromLiquidSection(liquidSection);
+
+        // Setting of the section in settings_data.json
+        const blocks = getSettingBlock(sectionSettings.blocks);
+
+        const parseDataToSection = {
+            section: {
+                id: id,
+                ...sectionSettings,
+                settings: sectionSettings.settings,
+                blocks: blocks,
+            },
+            settings: settings.current,
+            ...parseData,
+        };
+
+        // get data by section type
+        switch (type) {
+            case "featured-products":
+                // const idCollection = sectionSettings.settings.collection;
+                // const products = await eInstance.getProductsByCategory(
+                //     idCollection
+                // );
+                // const category = await eInstance.getCategoryById(idCollection);
+
+                // parseDataToSection.collections = {
+                //     [idCollection]: {
+                //         title: category.name,
+                //         images: category.images.map((img) => ({
+                //             img_url: config.imageRoot + img.path,
+                //         })),
+                //         image: {
+                //             img_url:
+                //                 category.images.length > 0
+                //                     ? config.imageRoot + category.images[0].path
+                //                     : config.imageDefault,
+                //         },
+                //         url: `/collections/${category.id}`,
+                //         products: products.map((product) => ({
+                //             title: product.name,
+                //             images: product.images.map((img) => ({
+                //                 img_url: config.imageRoot + img.path,
+                //             })),
+                //             featured_image: {
+                //                 img_url: _.get(product, "images[0].path")
+                //                     ? config.imageRoot +
+                //                       _.get(product, "images[0].path")
+                //                     : null,
+                //                 aspect_ratio: 1.0,
+                //             },
+                //             url: `/products/${product.id}`,
+                //         })),
+                //     },
+                // };
+                break;
+
+            default:
+                break;
+        }
+
+        // for (let block of blocks){
+        //     console.log(type)
+        //     if (block.type === "collection") {
+        //         console.log(block)
+        //     }
+        // }
+
+        liquidSection = `<div class="shopify-section index-section">${liquidSection}</div>`;
+
+        const preprocessedLiquidSection = liquid.preprocessLiquid(
+            liquidSection
+        );
+
+        const renderedSection = await engine.parseAndRender(
+            preprocessedLiquidSection,
+            parseDataToSection
+        );
+
+        sectionsLiquid.push(renderedSection);
+    }
+    const content_for_index_homepage = sectionsLiquid.join("\n");
+    return content_for_index_homepage;
+};
+
 exports.formatDate = formatDate;
 exports.cropImage = cropImage;
 exports.getSettings = getSettings;
@@ -114,3 +212,4 @@ exports.getLiquidFromFile = getLiquidFromFile;
 exports.getSection = getSection;
 exports.getTemplate = getTemplate;
 exports.getSchemaFromLiquidSection = getSchemaFromLiquidSection;
+exports.getContentForIndex = getContentForIndex;
