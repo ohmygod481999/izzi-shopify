@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Test Liquid Section</title>
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" href="/public/style.css" />
+    </head>
+    <body>
+        <div class="main">
+            <div class="container">
+                <div class="mt-3">
+                    <h1>Test liquid section</h1>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <textarea
+                            class="form-control mb-3"
+                            id="inLiquid"
+                            rows="10"
+                        ></textarea>
+                        <textarea
+                            class="form-control"
+                            id="inParam"
+                            rows="10"
+                        ></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <textarea
+                            class="form-control"
+                            id="out"
+                            rows="21"
+                        ></textarea>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button id="submit-btn" class="btn btn-success">
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+        <script src="/public/script.js"></script>
+    </body>
+</html>

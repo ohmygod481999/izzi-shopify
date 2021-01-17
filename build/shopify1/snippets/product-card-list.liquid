@@ -1,0 +1,75 @@
+{% comment %}
+    Renders a product card using "List" style
+
+    Accepts:
+    - product: {Object} Product Liquid object (optional)
+    - show_vendor: {Boolean} Show the product's vendor depending on the section setting (optional)
+
+    Usage:
+    {% render 'product-card-list' %}
+    {% render 'product-card-list', product: product, show_vendor: section.settings.show_vendor %}
+{% endcomment %}
+{%- liquid
+  if product.title
+    assign product_title = product.title
+    assign product_desc = product.description
+    assign product_vendor = product.vendor
+  else
+    assign product_title = 'homepage.onboarding.product_title' | t
+    assign product_desc = 'homepage.onboarding.product_description' | t
+    assign product_vendor = 'products.product.vendor' | t
+    assign onboarding = true
+  endif
+-%}
+
+<div class="product-card product-card--list"{% unless onboarding %} data-product-card data-product-id="{{ product.id }}" data-product-url="{{ product.url }}"{% endunless %} tabindex="-1">
+  <a class="full-width-link" href="{{ product.url | within: collection }}">
+    <span class="visually-hidden">{{ product_title }}</span>
+    <span class="visually-hidden">{{ product.title }}</span>
+  </a>
+
+  <div class="product-card__quantity"
+    data-label-single="{{ 'products.product.quantity_indicator.single' | t: title: product_title }}"
+    data-label-multi="{{ 'products.product.quantity_indicator.multi' | t: quantity: '[quantity]', title: product_title }}"
+    data-quantity-indicator="{{ product.id }}">
+    <span aria-hidden="true" data-quantity-number></span>
+    <span class="visually-hidden" data-quantity-label></span>
+  </div>
+
+  <div class="product-card__link">
+    <div class="product-card__content">
+      <div class="product-card__title-wrapper" aria-hidden="true">
+        <span class="product-card__title">{{ product_title }}</span>
+      </div>
+      {% if show_vendor %}
+        <div class="product-card__vendor">{{ product_vendor }}</div>
+      {% endif %}
+      <div class="product-card__desc-wrapper" aria-hidden="true">
+        <p class="product-card__desc">{{ product_desc | strip_html | truncate: 120 }}</p>
+      </div>
+      {% render 'product-price-listing', product: product, show_vendor: false %}
+    </div>
+
+    {% if product.featured_media or onboarding %}
+      <div class="product-card__image-wrapper">
+        {% if product.featured_media %}
+          <img srcset="{% if product.featured_media.width >= 90 %}{{ product.featured_media | img_url: '90x' }} 90w,{% endif %}
+              {% if product.featured_media.width >= 180 %}{{ product.featured_media | img_url: '180x' }} 180w,{% endif %}
+              {% if product.featured_media.width >= 110 %}{{ product.featured_media | img_url: '110x' }} 110w,{% endif %}
+              {% if product.featured_media.width >= 220 %}{{ product.featured_media | img_url: '220x' }} 220w,{% endif %}"
+            sizes="(min-width: 750px) 110px, 90px"
+            src="{{ product.featured_media | img_url: '110x110' }}"
+            width="{{ product.featured_media.width }}"
+            height="{{ product.featured_media.height }}"
+            loading="lazy"
+            class="product-card__image"
+            alt="{{ product.featured_media.alt | escape }}">
+        {% endif %}
+        {% if onboarding %}
+          {% capture current %}{% cycle 1, 2, 3, 4 %}{% endcapture %}
+          {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg placeholder-svg--small product-card__image' }}
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>

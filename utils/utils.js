@@ -1,6 +1,12 @@
 const fs = require("fs-extra");
 const liquid = require("../liquid/index");
 const path = require("path");
+const ElasticClient = require("./es");
+const dummyData = require("../dummy-data");
+const config = require("./config");
+const url = require("url");
+const https = require("https");
+const sizeOf = require("image-size");
 
 const formatDate = (date) => {
     var formatedDate = new Date(date);
@@ -204,6 +210,157 @@ const getContentForIndex = async (inputFolderPath, engine, parseData) => {
     return content_for_index_homepage;
 };
 
+const getImageSize = (img_url) => {
+    var options = url.parse(img_url);
+
+    return new Promise((resolve, reject) => {
+        https.get(options, function (response) {
+            var chunks = [];
+            response
+                .on("data", function (chunk) {
+                    chunks.push(chunk);
+                })
+                .on("error", function (err) {
+                    reject(err);
+                })
+                .on("end", function () {
+                    var buffer = Buffer.concat(chunks);
+                    // console.log(sizeOf(buffer));
+                    resolve(sizeOf(buffer));
+                });
+        });
+    });
+};
+
+const getImageObject = async (image) => {
+    const img_url = config.imageRoot + image.path;
+    const imgSize = await getImageSize(img_url);
+    const { width, height, type } = imgSize;
+
+    return {
+        img_url: img_url,
+        width: width,
+        height: height,
+        aspect_ratio: width / height,
+    };
+};
+
+const getImagesObject = async (images) => {
+    const imageObjects = [];
+    for (const image of images) {
+        const temp = await getImageObject(image);
+        imageObjects.push(temp);
+    }
+    //  images.map((image) => getImageObject(image));
+    const featured_image = imageObjects.length > 0 ? imageObjects[0] : null;
+    return {
+        images: imageObjects,
+        featured_image: featured_image,
+        featured_media: featured_image,
+        image: featured_image,
+    };
+};
+
+const getGlobalObject = async (inputFolderPath) => {
+    const eInstance = new ElasticClient(config.merchantId);
+    const allCollections = await eInstance.getCategoriesByType(
+        config.categortType.PRODUCT
+    );
+    const allCollectionsMap = {};
+    for (const collection of allCollections) {
+        const imagesObject = await getImagesObject(collection.images);
+        allCollectionsMap[collection.id] = {
+            title: collection.name, //collection
+            ...imagesObject,
+            url: `/collections/${collection.id}`,
+        };
+    }
+
+    for (let collection of allCollections) {
+        const products = await eInstance.getProductsByCategory(collection.id);
+
+        const resultProducts = [];
+        for (const product of products) {
+            const imagesObject = await getImagesObject(product.images);
+            resultProducts.push({
+                title: product.name,
+                ...imagesObject,
+                url: `/products/${product.id}`,
+            });
+        }
+        allCollectionsMap[collection.id].products = resultProducts;
+    }
+
+    /**
+     * @description: Get Articles
+     */
+    const allBlogs = await eInstance.getCategoriesByType(
+        config.categortType.ARTICLE
+    );
+    const allBlogsMap = {};
+    for (const blog of allBlogs) {
+        const imagesObject = await getImagesObject(blog.images);
+        allBlogsMap[blog.id] = {
+            title: blog.name, //blog
+            ...imagesObject,
+            url: `/blogs/${blog.id}`,
+        };
+    }
+
+    for (let blog of allBlogs) {
+        const articles = await eInstance.getArticlesByCategory(blog.id);
+
+        const resultArticles = [];
+        for (const article of articles) {
+            const imagesObject = await getImagesObject(article.images);
+            resultArticles.push({
+                title: article.name,
+                ...imagesObject,
+                url: `/blogs/${blog.id}/${article.id}`,
+                published_at: article.createdDate,
+            });
+        }
+        allBlogsMap[blog.id].articles = resultArticles;
+    }
+    const settings = getSettings(inputFolderPath);
+
+    const dataToParse = {
+        settings: settings.current,
+        collections: allCollectionsMap,
+        blogs: allBlogsMap,
+        ...dummyData,
+    };
+    return dataToParse;
+};
+
+const getPage = async (engine, inputFolderPath, templateName) => {
+    const raw = fs
+        .readFileSync(
+            path.join(
+                __dirname,
+                "../",
+                inputFolderPath,
+                "layout",
+                "theme.liquid"
+            )
+        )
+        .toString();
+
+    const templateLiquid = getTemplate(inputFolderPath, templateName);
+    const globalObject = await getGlobalObject(inputFolderPath);
+
+    const rendered_template = await engine.parseAndRender(
+        templateLiquid,
+        globalObject
+    );
+
+    const result = await engine.parseAndRender(raw, {
+        ...globalObject,
+        content_for_layout: rendered_template,
+    });
+    return result;
+};
+
 exports.formatDate = formatDate;
 exports.cropImage = cropImage;
 exports.getSettings = getSettings;
@@ -213,3 +370,5 @@ exports.getSection = getSection;
 exports.getTemplate = getTemplate;
 exports.getSchemaFromLiquidSection = getSchemaFromLiquidSection;
 exports.getContentForIndex = getContentForIndex;
+exports.getPage = getPage;
+exports.getGlobalObject = getGlobalObject;

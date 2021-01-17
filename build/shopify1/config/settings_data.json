@@ -1,0 +1,440 @@
+{
+    "current": {
+        "color_background": "#fffbf6",
+        "color_secondary_background": "#faf3ec",
+        "color_borders_and_lines": "#dad0ca",
+        "color_button": "#000000",
+        "color_headings_and_links": "#000000",
+        "color_body_text": "#746b60",
+        "color_secondary_background_text": "#000000",
+        "color_sale_price": "#c74230",
+        "color_field_text": "#000000",
+        "color_field_borders": "#000000",
+        "font_heading": "cardo_n4",
+        "font_heading_base_size": 26,
+        "font_body": "helvetica_n4",
+        "font_body_base_size": 16,
+        "show_product_modal": true,
+        "show_cart_drawer": true,
+        "show_cart_note": false,
+        "share_image": "",
+        "share_facebook": true,
+        "share_twitter": true,
+        "share_pinterest": true,
+        "social_twitter_link": "",
+        "social_facebook_link": "",
+        "social_pinterest_link": "",
+        "social_instagram_link": "",
+        "social_tumblr_link": "",
+        "social_snapchat_link": "",
+        "social_youtube_link": "",
+        "social_vimeo_link": "",
+        "favicon": "",
+        "checkout_header_image": "",
+        "checkout_logo_image": "",
+        "checkout_logo_position": "left",
+        "checkout_logo_size": "medium",
+        "checkout_body_background_image": "",
+        "checkout_body_background_color": "#fff",
+        "checkout_input_background_color_mode": "white",
+        "checkout_sidebar_background_image": "",
+        "checkout_sidebar_background_color": "#fafafa",
+        "checkout_heading_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+        "checkout_body_font": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
+        "checkout_accent_color": "#197bbd",
+        "checkout_button_color": "#197bbd",
+        "checkout_error_color": "#e32c2b",
+        "sections": {
+            "header": {
+                "type": "header",
+                "settings": {
+                    "logo": "",
+                    "logo_max_width": 50,
+                    "main_menu": "",
+                    "enable_secondary_background": true,
+                    "show_search": true,
+                    "announcement_bar_enabled": true,
+                    "announcement_bar_text": "Announce something here",
+                    "announcement_bar_color_background": "#faf3ec",
+                    "announcement_bar_color_text": "#000000"
+                }
+            },
+            "image-with-text-0": {
+                "type": "image-with-text",
+                "settings": {
+                    "image": "https://hapnature.com/wp-content/uploads/2020/02/tranh-treo-tuong-phong-canh-chau-au-mua-xuan-sd4138.jpg",
+                    "title": "asdasd",
+                    "text": "",
+                    "button_label": "",
+                    "button_url": "",
+                    "desktop_layout": "right",
+                    "mobile_layout": "bottom",
+                    "secondary_background": "partial_background",
+                    "text_size": "large",
+                    "keep_image_ratio": true,
+                    "enable_secondary_text_color": false
+                }
+            },
+            "featured-collections": {
+                "type": "featured-collections",
+                "blocks": {
+                    "featured-collections-0": {
+                        "type": "collection",
+                        "settings": { "collection": "" }
+                    },
+                    "featured-collections-1": {
+                        "type": "collection",
+                        "settings": { "collection": "" }
+                    },
+                    "featured-collections-2": {
+                        "type": "collection",
+                        "settings": { "collection": "" }
+                    },
+                    "featured-collections-3": {
+                        "type": "collection",
+                        "settings": { "collection": "" }
+                    },
+                    "featured-collections-4": {
+                        "type": "collection",
+                        "settings": { "collection": "" }
+                    }
+                },
+                "block_order": [
+                    "featured-collections-0",
+                    "featured-collections-1",
+                    "featured-collections-2",
+                    "featured-collections-3",
+                    "featured-collections-4"
+                ],
+                "settings": { "list_size": "small", "image_style": "square" }
+            },
+            "featured-product": {
+                "type": "featured-product",
+                "settings": {
+                    "product": "",
+                    "show_quantity_selector": false,
+                    "show_vendor": false,
+                    "enable_dynamic_checkout": false,
+                    "show_social_buttons": false
+                }
+            },
+            "image-with-text-1": {
+                "type": "image-with-text",
+                "settings": {
+                    "image": "https://hapnature.com/wp-content/uploads/2020/02/tranh-treo-tuong-phong-canh-chau-au-mua-xuan-sd4138.jpg",
+                    "title": "Image with text 123",
+                    "text": "<p>long pro dep trai vo dich vu tru</p>",
+                    "button_label": "",
+                    "button_url": "",
+                    "desktop_layout": "right",
+                    "mobile_layout": "bottom",
+                    "secondary_background": "full_background",
+                    "text_size": "medium",
+                    "keep_image_ratio": true,
+                    "enable_secondary_text_color": false
+                }
+            },
+            "image-with-text-2": {
+                "type": "image-with-text",
+                "settings": {
+                    "image": "https://hapnature.com/wp-content/uploads/2020/02/tranh-treo-tuong-phong-canh-chau-au-mua-xuan-sd4138.jpg",
+                    "title": "Image with text",
+                    "text": "<p>Pair large text with an image to give focus to your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+                    "button_label": "",
+                    "button_url": "",
+                    "desktop_layout": "left",
+                    "mobile_layout": "bottom",
+                    "secondary_background": "full_background",
+                    "text_size": "medium",
+                    "keep_image_ratio": true,
+                    "enable_secondary_text_color": false
+                }
+            },
+            "image-with-text-3": {
+                "type": "image-with-text",
+                "settings": {
+                    "image": "https://hapnature.com/wp-content/uploads/2020/02/tranh-treo-tuong-phong-canh-chau-au-mua-xuan-sd4138.jpg",
+                    "title": "Image with text",
+                    "text": "<p>Pair large text with an image to give focus to your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
+                    "button_label": "",
+                    "button_url": "",
+                    "desktop_layout": "right",
+                    "mobile_layout": "bottom",
+                    "secondary_background": "full_background",
+                    "text_size": "medium",
+                    "keep_image_ratio": true,
+                    "enable_secondary_text_color": false
+                }
+            },
+            "footer": {
+                "type": "footer",
+                "blocks": {
+                    "footer-0": {
+                        "type": "text",
+                        "settings": {
+                            "title": "Talk about your business",
+                            "text": "<p>Share store details, promotions, or brand content with your customers.</p>"
+                        }
+                    },
+                    "footer-1": {
+                        "type": "newsletter",
+                        "settings": { "title": "Newsletter" }
+                    }
+                },
+                "block_order": ["footer-0", "footer-1"],
+                "settings": {
+                    "show_payment_icons": false,
+                    "color_footer_background": "#faf3ec",
+                    "color_footer_heading_text": "#000000",
+                    "color_footer_body_text": "#746b60",
+                    "show_locale_selector": true
+                }
+            }
+        },
+        "content_for_index": [
+            "image-with-text-0",
+            "featured-collections",
+            "featured-product",
+            "image-with-text-1",
+            "image-with-text-2",
+            "image-with-text-3"
+        ]
+    },
+    "presets": {
+        "Bistro": {
+            "sections": {
+                "header": { "type": "header", "settings": {} },
+                "image-with-text-0": {
+                    "type": "image-with-text",
+                    "settings": {
+                        "text": "",
+                        "text_size": "large",
+                        "keep_image_ratio": true
+                    }
+                },
+                "featured-collections": {
+                    "type": "featured-collections",
+                    "blocks": {
+                        "featured-collections-0": {
+                            "type": "collection",
+                            "settings": {}
+                        },
+                        "featured-collections-1": {
+                            "type": "collection",
+                            "settings": {}
+                        },
+                        "featured-collections-2": {
+                            "type": "collection",
+                            "settings": {}
+                        },
+                        "featured-collections-3": {
+                            "type": "collection",
+                            "settings": {}
+                        },
+                        "featured-collections-4": {
+                            "type": "collection",
+                            "settings": {}
+                        }
+                    },
+                    "block_order": [
+                        "featured-collections-0",
+                        "featured-collections-1",
+                        "featured-collections-2",
+                        "featured-collections-3",
+                        "featured-collections-4"
+                    ],
+                    "settings": {}
+                },
+                "featured-product": {
+                    "type": "featured-product",
+                    "settings": {
+                        "enable_dynamic_checkout": false,
+                        "show_social_buttons": false
+                    }
+                },
+                "image-with-text-1": {
+                    "type": "image-with-text",
+                    "settings": {
+                        "secondary_background": "full_background",
+                        "text_size": "medium",
+                        "keep_image_ratio": true
+                    }
+                },
+                "image-with-text-2": {
+                    "type": "image-with-text",
+                    "settings": {
+                        "desktop_layout": "left",
+                        "secondary_background": "full_background",
+                        "text_size": "medium",
+                        "keep_image_ratio": true
+                    }
+                },
+                "image-with-text-3": {
+                    "type": "image-with-text",
+                    "settings": {
+                        "secondary_background": "full_background",
+                        "text_size": "medium",
+                        "keep_image_ratio": true
+                    }
+                },
+                "footer": {
+                    "type": "footer",
+                    "blocks": {
+                        "footer-0": { "type": "text", "settings": {} },
+                        "footer-1": { "type": "newsletter", "settings": {} }
+                    },
+                    "block_order": ["footer-0", "footer-1"],
+                    "settings": {}
+                }
+            },
+            "content_for_index": [
+                "image-with-text-0",
+                "featured-collections",
+                "featured-product",
+                "image-with-text-1",
+                "image-with-text-2",
+                "image-with-text-3"
+            ]
+        },
+        "Pantry": {
+            "color_background": "#FFFFFF",
+            "color_secondary_background": "#EBF2EF",
+            "color_borders_and_lines": "#577B46",
+            "color_button": "#2D4F1E",
+            "color_headings_and_links": "#2D4F1E",
+            "color_body_text": "#537344",
+            "color_secondary_background_text": "#2D4F1E",
+            "color_sale_price": "#E84C37",
+            "color_field_text": "#2D4F1E",
+            "color_field_borders": "#2D4F1E",
+            "font_heading": "futura_n5",
+            "font_body": "karla_n4",
+            "sections": {
+                "header": {
+                    "type": "header",
+                    "settings": {
+                        "enable_secondary_background": false,
+                        "announcement_bar_color_background": "#51836D",
+                        "announcement_bar_color_text": "#FFFFFF"
+                    }
+                },
+                "image-with-text-0": {
+                    "type": "image-with-text",
+                    "settings": {
+                        "secondary_background": "no_background",
+                        "text_size": "large",
+                        "keep_image_ratio": true
+                    }
+                },
+                "featured-collections-0": {
+                    "type": "featured-collections",
+                    "blocks": {
+                        "featured-collections-0-0": {
+                            "type": "collection",
+                            "settings": {}
+                        },
+                        "featured-collections-0-1": {
+                            "type": "collection",
+                            "settings": {}
+                        },
+                        "featured-collections-0-2": {
+                            "type": "collection",
+                            "settings": {}
+                        },
+                        "featured-collections-0-3": {
+                            "type": "collection",
+                            "settings": {}
+                        }
+                    },
+                    "block_order": [
+                        "featured-collections-0-0",
+                        "featured-collections-0-1",
+                        "featured-collections-0-2",
+                        "featured-collections-0-3"
+                    ],
+                    "settings": {}
+                },
+                "image-with-text-1": {
+                    "type": "image-with-text",
+                    "settings": {
+                        "secondary_background": "full_background",
+                        "text_size": "large",
+                        "keep_image_ratio": true
+                    }
+                },
+                "image-with-text-2": {
+                    "type": "image-with-text",
+                    "settings": {
+                        "desktop_layout": "left",
+                        "secondary_background": "no_background",
+                        "text_size": "large",
+                        "keep_image_ratio": true
+                    }
+                },
+                "featured-collections-1": {
+                    "type": "featured-collections",
+                    "blocks": {
+                        "featured-collections-1-0": {
+                            "type": "collection",
+                            "settings": {}
+                        },
+                        "featured-collections-1-1": {
+                            "type": "collection",
+                            "settings": {}
+                        },
+                        "featured-collections-1-2": {
+                            "type": "collection",
+                            "settings": {}
+                        },
+                        "featured-collections-1-3": {
+                            "type": "collection",
+                            "settings": {}
+                        },
+                        "featured-collections-1-4": {
+                            "type": "collection",
+                            "settings": {}
+                        }
+                    },
+                    "block_order": [
+                        "featured-collections-1-0",
+                        "featured-collections-1-1",
+                        "featured-collections-1-2",
+                        "featured-collections-1-3",
+                        "featured-collections-1-4"
+                    ],
+                    "settings": {}
+                },
+                "featured-product": {
+                    "type": "featured-product",
+                    "settings": {
+                        "show_quantity_selector": true,
+                        "enable_dynamic_checkout": false,
+                        "show_social_buttons": false
+                    }
+                },
+                "footer": {
+                    "type": "footer",
+                    "blocks": {
+                        "footer-0": { "type": "text", "settings": {} },
+                        "footer-1": { "type": "text", "settings": {} },
+                        "footer-2": { "type": "newsletter", "settings": {} }
+                    },
+                    "block_order": ["footer-0", "footer-1", "footer-2"],
+                    "settings": {
+                        "color_footer_background": "#EBF2EF",
+                        "color_footer_heading_text": "#2D4F1E",
+                        "color_footer_body_text": "#577B46"
+                    }
+                }
+            },
+            "content_for_index": [
+                "image-with-text-0",
+                "featured-collections-0",
+                "image-with-text-1",
+                "image-with-text-2",
+                "featured-collections-1",
+                "featured-product"
+            ]
+        }
+    }
+}
