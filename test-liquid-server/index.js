@@ -25,6 +25,13 @@ const engine = new Liquid({
 registCustomTag(engine, inputFolderPath);
 registCustomFilter(engine, inputFolderPath);
 
+let globalObject;
+console.log("getting global object");
+utils.getGlobalObject(inputFolderPath).then((value) => {
+    globalObject = value;
+    console.log("init done!");
+});
+
 app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use(bodyParser.json());
@@ -43,13 +50,20 @@ app.post("/api/render", async (req, res) => {
     const { liquid, param } = req.body;
 
     const pLiquid = preprocessLiquid(liquid);
-    // const renderLiquid = await engine.parseAndRender(pLiquid, param);
+
+    // const globalObject = await utils.getGlobalObject(inputFolderPath);
+    const parseData = {
+        ...param,
+        ...globalObject,
+    };
+
+    const renderLiquid = await engine.parseAndRender(pLiquid, parseData);
 
     // const renderLiquid = preprocessLiquid(liquid)
-    const html = await utils.getPage(engine, inputFolderPath, "index");
-    
+    // const html = await utils.getPage(engine, inputFolderPath, "index");
+
     res.json({
-        renderLiquid: html,
+        renderLiquid: renderLiquid,
     });
 });
 

@@ -168,7 +168,23 @@ module.exports = function registCustomTag(engine, inputFolderPath) {
     engine.registerTag("form", {
         parse: function (tagToken, remainTokens) {
             this.str = "";
-            // const [formType] = tagToken.args.split(",")
+            const [formType, ...args] = tagToken.args.split(",");
+            // console.log(args);
+            this.requiredParam = null;
+            this.remainParams = [];
+            if (args.length > 0) {
+                if (!args[0].includes(":")) {
+                    this.requiredParam = args[0].trim();
+                    args.forEach((arg, i) => {
+                        if (i !== 0) this.remainParams.push(arg);
+                    });
+                } else {
+                    args.forEach((arg) => {
+                        this.remainParams.push(arg);
+                    });
+                }
+            }
+
             // console.log(tagToken.args)
             const stream = this.liquid.parser
                 .parseStream(remainTokens)
@@ -181,6 +197,39 @@ module.exports = function registCustomTag(engine, inputFolderPath) {
             stream.start();
         },
         render: async function (context, hash) {
+            console.log(this.requiredParam);
+            if (this.requiredParam) {
+                if (this.requiredParam in context.scopes[0]) {
+                    this.requiredParam = context.scopes[0][this.requiredParam];
+                } else if (this.requiredParam in context.environments) {
+                    this.requiredParam =
+                        context.environments[this.requiredParam];
+                } else {
+                    this.requiredParam = {};
+                }
+            }
+            this.remainParams = this.remainParams.map((param) => {
+                let [key, value] = param.split(":");
+                value = value.trim();
+                if (value[0] === '"' || value[0] === "'") {
+                    let newValue = "";
+                    for (let i = 1; i < value.length - 1; i++) {
+                        newValue += value[i];
+                    }
+                    value = newValue;
+                } else {
+                    if (value in context.scopes[0]) {
+                        value = context.scopes[0][value];
+                    } else if (value in context.environments) {
+                        value = context.environments[value];
+                    } else {
+                        value = "";
+                    }
+                }
+                return [key, value];
+            });
+            console.log(this.requiredParam);
+            console.log(this.remainParams);
             // console.log(context.environments)
             // console.log("-------------------------------")
             const rendered = await engine.parseAndRender(this.str, {

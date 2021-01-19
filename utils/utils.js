@@ -349,6 +349,15 @@ const getPage = async (engine, inputFolderPath, templateName) => {
     const templateLiquid = getTemplate(inputFolderPath, templateName);
     const globalObject = await getGlobalObject(inputFolderPath);
 
+    let parseData = globalObject;
+    if (templateName === "index") {
+        parseData.content_for_index = await getContentForIndex(
+            inputFolderPath,
+            engine,
+            parseData
+        );
+    }
+
     const rendered_template = await engine.parseAndRender(
         templateLiquid,
         globalObject
