@@ -66,8 +66,8 @@
                     "logo": "",
                     "logo_max_width": "305",
                     "show_announcement": false,
-                    "announcement_text": "Announce something here",
-                    "announcement_link": ""
+                    "announcement_text": "Thong bao moi",
+                    "announcement_link": "https://google.com"
                 }
             },
             "footer": {

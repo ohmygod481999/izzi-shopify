@@ -333,7 +333,7 @@ const getGlobalObject = async (inputFolderPath) => {
     return dataToParse;
 };
 
-const getPage = async (engine, inputFolderPath, templateName) => {
+const getPage = async (engine, inputFolderPath, templateName, inputData) => {
     const raw = fs
         .readFileSync(
             path.join(
@@ -358,9 +358,16 @@ const getPage = async (engine, inputFolderPath, templateName) => {
         );
     }
 
+    if (inputData) {
+        parseData = {
+            ...parseData,
+            ...inputData,
+        };
+    }
+
     const rendered_template = await engine.parseAndRender(
         templateLiquid,
-        globalObject
+        parseData
     );
 
     const result = await engine.parseAndRender(raw, {
@@ -381,3 +388,5 @@ exports.getSchemaFromLiquidSection = getSchemaFromLiquidSection;
 exports.getContentForIndex = getContentForIndex;
 exports.getPage = getPage;
 exports.getGlobalObject = getGlobalObject;
+exports.getImageObject = getImageObject;
+exports.getImagesObject = getImagesObject;

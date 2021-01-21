@@ -16,7 +16,7 @@
   "articleBody": {{ article.content | strip_html | json }},
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": {{ shop.url | append: page.url | json }}
+    "@id": {{ shop.url | json }}
   },
   "headline": {{ article.title | json }},
   {% if article.excerpt != blank %}

@@ -44,43 +44,43 @@ module.exports = function registCustomTag(engine, inputFolderPath) {
         },
     });
 
-    // engine.registerTag("render", {
-    //     parse: function (tagToken, remainTokens) {
-    //         const [str, ...args] = tagToken.args.split(",");
-    //         this.str = str;
-    //         this.argsLiquid = "";
-    //         if (args.length > 0) {
-    //             this.argsLiquid = args
-    //                 .map((arg) => `{%- assign ${arg.replace(":", " =")} -%}`)
-    //                 .join("\n");
-    //         }
-    //     },
-    //     render: async function (context, emitter) {
-    //         var str = await this.liquid.evalValue(this.str, context);
-    //         let raw;
-    //         let sectionFolderPath = path.join(
-    //             __dirname,
-    //             `/../${inputFolderPath}/snippets/${str}.liquid`
-    //         );
-    //         if (!fs.existsSync(sectionFolderPath)) {
-    //             sectionFolderPath = path.join(
-    //                 __dirname,
-    //                 `/../${inputFolderPath}/sections/${str}.liquid`
-    //             );
-    //         }
-    //         raw = fs.readFileSync(sectionFolderPath).toString();
-    //         raw = this.argsLiquid + raw;
+    engine.registerTag("render", {
+        parse: function (tagToken, remainTokens) {
+            const [str, ...args] = tagToken.args.split(",");
+            this.str = str;
+            this.argsLiquid = "";
+            if (args.length > 0) {
+                this.argsLiquid = args
+                    .map((arg) => `{%- assign ${arg.replace(":", " =")} -%}`)
+                    .join("\n");
+            }
+        },
+        render: async function (context, emitter) {
+            var str = await this.liquid.evalValue(this.str, context);
+            let raw;
+            let sectionFolderPath = path.join(
+                __dirname,
+                `/../${inputFolderPath}/snippets/${str}.liquid`
+            );
+            if (!fs.existsSync(sectionFolderPath)) {
+                sectionFolderPath = path.join(
+                    __dirname,
+                    `/../${inputFolderPath}/sections/${str}.liquid`
+                );
+            }
+            raw = fs.readFileSync(sectionFolderPath).toString();
+            raw = this.argsLiquid + raw;
 
-    //         const processedLiquid = preprocessLiquid(raw);
+            const processedLiquid = preprocessLiquid(raw);
 
-    //         const rendered = engine.parseAndRender(processedLiquid, {
-    //             ...context.environments,
-    //             ...context.scopes[0],
-    //             ...context.scopes[1],
-    //         });
-    //         return rendered;
-    //     },
-    // });
+            const rendered = engine.parseAndRender(processedLiquid, {
+                ...context.environments,
+                ...context.scopes[0],
+                ...context.scopes[1],
+            });
+            return rendered;
+        },
+    });
 
     engine.registerTag("schema", {
         parse: function (tagToken, remainTokens) {
@@ -230,13 +230,18 @@ module.exports = function registCustomTag(engine, inputFolderPath) {
             });
             console.log(this.requiredParam);
             console.log(this.remainParams);
-            // console.log(context.environments)
-            // console.log("-------------------------------")
+            let openTag = "<form ";
+            this.remainParams.forEach((param) => {
+                const [attribute, value] = param;
+                openTag += `${attribute}="${value}" `;
+            });
+            openTag += ">";
+            let closeTag = "</form>";
             const rendered = await engine.parseAndRender(this.str, {
                 ...context.environments,
                 ...context.scopes[0],
             });
-            return rendered;
+            return openTag + "\n" + rendered + "\n" + closeTag;
         },
     });
 

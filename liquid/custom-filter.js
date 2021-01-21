@@ -63,7 +63,7 @@ module.exports = function registCustomTag(engine, inputFolderPath) {
     });
     engine.registerFilter("placeholder_svg_tag", (content, args) => {
         // return content
-        return `<img src="https://atzcart.s3.ap-south-1.amazonaws.com/uploads/images/categories/default.png" alt="default-img" />`;
+        return `<img src="https://elportaldelchacinado.com/wp-content/plugins/accelerated-mobile-pages/images/SD-default-image.png" alt="default-img" />`;
     });
     engine.registerFilter("truncatewords", (content, args) => {
         if (!content) return null;

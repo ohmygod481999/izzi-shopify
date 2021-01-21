@@ -8,14 +8,15 @@ const {
     preprocessLiquid,
 } = require("./liquid/index");
 const utils = require("./utils/utils");
+const api = require("./utils/api");
 
 const port = 5001;
 const app = express();
 
 if (process.argv.length < 3) {
-    return console.log("Pls tell me the path to build folder you want to run")
+    return console.log("Pls tell me the path to build folder you want to run");
 }
-const inputFolderPath = process.argv[2]
+const inputFolderPath = process.argv[2];
 
 const engine = new Liquid({
     extname: ".liquid",
@@ -38,6 +39,73 @@ app.use("/public", express.static(`${inputFolderPath}/assets`));
 
 app.get("/", async (req, res) => {
     const html = await utils.getPage(engine, inputFolderPath, "index");
+    res.send(html);
+});
+
+app.get("/products/:productId", async (req, res) => {
+    const productId = req.params.productId;
+    const product = await api.getProductParseDataById(productId);
+    const html = await utils.getPage(
+        engine,
+        inputFolderPath,
+        "product",
+        product
+    );
+    res.send(html);
+});
+
+app.get("/cart", async (req, res) => {
+    const html = await utils.getPage(engine, inputFolderPath, "cart");
+    res.send(html);
+});
+
+app.get("/search", async (req, res) => {
+    const terms = req.query.q;
+    const searchData = await api.getSearchData(terms);
+    const html = await utils.getPage(
+        engine,
+        inputFolderPath,
+        "search",
+        searchData
+    );
+    res.send(html);
+});
+
+app.get("/collections/:id", async (req, res) => {
+    const id = req.params.id;
+
+    const products = await api.getProductsByCollectionId(id);
+
+    const html = await utils.getPage(
+        engine,
+        inputFolderPath,
+        "collection",
+        products
+    );
+    res.send(html);
+});
+
+app.get("/blogs/:id", async (req, res) => {
+    const blogCatetegoryId = req.params.id;
+
+    const articles = await api.getArticlesByBlogId(blogCatetegoryId);
+
+    const html = await utils.getPage(engine, inputFolderPath, "blog", articles);
+    res.send(html);
+});
+
+app.get("/blogs/:cateId/:articleId", async (req, res) => {
+    const articleId = req.params.articleId;
+    const cateId = req.params.cateId;
+
+    const article = await api.getArticleById(articleId, cateId);
+
+    const html = await utils.getPage(
+        engine,
+        inputFolderPath,
+        "article",
+        article
+    );
     res.send(html);
 });
 

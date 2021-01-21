@@ -21,7 +21,7 @@
         "share_facebook": true,
         "share_twitter": true,
         "share_pinterest": true,
-        "social_twitter_link": "",
+        "social_twitter_link": "https://twitter.com/girlsgeneration",
         "social_facebook_link": "",
         "social_pinterest_link": "",
         "social_instagram_link": "",
@@ -29,7 +29,7 @@
         "social_snapchat_link": "",
         "social_youtube_link": "",
         "social_vimeo_link": "",
-        "favicon": "",
+        "favicon": "https://i.pinimg.com/originals/fc/c5/77/fcc57757270fbcacb3ec70a4ec384d26.jpg",
         "checkout_header_image": "",
         "checkout_logo_image": "",
         "checkout_logo_position": "left",
@@ -62,7 +62,7 @@
             "image-with-text-0": {
                 "type": "image-with-text",
                 "settings": {
-                    "image": "https://hapnature.com/wp-content/uploads/2020/02/tranh-treo-tuong-phong-canh-chau-au-mua-xuan-sd4138.jpg",
+                    "image": "https://img.freepik.com/free-vector/shining-circle-purple-lighting-isolated-dark-background_1441-2396.jpg?size=626&ext=jpg",
                     "title": "asdasd",
                     "text": "",
                     "button_label": "",
@@ -121,7 +121,7 @@
             "image-with-text-1": {
                 "type": "image-with-text",
                 "settings": {
-                    "image": "https://hapnature.com/wp-content/uploads/2020/02/tranh-treo-tuong-phong-canh-chau-au-mua-xuan-sd4138.jpg",
+                    "image": "https://img.freepik.com/free-vector/shining-circle-purple-lighting-isolated-dark-background_1441-2396.jpg?size=626&ext=jpg",
                     "title": "Image with text 123",
                     "text": "<p>long pro dep trai vo dich vu tru</p>",
                     "button_label": "",
@@ -137,7 +137,7 @@
             "image-with-text-2": {
                 "type": "image-with-text",
                 "settings": {
-                    "image": "https://hapnature.com/wp-content/uploads/2020/02/tranh-treo-tuong-phong-canh-chau-au-mua-xuan-sd4138.jpg",
+                    "image": "https://img.freepik.com/free-vector/shining-circle-purple-lighting-isolated-dark-background_1441-2396.jpg?size=626&ext=jpg",
                     "title": "Image with text",
                     "text": "<p>Pair large text with an image to give focus to your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
                     "button_label": "",
@@ -153,7 +153,7 @@
             "image-with-text-3": {
                 "type": "image-with-text",
                 "settings": {
-                    "image": "https://hapnature.com/wp-content/uploads/2020/02/tranh-treo-tuong-phong-canh-chau-au-mua-xuan-sd4138.jpg",
+                    "image": "https://img.freepik.com/free-vector/shining-circle-purple-lighting-isolated-dark-background_1441-2396.jpg?size=626&ext=jpg",
                     "title": "Image with text",
                     "text": "<p>Pair large text with an image to give focus to your chosen product, collection, or blog post. Add details on availability, style, or even provide a review.</p>",
                     "button_label": "",
