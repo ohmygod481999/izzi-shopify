@@ -1,0 +1,50 @@
+<section id="blog">
+    <div class="container page-title text-center">
+        <h2 class="text-center">latest <span>posts</span></h2>
+        <span class="title-head-subtitle">tips, insights, and best practices about web design and developpment</span>
+    </div>
+    <div class="container">
+        <div class="row">
+            <!-- Article Starts -->
+            {% for blog in collections %}
+                <!-- <p>{{ blog | json}}</p> -->
+                <!-- {% assign img_url = "" %} -->
+                {% if blog[1].images[0].img_url  %}
+                    {% assign img_url = blog[1].images[0].img_url %}
+                {% else %}
+                    {% assign img_url = "http://via.placeholder.com/748x364" %}
+                {% endif %}
+                <div class="col-12 col-sm-6">
+                    <article>
+                        <!-- Figure Starts -->
+                        <figure class="blog-figure">
+                            <a href="blog-post.html">
+                                <img class="img-fluid" src="{{ img_url }}" alt="">
+                            </a>
+                            <div class="post-date"> <span>23</span>
+                                <span>JUN</span>
+                            </div>
+                        </figure>
+                        <!-- Figure Ends -->
+                        <a href="blog-post.html">
+                            <h4>{{ blog[1].title }}</h4>
+                            <!-- <h4>create a wordpress theme from scratch</h4> -->
+                        </a>
+                        <!-- Excerpt Starts -->
+                        <div class="blog-excerpt">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed blandit massa vel mauris Lorem ...</p>
+                            <a href="blog-post.html" class="btn readmore"><span>Read more</span></a>
+                        </div>
+                        <!-- Excerpt Ends -->
+                    </article>
+                </div>
+            {% endfor %}
+            
+            <!-- Article Ends -->
+            <!-- Link To Blog Starts -->
+            <div class="col-12 col-sm-12 col-md-12 col-xl-12 col-lg-12 allposts"> <a href="blog.html" class="btn btn-secondary"><span><i class="fa fa-comments"></i>All posts</span></a>
+            </div>
+            <!-- Link To Blog Ends -->
+        </div>
+    </div>
+</section>

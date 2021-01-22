@@ -3,7 +3,7 @@ module.exports = {
         name: "longvb",
         money_format: "d",
         money_with_currency_format: "d",
-        currency: "vnd",
+        currency: "VND",
     },
     products: {
         product: {
