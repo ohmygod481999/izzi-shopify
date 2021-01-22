@@ -1,0 +1,98 @@
+<div class="template_customer template_customer__account">
+	<div class="container">
+		<h1 class="page_heading">{{ 'customer.account.title' | t }}, {{ customer.name }} <a class="link_logout" href="/account/logout">{{ 'customer.account.logout' | t }}</a></h1>
+
+		<h2>{{ 'customer.account.tagline' | t }}</h2>
+
+		<div class="account_section__wrapper">
+			<div class="account_section account_section__info">
+				<h4>{{ 'customer.account.account_info_title' | t }}</h4>
+
+				<table class="account_table account_table__info">
+					<tr>
+						<td>{{ 'customer.account.account_info_name' | t }}</td>
+						<td class="cell_right">{{ customer.name }}</td>
+					</tr>
+					<tr>
+						<td>{{ 'customer.account.account_info_email' | t }}</td>
+						<td class="cell_right">{{ customer.email }}</td>
+					</tr>
+					<tr>
+						<td>{{ 'customer.account.account_info_orders' | t }}</td>
+						<td class="cell_right">{{ customer.orders | size }}</td>
+					</tr>
+					<tr>
+						<td>{{ 'customer.account.account_info_total_spent' | t }}</td>
+						<td class="cell_right"><span class="money">{{ customer.total_spent | money }}</span></td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="account_section account_section__default">
+				<h4>{{ 'customer.account.account_addresses_title' | t }}<a class="link_edit" href="/account/addresses">{{ 'customer.account.account_addresses_edit' | t }}</a></h4>
+
+				{% if customer.default_address == nil %}
+					<p class="address_item address_item__none">{{ 'customer.account.account_addresses_default_empty' | t }}</p>
+				{% else %}
+					{% if customer.default_address.name.size > 0 %}
+						<p class="address_item address_item__name">
+							<i class="fa fa-user" aria-hidden="true"></i>
+							<span>{{ customer.default_address.name }}</span>
+						</p>
+					{% endif %}
+
+					<p class="address_item address_item__location">
+						<i class="fa fa-home" aria-hidden="true"></i>
+						{% if customer.default_address.address1.size > 0 %}<span>{{ customer.default_address.address1 }}</span>{% endif %}
+						{% if customer.default_address.address2.size > 0 %}<span>{{ customer.default_address.address2 }}</span>{% endif %}
+						{% if customer.default_address.city.size > 0 %}<span>{{ customer.default_address.city }}</span>{% endif %}
+						{% if customer.default_address.province.size > 0 %}<span>{{ customer.default_address.province }}</span>{% endif %}
+						{% if customer.default_address.zip.size > 0 %}<span>{{ customer.default_address.zip }}</span>{% endif %}
+						{% if customer.default_address.country.size > 0 %}<span>{{ customer.default_address.country }}</span>{% endif %}
+					</p>
+
+					{% if customer.default_address.phone.size > 0 %}
+						<p class="address_item address_item__phone">
+							<i class="fa fa-phone" aria-hidden="true"></i>
+							<span>{{ customer.default_address.phone }}</span>
+						</p>
+					{% endif %}
+				{% endif %}
+
+				<p class="address_item address_item__edit">
+					<a href="/account/addresses">{{ 'customer.account.account_addresses_manage' | t }} ({{ customer.addresses_count }})</a>
+				</p>
+			</div>
+		</div>
+
+		<div class="account_section account_orders">
+			<h4>{{ 'customer.account.account_orders_title' | t }}</h4>
+
+			{% if customer.orders.size == 0 %}
+				<p class="note">{{ 'customer.account.account_orders_none' | t }}</p>
+			{% else %}
+				<div class="account_table__wrap">
+					<table class="account_table">
+						<tr class="row_header">
+							<td class="cell_left">{{ 'customer.account.account_orders_order_number' | t }}</td>
+							<td>{{ 'customer.account.account_orders_date' | t }}</td>
+							<td>{{ 'customer.account.account_orders_payment_status' | t }}</td>
+							<td class="cell_fulfillment">{{ 'customer.account.account_orders_fulfillment_status' | t }}</td>
+							<td class="cell_right">{{ 'customer.account.account_orders_total' | t }}</td>
+						</tr>
+
+						{% for order in customer.orders %}
+							<tr class="{% if order.cancelled %}order_cancelled{% endif %}">
+								<td class="cell_left">{{ order.name | link_to: order.customer_url }}</td>
+								<td>{{ order.created_at | date: "%b %d, %Y" }}</td>
+								<td>{{ order.financial_status }}</td>
+								<td class="cell_fulfillment">{{ order.fulfillment_status }}</td>
+								<td class="cell_right"><span class="money">{{ order.total_price | money }}</span></td>
+							</tr>
+						{% endfor %}
+					</table>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</div>

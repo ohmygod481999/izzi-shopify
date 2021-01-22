@@ -1,0 +1,35 @@
+{% if collection.image %}
+	{% capture collection_img_url %}{{ collection | img_url: img_size, crop: section.settings.img_alignment }}{% endcapture %}
+{% elsif collection.products.first %}
+	{% assign iteration_count = collection.products_count | minus:1 %}
+
+	{% for i in (0..iteration_count) %}
+		{% if collection.products[i].images.size > 0 %}
+			{% capture collection_img_url %}{{ collection.products[i].images.first | img_url: img_size, crop: section.settings.img_alignment }}{% endcapture %}
+
+			{% break %}
+		{% else %}
+			{% assign collection_img_url = 0 %}
+		{% endif %}
+	{% endfor %}
+{% else %}
+	{% assign collection_img_url = 0 %}
+{% endif %}
+
+<a href="{{ collection.url }}">
+	<div class="layer_1 collection_img">
+		{% if collection_img_url == 0 %}
+			<div class="img_placeholder__wrap img_placeholder__{{ section.settings.img_size }} img_placeholder__empty"></div>
+		{% else %}
+			<div class="img_placeholder__wrap img_placeholder__{{ section.settings.img_size }}" style="background-image: url( {{ collection_img_url }} );"></div>
+		{% endif %}
+	</div>
+
+	<div class="layer_2">
+		<div>
+			<span class="collection_title split_words">{{ collection.title }}</span>
+
+			<span class="collection_products">{{ collection.products_count }} {{ 'layout.collection_listing.products' | t }}</span>
+		</div>
+	</div>
+</a>

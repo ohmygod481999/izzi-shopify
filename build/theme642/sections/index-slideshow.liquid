@@ -1,0 +1,208 @@
+{% case section.settings.slideshow_height %}
+	{% when 'small'  %}{%- assign img_size = '2048x500' -%}
+	{% when 'medium' %}{%- assign img_size = '2048x670' -%}
+	{% when 'large'  %}{%- assign img_size = '2048x800' -%}
+{% endcase %}
+
+<div class="section section_homepage section_slideshow section_slideshow__{{ section.settings.slideshow_height }} swiper-container" id="slideshow_{{ section.id }}" data-autoplay="{{ section.settings.autoplay }}" data-speed="{{ section.settings.autoplay_speed }}">
+	<div class="swiper-wrapper">
+		{% for block in section.blocks %}
+			{% case block.type %}
+				{% when 'image' %}
+					<div class="swiper-slide image_slide">
+						{% if block.settings.image.size > 0 %}
+							<div class="img_placeholder__wrap img_placeholder__{{ section.settings.slideshow_height }}" style="background-image: url( {{ block.settings.image | img_url: img_size, crop: block.settings.img_alignment }} );"></div>
+						{% else %}
+							<div class="img_placeholder__wrap img_placeholder__{{ section.settings.slideshow_height }}">
+								{% capture current %}{% cycle 1, 2 %}{% endcapture %}
+								{{ 'lifestyle-' | append: current | placeholder_svg_tag: 'img_placeholder' }}
+							</div>
+						{% endif %}
+
+						<div class="slide_caption">
+							<div class="container">
+								{% if block.settings.caption_txt1.size > 0 %}<h2>{{ block.settings.caption_txt1 }}</h2>{% endif %}
+								{% if block.settings.caption_txt2.size > 0 %}<h3>{{ block.settings.caption_txt2 }}</h3>{% endif %}
+								{% if block.settings.caption_btn.size > 0 and block.settings.caption_link.size > 0 %}<a class="btn btn_inverted" href="{{ block.settings.caption_link }}">{{ block.settings.caption_btn }}</a>{% endif %}
+							</div>
+						</div>
+
+					</div>
+
+			{% endcase %}
+
+		{% endfor %}
+
+		<div id="pagination_{{ section.id }}" class="swiper_pagination"></div>
+
+	</div>
+
+</div>
+
+{% schema %}
+{
+	"name": "Slideshow",
+	"class": "index-section",
+	"max_blocks": 5,
+	"settings": [
+		{
+			"type": "checkbox",
+			"id": "autoplay",
+			"label": "Slideshow autoplay",
+			"default": true
+		},
+		{
+			"type": "select",
+			"id": "autoplay_speed",
+			"label": "Autoplay transition duration",
+			"options": [
+				{ "value": "5000", "label": "5 seconds" },
+				{ "value": "6000", "label": "6 seconds" },
+				{ "value": "7000", "label": "7 seconds" },
+				{ "value": "8000", "label": "8 seconds" },
+				{ "value": "9000", "label": "9 seconds" },
+				{ "value": "10000", "label": "10 seconds" }
+			],
+			"default": "7000"
+		},
+		{
+			"type": "select",
+			"id": "slideshow_height",
+			"label": "Slide image size",
+			"options": [
+				{
+					"label": "Small (2048x500)",
+					"value": "small"
+				},
+				{
+					"label": "Medium (2048x670)",
+					"value": "medium"
+				},
+				{
+					"label": "Large (2048x800)",
+					"value": "large"
+				}
+			]
+		}
+	],
+	"blocks": [
+
+		// IMAGE SLIDE ////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "image",
+			"name": "Image slide",
+			"settings": [
+
+				// IMAGE //////////////////////////////////////////////////////////////////////////////////
+				{
+					"type": "header",
+					"content": "Image"
+				},
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Slide image"
+				},
+				{
+					"type": "select",
+					"id": "img_alignment",
+					"label": "Image alignment",
+					"options": [
+						{
+							"value": "top",
+							"label": "Top"
+						},
+						{
+							"value": "center",
+							"label": "Middle"
+						},
+						{
+							"value": "bottom",
+							"label": "Bottom"
+						}
+					]
+				},
+
+				// CAPTION ////////////////////////////////////////////////////////////////////////////////
+				{
+					"type": "header",
+					"content": "Caption"
+				},
+				{
+					"type": "text",
+					"id": "caption_txt1",
+					"label": "Heading",
+					"default": "Slideshow"
+				},
+				{
+					"type": "text",
+					"id": "caption_txt2",
+					"label": "Subheading",
+					"default": "Tell your brand's story through video and images"
+				},
+				{
+					"type": "text",
+					"id": "caption_btn",
+					"label": "Button text",
+					"default": "Read more"
+				},
+				{
+					"type": "url",
+					"id": "caption_link",
+					"label": "Button link"
+				}
+			]
+		}
+	],
+	"presets": [{
+		"name": "Slideshow",
+		"category": "Image",
+		"settings": {
+			"autoplay": true,
+			"autoplay_speed": "5000"
+		},
+		"blocks": [
+			{
+				"type": "image"
+			},
+			{
+				"type": "image"
+			}
+		]
+	}]
+}
+{% endschema %}
+
+{% javascript %}
+jQuery(document).ready(function($) {
+	$('.section_slideshow').each(function(i) {
+
+		var sliderId = '#' + $(this).attr('id');
+		var sliderVar = $(this).attr('id');
+		var sliderPagination = '#pagination_' + sliderVar.replace('slideshow_', '');
+
+		var sliderAutoplay = $(this).data('autoplay');
+		if ( sliderAutoplay == true ) {
+			sliderAutoplay = $(this).data('speed');
+		};
+
+		var sliderVar = new Swiper( sliderId, {
+			effect: 'fade',
+			autoplay: sliderAutoplay,
+			loop: true,
+			speed: 500,
+			autoplayDisableOnInteraction: false,
+
+			pagination: sliderPagination,
+			paginationClickable: true,
+
+		});
+
+		$(window).on('load', function() {
+			sliderVar.onResize(); // updating swiper after loading
+		});
+
+	});
+
+});
+{% endjavascript %}

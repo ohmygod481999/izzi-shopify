@@ -1,0 +1,108 @@
+{% comment %}
+  Renders a preview image of a media in the product gallery and submedia gallery.
+
+  Accepts:
+  - media: {Object} Media Liquid object (required)
+  - featured: {Boolean} Boolean indicating if the media being passed is the featured_media (required)
+  - gallery_type: {String} Indicates if it is the main gallery ('media') or secondary gallery ('submedia') (required)
+  - data_image: {String} A set of data attributes to be added to the img tag (optional)
+
+  Usage:
+  {%- for media in product.media -%}
+    {% include 'product-preview-image' with media, featured: false, gallery_type: 'submedia', data_image: data_image %}
+  {%- endfor -%}
+
+  {% for variant in product.variants %}
+    {% assign variant_media = variant.featured_media %}
+
+    {%- if variant_media -%}
+      {% include 'product-preview-image' with media: variant_media, featured: featured, gallery_type: 'media', data_image: 'data-variant-media-image' %}
+    {%- endif -%}
+  {% endfor %}
+{% endcomment %}
+
+
+
+{%- if gallery_type == 'media' -%}
+  {% comment %}
+    We need to figure out the max width we want the image to be on the page
+    based on the aspect ratio of the media preview image and based on the size of the
+    media preview image.
+  {% endcomment %}
+  {% assign max_height = 650 %}
+  {% assign max_width = 980 %}
+  {% assign max_aspect_ratio = 1.50769 %}
+
+  {%- if media.preview_image.aspect_ratio < max_aspect_ratio -%}
+    {%- if media.preview_image.height < max_height -%}
+      {% assign max_width = media.preview_image.width | times: media.preview_image.aspect_ratio | round %}
+    {%- else -%}
+      {% assign max_width = max_height | times: media.preview_image.aspect_ratio | round %}
+    {%- endif -%}
+  {%- else -%}
+    {%- if media.preview_image.width < max_width -%}
+      {% assign max_width = media.preview_image.width %}
+    {%- endif -%}
+  {%- endif -%}
+
+  {% comment %}
+  Create a container for the media that will never go wider than the
+  max width we determined above, and that will keep the same aspect ratio
+  of the media by using 'padding-top'.
+  {% endcomment %}
+  <div class="product__media-container{% unless featured_media %} hide{% endunless %}" style="max-width: {{ max_width }}px" data-media-id="{{ section.id }}-{{ media.id }}" data-variant-media-toggle-hide>
+
+{%- elsif gallery_type == 'submedia' -%}
+  <div class="product__submedia-list-item">
+{%- else -%}
+  <div>
+{%- endif -%}
+
+  <a href="{{ media | img_url: 'master' }}"
+     class="product__{{ gallery_type }}-wrapper"
+     {% if gallery_type == 'media' %}style="padding-top:{{ 1 | divided_by: media.preview_image.aspect_ratio | times: 100}}%"{% endif %}
+     data-product-slideshow-open
+     data-media-id="{{ section.id }}-{{ media.id }}">
+
+    {%- capture thumbnail_alt -%}
+      {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+        {{ 'sections.product_template.video_thumbnail_alt' | t: image_alt: media.alt | escape }}
+      {%- elsif media.media_type == 'model' -%}
+        {{ 'sections.product_template.model_thumbnail_alt' | t: image_alt: media.alt | escape }}
+      {%- else -%}
+        {{ 'sections.product_template.image_thumbnail_alt' | t: image_alt: media.alt | escape }}
+      {%- endif -%}
+    {%- endcapture -%}
+
+    {% comment %}
+      For product: Only give the visible variant media a src so that it shows an image
+      as quickly as possible. Let lazysizes.js load in the other images when
+      they become visible.
+    {% endcomment %}
+    {% assign img_url = media | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+    <img class="product__{{ gallery_type }}-preview-image lazyload"
+        {% if featured and gallery_type == 'media' %}src="{{ media | img_url: '300x'}}"{% endif %}
+        data-src="{{ img_url }}"
+        data-widths="[360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+        data-aspectratio="{{ media.preview_image.aspect_ratio }}"
+        data-sizes="auto"
+        alt="{{ thumbnail_alt }}"
+        {{ data_image }}>
+
+    {%- if media.media_type == 'video' or media.media_type =='external_video' -%}
+      <div class="product__thumbnail-badge">
+        {% include 'icon-video-badge-full-color' %}
+      </div>
+    {%- elsif media.media_type == 'model' -%}
+      <div class="product__thumbnail-badge">
+        {% include 'icon-3d-badge-full-color' %}
+      </div>
+    {%- endif -%}
+
+    {%- if gallery_type == 'submedia' -%}
+      <noscript>
+        <img src="{{ media | img_url: 'master' }}" alt="{{ media.alt | escape }}" class="product__submedia">
+      </noscript>
+    {%- endif -%}
+  </a>
+</div>

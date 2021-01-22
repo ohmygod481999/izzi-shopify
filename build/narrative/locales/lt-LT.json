@@ -1,0 +1,348 @@
+{
+  "general": {
+    "accessibility": {
+      "skip_to_content": "Eiti į turinį",
+      "refresh_page": "Pasirenkami atrankos rezultatai atnaujinant visą puslapį.",
+      "selection_help": "Kad pasirinktumėte, paspauskite tarpo klavišą, tada – rodyklių klavišus.",
+      "unit_price_separator": "per",
+      "link_messages": {
+        "new_window": "Atsidaro naujame lange.",
+        "external": "Atidaro išorinę svetainę.",
+        "new_window_and_external": "Atidaroma išorinė svetainė naujame lange."
+      }
+    },
+    "meta": {
+      "tags": "Pažymėta „{{ tags }}“",
+      "page": "{{ page }} psl."
+    },
+    "404": {
+      "title": "404: puslapis nerastas",
+      "subtext_html": "Puslapis, dėl kurio pateikėte užklausą, neegzistuoja.",
+      "404_link": "Tęsti apsipirkimą"
+    },
+    "pagination": {
+      "previous": "Ankstesnis",
+      "next": "Kitas"
+    },
+    "password_page": {
+      "close_modal": "Uždaryti prisijungimo slaptažodžio modalinį langą",
+      "login_form_heading": "Apsilankyti parduotuvėje naudojant slaptažodį",
+      "login_form_password_label": "Slaptažodis",
+      "login_form_password_placeholder": "Jūsų slaptažodis",
+      "login_form_submit": "Įvesti",
+      "signup_form_email_label": "El. paštas",
+      "signup_form_success": "Prieš pat atsidarydami atsiųsime jums el. laišką!",
+      "admin_link_html": "Ar esate parduotuvės savininkas? <a href=\"/admin\" class=\"text-link\">Prisijunkite čia</a>",
+      "password_link": "Apsilankyti naudojant slaptažodį",
+      "powered_by_shopify_html": "Ši parduotuvė priklausys platformai „{{ shopify }}“"
+    },
+    "social": {
+      "share": "Bendrinti",
+      "share_on_facebook": "Bendrinti",
+      "share_on_twitter": "Skelbti „Twitter“",
+      "share_on_pinterest": "Skelbti",
+      "social_platform": "„{{ name }}“ platformoje „{{ platform }}“",
+      "alt_text": {
+        "share_on_facebook": "Bendrinti „Facebook“",
+        "share_on_twitter": "Skelbti „Twitter“",
+        "share_on_pinterest": "Skelbti „Pinterest“"
+      }
+    },
+    "search": {
+      "title": "Ieškoti svetainėje",
+      "search_results_title": "Paieškos rezultatai",
+      "placeholder": "Ieškoti",
+      "submit": "Ieškoti dar kartą",
+      "results_count_html": {
+        "one": "<strong>{{ terms }}</strong> atitikčių skaičius: {{ count }}",
+        "other": "<strong>{{ terms }}</strong> atitikčių skaičius: {{ count }}",
+        "few": "<strong>{{ terms }}</strong> atitikčių skaičius: {{ count }}",
+        "many": "<strong>{{ terms }}</strong> atitikčių skaičius: {{ count }}"
+      }
+    },
+    "newsletter_form": {
+      "newsletter_placeholder": "Mano el. pašto adresas",
+      "confirmation": "Dėkojame, kad prenumeruojate",
+      "blank_error": "Reikia nurodyti el. paštą.",
+      "invalid_error": "Įveskite tinkamą el. pašto adresą.",
+      "submit": "Prenumeruoti"
+    },
+    "header": {
+      "menu": "Meniu",
+      "view_cart": "Žr. krepšelį"
+    },
+    "navigation": {
+      "toggle_sublinks": "„{{ link_title }}“ meniu"
+    },
+    "payment": {
+      "method": "Mokėjimo piktogramos"
+    }
+  },
+  "blogs": {
+    "article": {
+      "read_more": "Skaityti daugiau",
+      "no_matches": "Deja, šiame tinklaraštyje nebuvo paskelbta straipsnių"
+    },
+    "comments": {
+      "title": "Rašyti komentarą",
+      "name": "Vardas",
+      "email": "El. paštas",
+      "message": "Pranešimas",
+      "post": "Skelbti komentarą",
+      "moderated": "Turėkite omenyje, kad prieš paskelbiant komentarus, jie turi būti patvirtinti",
+      "success_moderated": "Komentaras sėkmingai pateiktas. Paskelbsime jį netrukus, nes mūsų tinklaraštis prižiūrimas.",
+      "success": "Komentaras sėkmingai pateiktas! Dėkojame!",
+      "with_count": {
+        "one": "{{ count }} komentaras",
+        "other": "{{ count }} komentarai (-ų)",
+        "few": "{{ count }} komentarai (-ų)",
+        "many": "{{ count }} komentarai (-ų)"
+      }
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Pirkinių krepšelis",
+      "remove": "Pašalinti",
+      "note": "Specialūs nurodymai pardavėjui",
+      "subtotal": "Tarpinė suma",
+      "taxes_and_shipping_at_checkout": "Mokesčiai ir siuntimo išlaidos apskaičiuojami atsiskaitant",
+      "taxes_and_shipping_policy_at_checkout_html": "Mokesčiai ir <a href=\"{{ link }}\">siuntimo išlaidos</a> apskaičiuojami atsiskaitant",
+      "taxes_included_but_shipping_at_checkout": "Mokesčiai įtraukti, o siuntimo išlaidos apskaičiuojamos atsiskaitant",
+      "taxes_included_and_shipping_policy_html": "Mokesčiai įtraukti. <a href=\"{{ link }}\">Siuntimo išlaidos</a> apskaičiuojamos atsiskaitant.",
+      "update": "Atnaujinti krepšelį",
+      "checkout": "Atsiskaityti",
+      "empty": "Šiuo metu jūsų krepšelis tuščias.",
+      "continue_browsing": "Tęsti naršymą čia",
+      "close_cart": "Uždaryti krepšelį",
+      "savings": "Sutaupote ",
+      "item_quantity": "Prekės kiekis",
+      "cookies_required": "Kad galėtumėte naudoti pirkinių krepšelį, įgalinkite slapukus",
+      "cart_error": "Atnaujinant krepšelį įvyko klaida. Bandykite dar kartą.",
+      "cart_quantity_error_html": "Į krepšelį galite pridėti tik {{ quantity }} prekės ženklo „{{ title }}“ prek."
+    },
+    "label": {
+      "product": "Gaminys",
+      "price": "Kaina",
+      "quantity": "Kiekis",
+      "total": "Visa suma"
+    }
+  },
+  "collections": {
+    "general": {
+      "all": "Visos kolekcijos",
+      "view_all": "Žr. viską",
+      "no_matches": "Deja, šioje kolekcijoje gaminių nėra"
+    },
+    "sorting": {
+      "title": "Rūšiuoti pagal"
+    },
+    "filters": {
+      "title_tags": "Filtruoti pagal",
+      "all_tags": "Visi gaminiai"
+    }
+  },
+  "contact": {
+    "form": {
+      "name": "Vardas",
+      "email": "El. paštas",
+      "phone": "Telefono numeris",
+      "message": "Pranešimas",
+      "send": "Siųsti",
+      "post_success": "Dėkojame, kad su mumis susisiekėte. Atsakysime kaip galėdami greičiau."
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "Mano paskyra",
+      "details": "Paskyros informacija",
+      "view_addresses": "Žr. adresus",
+      "return": "Grįžti į paskyros informaciją"
+    },
+    "activate_account": {
+      "title": "Aktyvinti paskyrą",
+      "subtext": "Sukurkite slaptažodį, kad galėtumėte aktyvinti paskyrą.",
+      "password": "Slaptažodis",
+      "password_confirm": "Patvirtinti slaptažodį",
+      "submit": "Aktyvinti paskyrą",
+      "cancel": "Atmesti kvietimą"
+    },
+    "addresses": {
+      "title": "Jūsų adresai",
+      "default": "Numatytasis",
+      "add_new": "Pridėti naują adresą",
+      "edit_address": "Redaguoti adresą",
+      "first_name": "Vardas",
+      "last_name": "Pavardė",
+      "company": "Įmonė",
+      "address1": "Adresas (1)",
+      "address2": "Adresas (2)",
+      "city": "Miestas",
+      "country": "Šalis / regionas",
+      "province": "Sritis",
+      "zip": "Pašto kodas",
+      "phone": "Telefonas",
+      "set_default": "Nustatyti kaip numatytąjį adresą",
+      "add": "Pridėti adresą",
+      "update": "Atnaujinti adresą",
+      "cancel": "Atšaukti",
+      "edit": "Redaguoti",
+      "delete": "Ištrinti",
+      "delete_confirm": "Ar tikrai norite ištrinti šį adresą?"
+    },
+    "login": {
+      "title": "Prisijungimo vardas",
+      "email": "El. paštas",
+      "password": "Slaptažodis",
+      "forgot_password": "Pamiršote slaptažodį?",
+      "sign_in": "Prisijungti",
+      "guest_title": "Tęsti kaip svečias",
+      "guest_continue": "Tęsti"
+    },
+    "orders": {
+      "title": "Užsakymų istorija",
+      "order_number": "Užsakymas",
+      "date": "Data",
+      "payment_status": "Mokėjimo būsena",
+      "fulfillment_status": "Įvykdymo būsena",
+      "total": "Visa suma",
+      "none": "Dar nepateikėte užsakymų."
+    },
+    "order": {
+      "title": "Užsakymas {{ name }}",
+      "date": "Pateiktas {{ date }}",
+      "cancelled": "Užsakymas atšauktas {{ date }}",
+      "cancelled_reason": "Priežastis: {{ reason }}",
+      "billing_address": "Sąskaitos pateikimo adresas",
+      "payment_status": "Mokėjimo būsena",
+      "shipping_address": "Pristatymo adresas",
+      "fulfillment_status": "Įvykdymo būsena",
+      "discount": "Nuolaida",
+      "shipping": "Siuntimas",
+      "tax": "Mokesčiai",
+      "product": "Gaminys",
+      "sku": "SKU kodas",
+      "price": "Kaina",
+      "quantity": "Kiekis",
+      "total": "Visa suma",
+      "fulfilled_at": "Įvykdyta {{ date }}",
+      "subtotal": "Tarpinė suma",
+      "track_shipment": "Stebėti siuntą"
+    },
+    "recover_password": {
+      "title": "Nustatyti slaptažodį iš naujo",
+      "email": "El. paštas",
+      "submit": "Pateikti",
+      "cancel": "Atšaukti",
+      "subtext": "Atsiųsime jums el. laišką, kad galėtumėte nustatyti slaptažodį iš naujo.",
+      "success": "Išsiuntėme jums el. laišką su nuoroda atnaujinti slaptažodį."
+    },
+    "reset_password": {
+      "title": "Nustatyti paskyros slaptažodį iš naujo",
+      "subtext": "Įveskite naują paskyros {{ email }} slaptažodį",
+      "password": "Slaptažodis",
+      "password_confirm": "Patvirtinti slaptažodį",
+      "submit": "Nustatyti slaptažodį iš naujo"
+    },
+    "register": {
+      "title": "Kurti paskyrą",
+      "first_name": "Vardas",
+      "last_name": "Pavardė",
+      "email": "El. paštas",
+      "password": "Slaptažodis",
+      "submit": "Kurti",
+      "cancel": "Grįžti į parduotuvę"
+    }
+  },
+  "homepage": {
+    "onboarding": {
+      "collection_title": "Jūsų kolekcijos pavadinimas",
+      "product_vendor": "Gaminio tiekėjas",
+      "product_title": "Pavyzdinio gaminio pavadinimas",
+      "blog_title": "Jūsų įrašo pavadinimas",
+      "blog_excerpt": "Jūsų parduotuvė dar nepaskelbė tinklaraščio įrašų. Tinklaraštyje galite pateikti informacijos apie naujus gaminius, duoti patarimų ar paskelbti kitų naujienų, kuriomis norite pasidalyti su klientais. Galite peržiūrėti „Shopify“ el. prekybos tinklaraštį ir pasisemti idėjų savo parduotuvei bei tinklaraščiui.",
+      "no_content": "Šioje skiltyje šiuo metu nėra turinio. Pridėkite turinio į šią skiltį naudodami šoninę juostą."
+    }
+  },
+  "layout": {
+    "customer": {
+      "account": "Paskyra",
+      "logged_in_as_html": "Prisijungę kaip {{ first_name }}",
+      "log_out": "Atsijungti",
+      "log_in": "Prisijungti",
+      "create_account": "Sukurti paskyrą"
+    },
+    "footer": {
+      "copyright": "Autorių teisės"
+    }
+  },
+  "products": {
+    "product": {
+      "sold_out": "Išparduota",
+      "unavailable": "Nėra",
+      "price": "Kaina",
+      "sale_price": "Kaina su nuolaida",
+      "regular_price": "Įprasta kaina",
+      "on_sale_from_html": "Išpardavimo kaina nuo {{ price }}",
+      "on_sale": "Išpardavimas",
+      "from_text_html": "Nuo {{ price }}",
+      "include_taxes": "Mokesčiai įtraukti.",
+      "shipping_policy_html": "<a href=\"{{ link }}\">Siuntimo išlaidos</a> apskaičiuojamos atsiskaitant.",
+      "add_to_cart": "Pridėti prie krepšelio",
+      "item_added_to_cart": "Prekė pridėta prie krepšelio!",
+      "view_cart": "Žr. krepšelį",
+      "quantity": "Kiekis",
+      "unit_price": "Vieneto kaina",
+      "view_in_space": "Peržiūra savo erdvėje",
+      "view_in_space_label": "Funkcija „Peržiūra savo erdvėje“ elementą įkelia į išplėstinės realybės langą"
+    }
+  },
+  "sections": {
+    "slider": {
+      "previous_slide": "Ankstesnė skaidrė",
+      "next_slide": "Kita skaidrė",
+      "pause": "Pristabdyti foninį vaizdo įrašą",
+      "play": "Leisti foninį vaizdo įrašą",
+      "slide": "{{ number }} skaidrė",
+      "navigation_instructions": "Valdykite skaidrių peržiūrą naudodami rodyklių kairėn ir dešinėn klavišus arba, jei naudojate mobilųjį įrenginį, perbraukite kairėn ar dešinėn",
+      "load_slide": "Įkelti {{ slide_number }} skaidrę",
+      "active_slide": "{{ slide_number }} skaidrė, dabar rodoma"
+    },
+    "map": {
+      "address_error": "Ieškant šio adreso įvyko klaida",
+      "address_no_results": "Nerasta šio adreso rezultatų",
+      "address_query_limit_html": "Viršijote „Google“ API naudojimo apribojimą. Apsvarstykite galimybę naujovinti į <a href=\"https://developers.google.com/maps/premium/usage-limits\">planą „Premium“</a>.",
+      "auth_error_html": "Patvirtinant „Google“ žemėlapių API raktą iškilo problema."
+    },
+    "product_template": {
+      "image_thumbnail_alt": "Atidaryti vaizdą skaidrių peržiūroje, {{ image_alt }}",
+      "video_thumbnail_alt": "Atidaryti ir leisti vaizdo įrašą skaidrių peržiūroje, {{ image_alt }}",
+      "model_thumbnail_alt": "Atidaryti trimatį modelį skaidrių peržiūroje, {{ image_alt }}",
+      "slide": "{{ number }} skaidrė"
+    },
+    "featured_product": {
+      "full_details": "Išsami informacija"
+    },
+    "newsletter": {
+      "submit": "Pateikti"
+    }
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "Štai jūsų {{ value }} vertės parduotuvės „{{ shop }}“ dovanų kortelė!",
+      "subtext": "Štai jūsų dovanų kortelė!",
+      "disabled": "Išjungta",
+      "expired": "Baigė galioti {{ expiry }}",
+      "active": "Baigs galioti {{ expiry }}",
+      "redeem_html": "Atsiskaitydami įveskite šį kodą, kad panaudotumėte dovanų kortelę, arba galite {{ print }} šį puslapį.",
+      "shop_link": "Pradėti apsipirkimą",
+      "print": "spausdinti",
+      "remaining_html": "Liko {{ balance }}",
+      "add_to_apple_wallet": "Pridėti prie „Apple Wallet“"
+    }
+  },
+  "video": {
+    "play": "Leisti vaizdo įrašą",
+    "close": "Sutabdyti vaizdo įrašą"
+  }
+}

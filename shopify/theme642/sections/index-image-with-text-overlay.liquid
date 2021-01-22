@@ -1,0 +1,182 @@
+{% if section.settings.parallax %}
+	{% case section.settings.section_height %}
+		{% when 'small' %}{%- assign img_size = '2048x750' -%}
+		{% when 'medium' %}{%- assign img_size = '2048x930' -%}
+		{% when 'large' %}{%- assign img_size = '2048x1050' -%}
+	{% endcase %}
+{% else %}
+	{% case section.settings.section_height %}
+		{% when 'small' %}{%- assign img_size = '2048x500' -%}
+		{% when 'medium' %}{%- assign img_size = '2048x670' -%}
+		{% when 'large' %}{%- assign img_size = '2048x800' -%}
+	{% endcase %}
+{% endif %}
+
+<div class="section_wrap flexible_block__{{ section.settings.section_height }} {% if section.settings.parallax %}parallax_block{% endif %}">
+	{% if section.settings.image.size > 0 %}
+		<div class="img_placeholder__wrap img_placeholder__{{ section.settings.section_height }} {% if section.settings.parallax %}parallax_layer{% endif %}" style="background-image: url( {{ section.settings.image | img_url: img_size, crop: section.settings.img_alignment }} );"></div>
+	{% else %}
+		<div class="img_placeholder__wrap img_placeholder__{{ section.settings.section_height }} {% if section.settings.parallax %}parallax_layer{% endif %}">
+			{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+		</div>
+	{% endif %}
+
+	<div class="section_txt">
+		<div class="container">
+			{% if section.settings.title.size > 0 %}
+				<h2>{{ section.settings.title | escape }}</h2>
+			{% endif %}
+
+			{% if section.settings.text.size > 0 %}
+				<p>{{ section.settings.text | strip_html }}</p>
+			{% endif %}
+
+			{% if section.settings.button_label.size > 0 and section.settings.button_link.size > 0 %}
+				<a href="{{ section.settings.button_link }}" class="btn btn_inverted">{{ section.settings.button_label }}</a>
+			{% endif %}
+		</div>
+	</div>
+</div>
+
+{% schema %}
+{
+	"name": "Image with text overlay",
+	"class": "section section_homepage section_image-with-text-overlay",
+	"settings": [
+		{
+			"type": "select",
+			"id": "section_height",
+			"label": "Image height",
+			"default": "medium",
+			"options": [
+				{
+					"label": "Small (2048x256)",
+					"value": "small"
+				},
+				{
+					"label": "Medium (2048x512)",
+					"value": "medium"
+				},
+				{
+					"label": "Large (2048x682)",
+					"value": "large"
+				}
+			]
+		},
+		{
+			"type": "image_picker",
+			"id": "image",
+			"label": "Image",
+			"info": "The image should be more than 2048px wide to resize and crop properly"
+		},
+		{
+			"type": "select",
+			"id": "img_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		},
+		{
+			"type": "checkbox",
+			"id": "parallax",
+			"label": "Parallax",
+			"default": false
+		},
+		{
+			"type": "text",
+			"id": "title",
+			"label": "Heading",
+			"default": "Image with text overlay"
+		},
+		{
+			"type": "textarea",
+			"id": "text",
+			"label": "Text",
+			"default": "Use overlay text to give your customers insight into your brand. Select imagery and text that relates to your style and story."
+		},
+		{
+			"type": "text",
+			"id": "button_label",
+			"label": "Button label"
+		},
+		{
+			"type": "url",
+			"id": "button_link",
+			"label": "Button link"
+		}
+	],
+	"presets": [
+		{
+			"name": "Image with text overlay",
+			"category": "Image"
+		}
+	]
+}
+{% endschema %}
+
+{% javascript %}
+jQuery(function($){
+
+	morkoParallax = function() {
+		$('.parallax_block').each(function() {
+			var parallaxBlock = $(this);
+			var parallaxLayer = $(this).find('.parallax_layer');
+
+			$(window).on('load scroll', function() {
+				var parallaxHeight = parseInt( parallaxBlock.outerHeight() );
+				var parallaxImgHeight = parseInt( parallaxLayer.outerHeight() );
+
+				var parallaxOffset1 = parseInt( parallaxBlock.offset().top );
+				var parallaxOffset2 = parseInt( parallaxOffset1 + parallaxHeight );
+
+				var translateMax = parseInt( parallaxImgHeight - parallaxHeight ) - 2; // minus 2 to prevent floated numbers and borders between sections
+
+				var scrollTemp = $(window).scrollTop() + window.innerHeight;
+
+				if ( ( scrollTemp >= parallaxOffset1 ) && ( $(window).scrollTop() <= parallaxOffset2 ) ) {
+					var translateKoff = parallaxHeight/parallaxImgHeight;
+
+					if ( translateKoff > 0.2 ) {
+						var translateVal = parseInt( ( scrollTemp - parallaxOffset1 ) * 0.2 );
+					}
+					else {
+						var translateVal = parseInt( ( scrollTemp - parallaxOffset1 ) * translateKoff );
+					};
+
+					if ( translateVal <= translateMax ) {
+						parallaxLayer.css({ 'transform' : 'translate3d(0, -' + translateVal + 'px, 0)' });
+					}
+					else if ( translateVal > translateMax ) {
+						parallaxLayer.css({ 'transform' : 'translate3d(0, -' + translateMax + 'px, 0)' });
+					};
+
+				};
+
+			});
+
+		});
+
+	};
+
+
+	morkoParallax();
+
+
+	$(document).on('shopify:section:load shopify:section:unload', '.section_image-with-text-overlay', function() {
+		morkoParallax();
+	});
+
+});
+{% endjavascript %}

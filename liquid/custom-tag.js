@@ -197,7 +197,6 @@ module.exports = function registCustomTag(engine, inputFolderPath) {
             stream.start();
         },
         render: async function (context, hash) {
-            console.log(this.requiredParam);
             if (this.requiredParam) {
                 if (this.requiredParam in context.scopes[0]) {
                     this.requiredParam = context.scopes[0][this.requiredParam];
@@ -228,8 +227,6 @@ module.exports = function registCustomTag(engine, inputFolderPath) {
                 }
                 return [key, value];
             });
-            console.log(this.requiredParam);
-            console.log(this.remainParams);
             let openTag = "<form ";
             this.remainParams.forEach((param) => {
                 const [attribute, value] = param;

@@ -1,0 +1,584 @@
+<footer {% if template == 'index' %}class="footer_homepage"{% endif %}>
+	<div class="footer_row__1">
+		<div class="container">
+
+			<div class="row">
+				{% for block in section.blocks %}
+					{%- assign block_width = 'col-sm-12' -%}
+
+					{% case block.settings.width %}
+						{% when '25%' %}
+							{%- assign block_width = 'col-sm-3' -%}
+							{%- assign block_counter = block_counter | plus:3 -%}
+
+						{% when '33%' %}
+							{%- assign block_width = 'col-sm-4' -%}
+							{%- assign block_counter = block_counter | plus:4 -%}
+
+						{% when '50%' %}
+							{%- assign block_width = 'col-sm-6' -%}
+							{%- assign block_counter = block_counter | plus:6 -%}
+
+						{% when '66%' %}
+							{%- assign block_width = 'col-sm-8' -%}
+							{%- assign block_counter = block_counter | plus:8 -%}
+
+						{% when '75%' %}
+							{%- assign block_width = 'col-sm-9' -%}
+							{%- assign block_counter = block_counter | plus:9 -%}
+
+						{% when '10%' %}
+							{%- assign block_counter = 12 -%}
+
+					{% endcase %}
+
+					<div class="{{ block_width }} footer_block {% cycle 'step2': 'footer_block__2_1', '' %}">
+						{% case block.type %}
+							{% when 'linklist' %}
+								{%- assign linklist = block.settings.links -%}
+
+								<div class="footer_item footer_item__links">
+									<h3>{{ linklists[linklist].title }}</h3>
+
+									<ul>
+										{% for link in linklists[linklist].links %}
+											<li>
+												<a href="{{ link.url }}">{{ link.title }}</a>
+											</li>
+										{% endfor %}
+									</ul>
+								</div>
+
+							{% when 'contacts' %}
+								<div class="footer_item footer_item__contacts">
+									<h3>{{ block.settings.contacts_title }}</h3>
+
+									<div>{{ block.settings.contacts }}</div>
+								</div>
+
+							{% when 'fb-block' %}
+								<div id="fb-root"></div>
+
+								<script>
+									(function(d, s, id) {
+										var js, fjs = d.getElementsByTagName(s)[0];
+										if (d.getElementById(id)) return;
+										js = d.createElement(s); js.id = id;
+										js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=853490611342442";
+										fjs.parentNode.insertBefore(js, fjs);
+									}(document, 'script', 'facebook-jssdk'));
+
+									window.onresize = function() {
+										FB.XFBML.parse();
+									};
+								</script>
+
+								<div class="footer_item footer_item__facebook">
+									<div class="fb-page" data-href="{{ block.settings.fb_block }}" data-tabs="timeline" data-border-color="#ff0000" data-width="{% case block.settings.width %}{% when '25%' %}270{% when '33%' %}370{% when '50%' %}570{% when '66%' %}770{% when '75%' %}870{% when '10%' %}1170{% endcase %}" data-height="270" data-small-header="{% case block.settings.width %}{% when '25%' %}false{% else %}true{% endcase %}" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="true"><blockquote cite="{{ block.settings.fb_block }}" class="fb-xfbml-parse-ignore"><a href="{{ block.settings.fb_block }}">{{ block.settings.fb_block | replace: '/', '' | replace: 'https:', '' | replace: 'www.facebook.com', '' }}</a></blockquote></div>
+								</div>
+
+							{% when 'tw-block' %}
+								<div class="footer_item footer_item__twitter">
+									<a class="twitter-timeline" href="{{ block.settings.tw_block }}" data-width="{% case block.settings.width %}{% when '25%' %}270{% when '33%' %}370{% when '50%' %}570{% when '66%' %}770{% when '75%' %}870{% when '10%' %}1170{% endcase %}" data-height="270" data-border-color="{{ settings.border_color }}" data-chrome="nofooter"></a>
+								</div>
+
+								<script src="//platform.twitter.com/widgets.js" charset="utf-8" async></script>
+
+							{% when 'newsletter' %}
+								<div class="footer_item footer_item__newsletter">
+									<h3>{{ 'layout.footer.newsletter_title' | t }}</h3>
+
+									{% capture newsletterForm %}
+										{% form 'customer' %}
+											{{ form.errors | default_errors }}
+
+											{% if form.posted_successfully? %}
+												<p class="alert alert-success">{{ 'layout.footer.newsletter_success' | t }}</p>
+											{% else %}
+												<p>{{ 'layout.footer.newsletter_tagline' | t }}</p>
+												<input type="hidden" name="contact[tags]" value="Newsletter subscriber">
+												<div class="form_wrapper">
+													<input type="email" name="contact[email]" class="input-group__field newsletter__input" placeholder="Enter your email">
+													<button type="submit"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+												</div>
+											{% endif %}
+										{% endform %}
+									{% endcapture %}
+
+									{% assign newsletterForm = newsletterForm | replace: "'", "&lsquo;" | replace: 'id="contact_form"', 'id="newsletter_form"' | strip_newlines %}
+
+									{{ newsletterForm }}
+								</div>
+
+							{% when 'social' %}
+								<div class="footer_item footer_item__social">
+									<ul>
+										{% if block.settings.social_fb.size > 0 %}
+											<li><a href="{{ block.settings.social_fb }}"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+										{% endif %}
+
+										{% if block.settings.social_tw.size > 0 %}
+											<li><a href="{{ block.settings.social_tw }}"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+										{% endif %}
+
+										{% if block.settings.social_inst.size > 0 %}
+											<li><a href="{{ block.settings.social_inst }}"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+										{% endif %}
+
+										{% if block.settings.social_pin.size > 0 %}
+											<li><a href="{{ block.settings.social_pin }}"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+										{% endif %}
+
+										{% if block.settings.social_gplus.size > 0 %}
+											<li><a href="{{ block.settings.social_gplus }}"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+										{% endif %}
+
+										{% if block.settings.social_yt.size > 0 %}
+											<li><a href="{{ block.settings.social_yt }}"><i class="fa fa-youtube" aria-hidden="true"></i></a></li>
+										{% endif %}
+									</ul>
+								</div>
+
+						{% endcase %}
+					</div>
+
+					{% if block_counter == 12 %}
+						<div class="clearfix"></div>
+					{% endif %}
+
+				{% endfor %}
+
+			</div>
+
+		</div>
+
+	</div>
+
+	{% if section.settings.powered_toggle or section.settings.payment_icons_toggle %}
+		<div class="footer_row__2">
+			<div class="container">
+				<div class="footer_wrap_1">
+					{% if section.settings.powered_toggle %}
+						<div class="footer_wrap_2 footer_left">
+							{{ powered_by_link }}
+						</div>
+					{% endif %}
+
+					{% if section.settings.payment_icons_toggle %}
+						{% assign payment_icons = 'cc-amex|cc-diners-club|cc-discover|cc-jcb|cc-mastercard|cc-paypal|cc-stripe|cc-visa|google-wallet' | split: '|' %}
+
+						<div class="footer_wrap_2 footer_right">
+							<ul class="footer_payments">
+								{% for i in payment_icons %}
+									{% if section.settings[i] %}
+										<li><i class="fa fa-{{ i }}" aria-hidden="true"></i></li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+	<div class="footer_banner" style="background-image: url( {{ 'kardone_footer_banner.png' | asset_url }} );">
+		<div class="banner_text">
+			<h3><b>Upgrade</b> to a Fully-fledged <b>Kardone!</b></h3>
+			<h4>Featuring a additional pages, plugins, beautiful pictures and fully functionality!</h4>
+			<a href="https://www.templatemonster.com/shopify-themes/auto-parts-responsive-shopify-theme-62439.html" class="btn">VIEW NOW!</a>
+		</div>
+	</div>
+</footer>
+
+{% schema %}
+{
+	"name": "Footer",
+	"max_blocks": 10,
+	"settings": [
+
+		// POWERED BY /////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "header",
+			"content": "'Powered by Shopify' link"
+		},
+		{
+			"type": "checkbox",
+			"id": "powered_toggle",
+			"label": "Show 'Powered by Shopify'",
+			"default": true
+		},
+
+		// PAYMENT ICONS //////////////////////////////////////////////////////////////////////////
+		{
+			"type": "header",
+			"content": "Payment icons"
+		},
+		{
+			"type": "checkbox",
+			"id": "payment_icons_toggle",
+			"label": "Show payment icons",
+			"default": true
+		},
+		{
+			"type": "checkbox",
+			"id": "cc-amex",
+			"label": "American Express"
+		},
+		{
+			"type": "checkbox",
+			"id": "cc-diners-club",
+			"label": "Diners Club"
+		},
+		{
+			"type": "checkbox",
+			"id": "cc-discover",
+			"label": "Discover"
+		},
+		{
+			"type": "checkbox",
+			"id": "cc-jcb",
+			"label": "JCB"
+		},
+		{
+			"type": "checkbox",
+			"id": "cc-mastercard",
+			"label": "Mastercard"
+		},
+		{
+			"type": "checkbox",
+			"id": "cc-paypal",
+			"label": "Paypal"
+		},
+		{
+			"type": "checkbox",
+			"id": "cc-stripe",
+			"label": "Stripe"
+		},
+		{
+			"type": "checkbox",
+			"id": "cc-visa",
+			"label": "Visa"
+		},
+		{
+			"type": "checkbox",
+			"id": "google-wallet",
+			"label": "Google Wallet"
+		}
+	],
+	"blocks": [
+
+
+		// LINKLIST ///////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "linklist",
+			"name": "Linklist",
+			"settings": [
+				{
+					"type": "select",
+					"id": "width",
+					"label": "Block width",
+					"default": "25%",
+					"options": [
+						{
+							"value": "25%",
+							"label": "25%"
+						},
+						{
+							"value": "33%",
+							"label": "33%"
+						},
+						{
+							"value": "50%",
+							"label": "50%"
+						},
+						{
+							"value": "66%",
+							"label": "66%"
+						},
+						{
+							"value": "75%",
+							"label": "75%"
+						},
+						{
+							"value": "100%",
+							"label": "100%"
+						}
+					]
+				},
+				{
+					"type": "link_list",
+					"id": "links",
+					"label": "Choose linklist"
+				}
+			]
+		},
+
+
+		// CONTACTS BLOCK /////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "contacts",
+			"name": "Contacts block",
+			"settings": [
+				{
+					"type": "select",
+					"id": "width",
+					"label": "Block width",
+					"default": "25%",
+					"options": [
+						{
+							"value": "25%",
+							"label": "25%"
+						},
+						{
+							"value": "33%",
+							"label": "33%"
+						},
+						{
+							"value": "50%",
+							"label": "50%"
+						},
+						{
+							"value": "66%",
+							"label": "66%"
+						},
+						{
+							"value": "75%",
+							"label": "75%"
+						},
+						{
+							"value": "100%",
+							"label": "100%"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"id": "contacts_title",
+					"label": "Block title"
+				},
+				{
+					"type": "richtext",
+					"id": "contacts",
+					"label": "Contacts"
+				}
+			]
+		},
+
+
+		// FACEBOOK BLOCK /////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "fb-block",
+			"name": "Facebook block",
+			"settings": [
+				{
+					"type": "paragraph",
+					"content": "Warning! To avoid errors, please use this block only once."
+				},
+				{
+					"type": "select",
+					"id": "width",
+					"label": "Block width",
+					"default": "25%",
+					"options": [
+						{
+							"value": "25%",
+							"label": "25%"
+						},
+						{
+							"value": "33%",
+							"label": "33%"
+						},
+						{
+							"value": "50%",
+							"label": "50%"
+						},
+						{
+							"value": "66%",
+							"label": "66%"
+						},
+						{
+							"value": "75%",
+							"label": "75%"
+						},
+						{
+							"value": "100%",
+							"label": "100%"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"id": "fb_block",
+					"label": "Enter your Facebook URL"
+				}
+			]
+		},
+
+
+		// TWITTER BLOCK //////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "tw-block",
+			"name": "Twitter block",
+			"settings": [
+				{
+					"type": "paragraph",
+					"content": "Warning! To avoid errors, please use this block only once."
+				},
+				{
+					"type": "select",
+					"id": "width",
+					"label": "Block width",
+					"default": "25%",
+					"options": [
+						{
+							"value": "25%",
+							"label": "25%"
+						},
+						{
+							"value": "33%",
+							"label": "33%"
+						},
+						{
+							"value": "50%",
+							"label": "50%"
+						},
+						{
+							"value": "66%",
+							"label": "66%"
+						},
+						{
+							"value": "75%",
+							"label": "75%"
+						},
+						{
+							"value": "100%",
+							"label": "100%"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"id": "tw_block",
+					"label": "Enter your Twitter URL"
+				}
+			]
+		},
+
+
+		// NEWSLETTER BLOCK ///////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "newsletter",
+			"name": "Newsletter form",
+			"settings": [
+				{
+					"type": "paragraph",
+					"content": "Warning! To avoid errors, please use this block only once."
+				},
+				{
+					"type": "select",
+					"id": "width",
+					"label": "Block width",
+					"default": "25%",
+					"options": [
+						{
+							"value": "25%",
+							"label": "25%"
+						},
+						{
+							"value": "33%",
+							"label": "33%"
+						},
+						{
+							"value": "50%",
+							"label": "50%"
+						},
+						{
+							"value": "66%",
+							"label": "66%"
+						},
+						{
+							"value": "75%",
+							"label": "75%"
+						},
+						{
+							"value": "100%",
+							"label": "100%"
+						}
+					]
+				}
+			]
+		},
+
+
+		// SOCIAL LINKS ///////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "social",
+			"name": "Social links",
+			"settings": [
+				{
+					"type": "select",
+					"id": "width",
+					"label": "Block width",
+					"default": "25%",
+					"options": [
+						{
+							"value": "25%",
+							"label": "25%"
+						},
+						{
+							"value": "33%",
+							"label": "33%"
+						},
+						{
+							"value": "50%",
+							"label": "50%"
+						},
+						{
+							"value": "66%",
+							"label": "66%"
+						},
+						{
+							"value": "75%",
+							"label": "75%"
+						},
+						{
+							"value": "100%",
+							"label": "100%"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"id": "social_fb",
+					"label": "Facebook"
+				},
+				{
+					"type": "text",
+					"id": "social_tw",
+					"label": "Twitter"
+				},
+				{
+					"type": "text",
+					"id": "social_inst",
+					"label": "Instagram"
+				},
+				{
+					"type": "text",
+					"id": "social_pin",
+					"label": "Pinterest"
+				},
+				{
+					"type": "text",
+					"id": "social_gplus",
+					"label": "Google+"
+				},
+				{
+					"type": "text",
+					"id": "social_yt",
+					"label": "Youtube"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

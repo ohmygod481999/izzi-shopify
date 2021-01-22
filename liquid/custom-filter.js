@@ -79,4 +79,8 @@ module.exports = function registCustomTag(engine, inputFolderPath) {
     engine.registerFilter("money", (content, args) => {
         return `${content}đ`;
     });
+    engine.registerFilter("append", (content, args) => {
+        if (!args) return content
+        return `${content}${args}`;
+    });
 };

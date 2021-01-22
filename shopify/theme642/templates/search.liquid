@@ -1,0 +1,73 @@
+{% paginate search.results by 10 %}
+	<div class="template_search">
+		<div class="container">
+			{% if search.terms.size > 0 %}
+				<h1 class="page_heading">{{ 'pages.search.search' | t }}: "{{ search.terms | escape }}" — {{ search.results_count }} {{ 'pages.search.results' | t }}</h1>
+			{% else %}
+				<h1 class="page_heading">{{ page_title }}</h1>
+			{% endif %}
+
+			<form action="/search" method="get" class="search_form" role="search">
+				<input type="text" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'pages.search.search' | t }}">
+				<button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+			</form>
+
+			<div class="button_filters">
+				<ul>
+					<li {% unless canonical_url contains 'type' %}class="active"{% endunless %}><a href="/search?q={{ search.terms }}">{{ 'pages.search.results_all' | t }}</a></li>
+					<li {% if canonical_url contains 'type=article' %}class="active"{% endif %}><a href="/search?type=article&q={{ search.terms }}">{{ 'pages.search.results_blog' | t }}</a></li>
+					<li {% if canonical_url contains 'type=page' %}class="active"{% endif %}><a href="/search?type=page&q={{ search.terms }}">{{ 'pages.search.results_pages' | t }}</a></li>
+					<li {% if canonical_url contains 'type=product' %}class="active"{% endif %}><a href="/search?type=product&q={{ search.terms }}">{{ 'pages.search.results_products' | t }}</a></li>
+				</ul>
+			</div>
+
+			{% if search.results_count == 0 %}
+				{% if search.terms %}
+					<p class="alert alert-warning">{{ 'pages.search.no_results' | t }}</p>
+				{% endif %}
+			{% else %}
+				{% assign search_results = search.results | sort: 'object_type' %}
+				<ul class="search_results">
+					{% for item in search_results %}
+						<li>
+							{% if item.object_type == 'product' and item.featured_image %}
+								<a class="search_results__img" href="{{ item.url }}">
+									<img src="{{ item.featured_image.src | img_url: '200x200' }}" alt="{{ item.featured_image.alt | escape }}">
+								</a>
+							{% elsif item.object_type != 'product' and item.image %}
+								<a class="search_results__img" href="{{ item.url }}">
+									<img src="{{ item.image.src | img_url: '200x200' }}" alt="{{ item.image.alt | escape }}">
+								</a>
+							{% endif %}
+
+							<div>
+								{% case item.object_type %}
+									{% when 'product' %}
+										<p class="search_results__name"><a href="{{ item.url }}">{{ item.title | highlight: search.terms }}</a></p>
+										<p class="search_results__desc">{{ item.description | strip_html | truncatewords:75 | highlight: search.terms }}</p>
+										<p class="search_results__price">
+											<span class="money">{{ item.price | money }}</span>
+
+											{% if item.compare_at_price > item.price %}
+												<span class="money money_sale">{{ item.compare_at_price | money }}</span>
+											{% endif %}
+										</p>
+
+									{% else %}
+										<p class="search_results__name"><a href="{{ item.url }}">{{ item.title | highlight: search.terms }}</a></p>
+										<p class="search_results__desc">{{ item.content | strip_html | truncatewords:75 | highlight: search.terms }}</p>
+
+								{% endcase %}
+							</div>
+						</li>
+					{% endfor %}
+				</ul>
+
+				{% if paginate.pages > 1 %}
+					{% assign pagination_items = 'layout.pagination.items' | t %}
+					{% include 'snippet-pagination' with pagination_items %}
+				{% endif %}
+			{% endif %}
+		</div>
+	</div>
+{% endpaginate %}

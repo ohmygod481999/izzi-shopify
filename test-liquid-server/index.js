@@ -12,7 +12,7 @@ const utils = require("../utils/utils");
 const port = 5000;
 const app = express();
 
-const inputFolderPath = "shopify/shopify1";
+const inputFolderPath = "build/narrative";
 const engine = new Liquid({
     extname: ".liquid",
     root: [

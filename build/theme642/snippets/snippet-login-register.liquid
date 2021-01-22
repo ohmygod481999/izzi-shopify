@@ -1,0 +1,146 @@
+<div class="template_customer template_customer__login">
+	<div class="container">
+		<h1 class="page_heading">{{ page_title }}</h1>
+
+		<div id="account_section__wrapper" class="account_section__wrapper">
+			<div class="account_section account_section__welcome">
+				<h4>{{ 'customer.register_welcome.title' | t }}</h4>
+
+				<p class="note">{{ 'customer.register_welcome.subtitle' | t }}</p>
+
+				<ul>
+					<li>{{ 'customer.register_welcome.list_item_1' | t }}</li>
+					<li>{{ 'customer.register_welcome.list_item_2' | t }}</li>
+					<li>{{ 'customer.register_welcome.list_item_3' | t }}</li>
+				</ul>
+
+				<a id="account_register__link" class="btn" href="#">{{ 'customer.register_welcome.button' | t }}</a>
+			</div>
+
+			<div class="account_section account_section__login">
+				{% form 'customer_login' %}
+					<h4>{{ 'customer.login_form.title' | t }}</h4>
+
+					{{ form.errors | default_errors | replace: 'errors', 'alert alert-danger' }}
+
+					<div class="form-group">
+						<label for="customer_email">{{ 'customer.login_form.email' | t }}</label>
+						<input type="email" value="" name="customer[email]" id="customer_email">
+					</div>
+					
+					{% if form.password_needed %}
+						<div class="form-group">
+							<label for="customer_password">{{ 'customer.login_form.password' | t }}</label>
+							<input type="password" value="" name="customer[password]" id="customer_password">
+						</div>
+					{% endif %}
+					  
+					<div class="form-group">
+						<button class="btn" type="submit">{{ 'customer.login_form.button' | t }}</button>
+						<a id="account_reset__link" href="#">{{ 'customer.login_form.forgot_password' | t }}</a>
+					</div>
+				{% endform %}
+			</div>
+		</div>
+
+		<div id="account_section__register" class="account_section account_section__register account_section__hidden">
+			<h4>{{ 'customer.register_form.title' | t }} <a class="link_close account_register__close" href="#">{{ 'customer.register_form.close' | t }}</a></h4>
+
+			<div class="form-horizontal">
+				{% form 'create_customer' %}
+					<input type="hidden" id="password_confirmed" name="customer[password]">
+
+					{{ form.errors | default_errors | replace: 'errors', 'alert alert-danger' }}
+
+					<div class="clearfix form-group">
+						<label for="first_name" class="col-sm-4">{{ 'customer.register_form.first_name' | t }}</label>
+						<div class="col-sm-4">
+							<input type="text" value="" name="customer[first_name]" id="first_name">
+						</div>
+					</div>
+
+					<div class="clearfix form-group">
+						<label for="last_name" class="col-sm-4">{{ 'customer.register_form.last_name' | t }}</label>
+						<div class="col-sm-4">
+							<input type="text" value="" name="customer[last_name]" id="last_name">
+						</div>
+					</div>
+
+					<div class="clearfix form-group">
+						<label for="email" class="col-sm-4">{{ 'customer.register_form.email' | t }}</label>
+						<div class="col-sm-4">
+							<input type="email" value="" name="customer[email]" id="email">
+						</div>
+					</div>
+
+					<div class="clearfix form-group">
+						<label for="password_1" class="col-sm-4">{{ 'customer.register_form.password' | t }}</label>
+						<div class="col-sm-4">
+							<input type="password" value="" id="password_1">
+						</div>
+					</div>
+
+					<div class="clearfix form-group">
+						<label for="password_2" class="col-sm-4">{{ 'customer.register_form.confirm_password' | t }}</label>
+						<div class="col-sm-4">
+							<input type="password" value="" id="password_2">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-offset-4 col-sm-4">
+							<button class="btn btn-primary" type="submit">{{ 'customer.register_form.button' | t }}</button>
+							<a class="account_register__close" href="#">{{ 'customer.register_form.cancel' | t }}</a>
+						</div>
+					</div>
+				{% endform %}
+			</div>
+		</div>
+
+		<div id="account_section__reset" class="account_section account_section__hidden">
+			<h4>{{ 'customer.reset_password.title' | t }} <a class="link_close account_reset__cancel" href="#">{{ 'customer.reset_password.close' | t }}</a></h4>
+
+			<p class="note">{{ 'customer.reset_password.subtitle' | t }}</p>
+
+			{% form 'recover_customer_password' %}
+				<div class="clearfix form-horizontal">
+					{% if form.posted_successfully? %}
+						<p class="alert alert-success">{{ 'customer.reset_password.success' | t }}</p>
+					{% else %}
+						{{ form.errors | default_errors | replace: 'errors', 'alert alert-danger' }}
+					{% endif %}
+
+					<div class="form-group">
+						<label for="email_recover" class="large col-sm-4">{{ 'customer.reset_password.email' | t }}</label>
+						<div class="col-sm-4">
+							<input type="email" id="email_recover" name="email" value="">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-4 col-sm-offset-4">
+							<button type="submit" class="btn">{{ 'customer.reset_password.button' | t }}</button>
+							<a class="account_reset__cancel" href="#">{{ 'customer.reset_password.cancel' | t }}</a>
+						</div>
+					</div>
+				</div>
+			{% endform %}
+		</div>
+
+		{% if shop.checkout.guest_login %}
+			<div id="account_guest" class="account_section">
+				<h4>Guest login</h4>
+
+				<p class="note">Guest login allows you to place orders without registration</p>
+
+				{% form 'guest_login' %}
+					<button class="btn" type="submit">Continue as Guest</button>
+				{% endform %}
+			</div>
+		{% endif %}
+	</div>
+</div>
+
+<script>
+	theme.loginForms = true;
+</script>

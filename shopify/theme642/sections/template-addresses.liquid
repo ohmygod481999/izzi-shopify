@@ -1,0 +1,78 @@
+{% javascript %}
+jQuery(document).ready(function($) {
+	// ADD NEW ADDRESS
+	$('#address_add, #address_add__close').hide();
+
+	$('#address_add__link').on('click', function(e) {
+		e.preventDefault();
+
+		$(this).fadeOut(300);
+		$('#address_add__close').delay(300).fadeIn();
+		$('#address_add').slideDown();
+	});
+
+	$('#address_add__close, #address_add__cancel').on('click', function(e) {
+		e.preventDefault();
+
+		$('#address_add__close').fadeOut(300);
+		$('#address_add__link').delay(300).fadeIn();
+		$('#address_add').slideUp();
+	});
+
+
+	// EDIT EXISTING ADDRESS
+	$('.account_address__edit').hide();
+	$('.account_address__item .link_close').hide();
+
+	$('.link_edit').on('click', function(e) {
+		e.preventDefault();
+
+		var t = $(this).attr('href');
+
+		$(t).find('.account_address__edit').slideDown();
+
+		$(this).fadeOut(300);
+
+		$(t).find('.link_close').delay(300).fadeIn();
+
+		$(t).find('.link_close').on('click', function(event) {
+			event.preventDefault();
+
+			$(t).find('.account_address__edit').slideUp();
+
+			$(this).fadeOut(300);
+
+			$(t).find('.link_edit').delay(300).fadeIn();
+		});
+
+		$(t).find('.link_cancel').on('click', function(event) {
+			event.preventDefault();
+
+			$(t).find('.link_close').trigger('click');
+		});
+
+	});
+
+
+	// DELETING ADDRESS
+	$('.link_delete').on('click', function() {
+		Shopify.CustomerAddress.destroy( $(this).attr('title') );
+	});
+
+});
+
+
+// PROVINCES SELECTS
+new Shopify.CountryProvinceSelector( 'address_country_new', 'address_province_new', { hideElement: 'address_province_container_new' } );
+
+var customerAddresses = JSON.parse( theme.customerAddresses );
+
+for ( i=0; i<customerAddresses.length; i++ ) {
+	var addressCountry = 'address_country_' + customerAddresses[i].id;
+	var addressProvince = 'address_province_' + customerAddresses[i].id;
+	var addressProvinceHide = 'address_province_container_' + customerAddresses[i].id;
+
+	new Shopify.CountryProvinceSelector( addressCountry, addressProvince, { hideElement: addressProvinceHide } );
+
+};
+{% endjavascript %}

@@ -10,13 +10,20 @@ const {
 const utils = require("./utils/utils");
 const api = require("./utils/api");
 
-const port = 5001;
+const port = 5002;
 const app = express();
 
 if (process.argv.length < 3) {
     return console.log("Pls tell me the path to build folder you want to run");
 }
 const inputFolderPath = process.argv[2];
+
+let globalObject;
+console.log("getting global object");
+utils.getGlobalObject(inputFolderPath).then((value) => {
+    globalObject = value;
+    console.log("init done!");
+});
 
 const engine = new Liquid({
     extname: ".liquid",
@@ -38,7 +45,13 @@ app.use("/public", express.static(`${inputFolderPath}/assets`));
 // app.use(bodyParser.json());
 
 app.get("/", async (req, res) => {
-    const html = await utils.getPage(engine, inputFolderPath, "index");
+    const html = await utils.getPage(
+        engine,
+        inputFolderPath,
+        "index",
+        {},
+        globalObject
+    );
     res.send(html);
 });
 
@@ -49,13 +62,20 @@ app.get("/products/:productId", async (req, res) => {
         engine,
         inputFolderPath,
         "product",
-        product
+        product,
+        globalObject
     );
     res.send(html);
 });
 
 app.get("/cart", async (req, res) => {
-    const html = await utils.getPage(engine, inputFolderPath, "cart");
+    const html = await utils.getPage(
+        engine,
+        inputFolderPath,
+        "cart",
+        {},
+        globalObject
+    );
     res.send(html);
 });
 
@@ -66,7 +86,8 @@ app.get("/search", async (req, res) => {
         engine,
         inputFolderPath,
         "search",
-        searchData
+        searchData,
+        globalObject
     );
     res.send(html);
 });
@@ -80,7 +101,8 @@ app.get("/collections/:id", async (req, res) => {
         engine,
         inputFolderPath,
         "collection",
-        products
+        products,
+        globalObject
     );
     res.send(html);
 });
@@ -90,7 +112,13 @@ app.get("/blogs/:id", async (req, res) => {
 
     const articles = await api.getArticlesByBlogId(blogCatetegoryId);
 
-    const html = await utils.getPage(engine, inputFolderPath, "blog", articles);
+    const html = await utils.getPage(
+        engine,
+        inputFolderPath,
+        "blog",
+        articles,
+        globalObject
+    );
     res.send(html);
 });
 
@@ -104,7 +132,8 @@ app.get("/blogs/:cateId/:articleId", async (req, res) => {
         engine,
         inputFolderPath,
         "article",
-        article
+        article,
+        globalObject
     );
     res.send(html);
 });

@@ -36,20 +36,20 @@ const build = async (inputFolderPath) => {
     // utils.getContentForIndex(inputFolderPath, engine, {})
     // console.log(utils.getPage(engine, inputFolderPath, "index"));
 
-    const folderName = inputFolderPath.split("/")[inputFolderPath.split("/").length - 1]
-    const buildPath = "build/" + folderName
+    const folderName = inputFolderPath.split("/")[
+        inputFolderPath.split("/").length - 1
+    ];
+    const buildPath = "build/" + folderName;
     if (!fs.existsSync(buildPath)) {
-        fs.mkdirSync(buildPath)
+        fs.mkdirSync(buildPath);
     }
-    if (!fs.existsSync(buildPath + "/public")) {
-        fs.mkdirSync(buildPath + "/public")
-    }
-    const assetsInputPath = inputFolderPath + "/" + "assets"
+    const assetsInputPath = inputFolderPath + "/" + "assets";
     if (!fs.existsSync(assetsInputPath)) {
-        return console.log("Shopify folder does not have assets folder")
+        return console.log("Shopify folder does not have assets folder");
     }
     fs.copySync(inputFolderPath, buildPath);
 
+    utils.exportSassFromCss(inputFolderPath);
 };
 
 if (process.argv.length < 3) {

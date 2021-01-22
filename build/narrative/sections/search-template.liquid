@@ -1,0 +1,410 @@
+{%- assign limit = section.settings.results | times: section.settings.rows -%}
+
+{% paginate search.results by limit %}
+
+<div class="page-width" data-section-id="{{ section.id }}" data-section-type="search-template">
+  <header class="section-header section-header--small text-center">
+    {% if search.performed %}
+      <h1 class="section-header__title h2">{{ 'general.search.search_results_title' | t }}</h1>
+      <div class="section-header__description">
+        {{ 'general.search.results_count_html' | t: count: search.results_count, terms: search.terms }}
+      </div>
+    {% else %}
+      <h1 class="section-header__title h2">{{ 'general.search.title' | t }}</h1>
+      <div class="search-template__search-bar">
+        {% include 'search-bar' %}
+      </div>
+    {% endif %}
+  </header>
+
+  {% if search.performed %}
+
+    {%- assign desktopColumns = section.settings.results -%}
+    {%- assign mobileColumns = '1' -%}
+
+    {%- capture gridClasses -%}
+      {% if desktopColumns == '3' %}medium-up--one-third {% else %}medium-up--one-half {% endif %}
+      {% if mobileColumns == '2' %}small--one-half {% endif %}
+    {%- endcapture -%}
+
+    <div class="card-list grid" data-desktop-columns="{{ desktopColumns }}" data-mobile-columns="{{ mobileColumns }}" data-grid-style="{{ section.settings.grid_style }}">
+      <div class="card-list__column grid__item {% if search.results.size == 1 %} card-list__column--center{% endif %} {{ gridClasses }}">
+        {% for item in search.results %}
+          {% if item.object_type == 'article' %}
+            {% include 'article-card', article: item, grid_style: section.settings.grid_style %}
+          {% elsif item.object_type == 'page' %}
+            {% include 'page-card', page: item %}
+          {% else %}
+            {% include 'product-card', product: item, grid_style: section.settings.grid_style %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if paginate.pages > 1 %}
+      <div class="card-list__sub-actions">
+        {% include 'pagination' %}
+      </div>
+    {% endif %}
+
+    <div class="text-center card-list__sub-actions{% if product_count == 0 %} card-list__sub-actions--no-results{% endif %}">
+      {% include 'search-bar' %}
+    </div>
+  {% endif %}
+</div>
+
+{% endpaginate %}
+
+{% schema %}
+{
+  "name": {
+    "cs": "Hledat",
+    "da": "Søg",
+    "de": "Suchen",
+    "en": "Search",
+    "es": "Buscar",
+    "fi": "Hae",
+    "fr": "Rechercher",
+    "it": "Cerca",
+    "ja": "検索",
+    "ko": "검색",
+    "nb": "Søk",
+    "nl": "Zoeken",
+    "pl": "Szukaj",
+    "pt-BR": "Pesquisa",
+    "pt-PT": "Pesquisar",
+    "sv": "Sök",
+    "th": "ค้นหา",
+    "tr": "Ara",
+    "vi": "Tìm kiếm",
+    "zh-CN": "搜索",
+    "zh-TW": "搜尋"
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "grid_style",
+      "label": {
+        "cs": "Styl mřížky",
+        "da": "Gittertypografi",
+        "de": "Rasterstil",
+        "en": "Grid style",
+        "es": "Estilo de cuadrícula",
+        "fi": "Ruudukkotyyli",
+        "fr": "Style de grille",
+        "it": "Stile griglia",
+        "ja": "グリッドスタイル",
+        "ko": "그리드 스타일",
+        "nb": "Rutenettstil",
+        "nl": "Rasterstijl",
+        "pl": "Styl siatki",
+        "pt-BR": "Estilo da grade",
+        "pt-PT": "Estilo da grelha",
+        "sv": "Rutnätsstil",
+        "th": "รูปแบบกริด",
+        "tr": "Izgara stili",
+        "vi": "Kiểu lưới",
+        "zh-CN": "网格样式",
+        "zh-TW": "網格樣式"
+      },
+      "default": "collage",
+      "options": [
+        {
+          "value": "collage",
+          "label": {
+            "cs": "Koláž",
+            "da": "Collage",
+            "de": "Collage",
+            "en": "Collage",
+            "es": "Collage",
+            "fi": "Kollaasi",
+            "fr": "Collage",
+            "it": "Collage",
+            "ja": "コラージュ",
+            "ko": "콜라주",
+            "nb": "Fotomontasje",
+            "nl": "Collage",
+            "pl": "Kolaż",
+            "pt-BR": "Colagem",
+            "pt-PT": "Colagem",
+            "sv": "Kollage",
+            "th": "ภาพตัดแปะ",
+            "tr": "Kolaj",
+            "vi": "Ghép",
+            "zh-CN": "拼贴画",
+            "zh-TW": "拼貼"
+          }
+        },
+        {
+          "value": "grid",
+          "label": {
+            "cs": "Mřížka",
+            "da": "Gitter",
+            "de": "Raster",
+            "en": "Grid",
+            "es": "Cuadrícula",
+            "fi": "Ruudukko",
+            "fr": "Grille",
+            "it": "Griglia",
+            "ja": "グリッド",
+            "ko": "그리드",
+            "nb": "Rutenett",
+            "nl": "Raster",
+            "pl": "Siatka",
+            "pt-BR": "Grade",
+            "pt-PT": "Grelha",
+            "sv": "Rutnät",
+            "th": "กริด",
+            "tr": "Izgara",
+            "vi": "Lưới",
+            "zh-CN": "网格",
+            "zh-TW": "網格"
+          }
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "results",
+      "label": {
+        "cs": "Počet výsledků na řádek",
+        "da": "Resultater pr. række",
+        "de": "Ergebnisse pro Zeile",
+        "en": "Results per row",
+        "es": "Resultados por fila",
+        "fi": "Tuloksia per rivi",
+        "fr": "Résultats par rangée",
+        "it": "Risultati per riga",
+        "ja": "行あたりの結果",
+        "ko": "열 별 결과",
+        "nb": "Resultater per rad",
+        "nl": "Resultaten per rij",
+        "pl": "Liczba wyników na wiersz",
+        "pt-BR": "Resultados por linha",
+        "pt-PT": "Resultados por linha",
+        "sv": "Resultat per rad",
+        "th": "ผลลัพธ์ต่อแถว",
+        "tr": "Satır başına sonuç",
+        "vi": "Số kết quả trên một hàng",
+        "zh-CN": "每行结果数",
+        "zh-TW": "每列結果數"
+      },
+      "default": "2",
+      "options": [
+        {
+          "value": "2",
+          "label": {
+            "cs": "2",
+            "da": "2",
+            "de": "2",
+            "en": "2",
+            "es": "2",
+            "fi": "2",
+            "fr": "2",
+            "it": "2",
+            "ja": "2",
+            "ko": "2",
+            "nb": "2",
+            "nl": "2",
+            "pl": "2",
+            "pt-BR": "2",
+            "pt-PT": "2",
+            "sv": "2",
+            "th": "2",
+            "tr": "2",
+            "vi": "2",
+            "zh-CN": "2",
+            "zh-TW": "2"
+          }
+        },
+        {
+          "value": "3",
+          "label": {
+            "cs": "3",
+            "da": "3",
+            "de": "3",
+            "en": "3",
+            "es": "3",
+            "fi": "3",
+            "fr": "3",
+            "it": "3",
+            "ja": "3",
+            "ko": "3",
+            "nb": "3",
+            "nl": "3",
+            "pl": "3",
+            "pt-BR": "3",
+            "pt-PT": "3",
+            "sv": "3",
+            "th": "3",
+            "tr": "3",
+            "vi": "3",
+            "zh-CN": "3",
+            "zh-TW": "3"
+          }
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "rows",
+      "label": {
+        "cs": "Počet řádků na stránku",
+        "da": "Rækker pr. side",
+        "de": "Zeilen pro Seite",
+        "en": "Rows per page",
+        "es": "Filas por página",
+        "fi": "Rivejä per sivu",
+        "fr": "Rangées par page",
+        "it": "Righe per pagina",
+        "ja": "ページあたりの行数",
+        "ko": "페이지 별 열",
+        "nb": "Rader per side",
+        "nl": "Rijen per pagina",
+        "pl": "Liczba wierszy na stronę",
+        "pt-BR": "Linhas por página",
+        "pt-PT": "Linhas por página",
+        "sv": "Rader per sida",
+        "th": "แถวต่อหน้า",
+        "tr": "Sayfa başına satır",
+        "vi": "Số hàng trên một trang",
+        "zh-CN": "每页行数",
+        "zh-TW": "每頁列數"
+      },
+      "default": "4",
+      "options": [
+        {
+          "value": "2",
+          "label": {
+            "cs": "2",
+            "da": "2",
+            "de": "2",
+            "en": "2",
+            "es": "2",
+            "fi": "2",
+            "fr": "2",
+            "it": "2",
+            "ja": "2",
+            "ko": "2",
+            "nb": "2",
+            "nl": "2",
+            "pl": "2",
+            "pt-BR": "2",
+            "pt-PT": "2",
+            "sv": "2",
+            "th": "2",
+            "tr": "2",
+            "vi": "2",
+            "zh-CN": "2",
+            "zh-TW": "2"
+          }
+        },
+        {
+          "value": "3",
+          "label": {
+            "cs": "3",
+            "da": "3",
+            "de": "3",
+            "en": "3",
+            "es": "3",
+            "fi": "3",
+            "fr": "3",
+            "it": "3",
+            "ja": "3",
+            "ko": "3",
+            "nb": "3",
+            "nl": "3",
+            "pl": "3",
+            "pt-BR": "3",
+            "pt-PT": "3",
+            "sv": "3",
+            "th": "3",
+            "tr": "3",
+            "vi": "3",
+            "zh-CN": "3",
+            "zh-TW": "3"
+          }
+        },
+        {
+          "value": "4",
+          "label": {
+            "cs": "4",
+            "da": "4",
+            "de": "4",
+            "en": "4",
+            "es": "4",
+            "fi": "4",
+            "fr": "4",
+            "it": "4",
+            "ja": "4",
+            "ko": "4",
+            "nb": "4",
+            "nl": "4",
+            "pl": "4",
+            "pt-BR": "4",
+            "pt-PT": "4",
+            "sv": "4",
+            "th": "4",
+            "tr": "4",
+            "vi": "4",
+            "zh-CN": "4",
+            "zh-TW": "4"
+          }
+        },
+        {
+          "value": "5",
+          "label": {
+            "cs": "5",
+            "da": "5",
+            "de": "5",
+            "en": "5",
+            "es": "5",
+            "fi": "5",
+            "fr": "5",
+            "it": "5",
+            "ja": "5",
+            "ko": "5",
+            "nb": "5",
+            "nl": "5",
+            "pl": "5",
+            "pt-BR": "5",
+            "pt-PT": "5",
+            "sv": "5",
+            "th": "5",
+            "tr": "5",
+            "vi": "5",
+            "zh-CN": "5",
+            "zh-TW": "5"
+          }
+        },
+        {
+          "value": "6",
+          "label": {
+            "cs": "6",
+            "da": "6",
+            "de": "6",
+            "en": "6",
+            "es": "6",
+            "fi": "6",
+            "fr": "6",
+            "it": "6",
+            "ja": "6",
+            "ko": "6",
+            "nb": "6",
+            "nl": "6",
+            "pl": "6",
+            "pt-BR": "6",
+            "pt-PT": "6",
+            "sv": "6",
+            "th": "6",
+            "tr": "6",
+            "vi": "6",
+            "zh-CN": "6",
+            "zh-TW": "6"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,701 @@
+<header>
+	<div class="header_row__1">
+		<div class="page_container">
+			<div class="container">
+				<div class="header_left">
+					{% if shop.customer_accounts_enabled and section.settings.header_user %}
+						<ul class="header_links">
+							<li>
+								<a href="/account"><i class="fa fa-user" aria-hidden="true"></i>{{ 'layout.header.my_account' | t }}</a>
+							</li>
+							
+							{% if customer %}
+							<li>
+								<a href="/account/logout">{{ 'layout.header.logout' | t }}</a>
+							</li>
+							{% endif %}
+						</ul>
+					{% endif %}
+				</div>
+
+				<div class="header_right">
+					{% if section.settings.currency_selector %}
+						{% assign codes = ',USD,EUR,GBP,CAD,ARS,AUD,BBD,BDT,BSD,BHD,BRL,BOB,BND,BGN,MMK,KYD,CLP,CNY,COP,CRC,HRK,CZK,DKK,DOP,XCD,EGP,XPF,FJD,GHS,GTQ,GYD,GEL,HKD,HUF,ISK,INR,IDR,NIS,JMD,JPY,JOD,KZT,KES,KWD,LVL,LTL,MXN,MYR,MUR,MDL,MAD,MNT,MZN,ANG,NZD,NGN,NOK,OMR,PKR,PYG,PEN,PHP,PLN,QAR,RON,RUB,SAR,RSD,SCR,SGD,SYP,ZAR,KRW,LKR,SEK,CHF,TWD,THB,TZS,TTD,TRY,UAH,AED,UYU,VEB,VND,ZMK,' %}
+						{% assign supported_codes = settings.supported_currencies | split: ' ' %}
+
+						<div class="currency_selector">
+							<div class="currency_selector__wrap">
+								<div id="currency_active">{{ shop.currency }}</div>
+
+								<ul id="currency_selector">
+									<li data-value="{{ shop.currency }}" id="currency_selected" class="currency_selector__item">{{ shop.currency }}</li>
+
+									{% for code in supported_codes %}
+										{% if code != shop.currency and codes contains code %}
+											<li data-value="{{ code }}" class="currency_selector__item">{{ code }}</li>
+										{% endif %}
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+
+						<script>
+							theme.shopCurrency = {{ shop.currency | json }};
+							theme.moneyFormat = {{ shop.money_format | json }};
+							theme.moneyFormatCurrency = {{ shop.money_with_currency_format | json }};
+						</script>
+
+						
+					{% endif %}
+
+					{% if section.settings.header_cart %}
+						<div class="header_cart">
+							<a href="/cart" title="{{ 'layout.header.cart' | t }}: {{ cart.item_count }} {{ 'layout.header.cart_items' | t }}"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span>{{ cart.item_count }}</span></a>
+						</div>
+					{% endif %}
+
+					{% if section.settings.header_search %}
+						<div class="header_search">
+							<form action="/search" method="get" role="search" class="search_form" id="header_search__form">
+								<input type="search" name="q" placeholder="{{ 'layout.header.search' | t }}" aria-label="{{ 'layout.header.search' | t }}" id="header_search__input">
+
+								<button type="submit">
+									<i class="fa fa-search" aria-hidden="true"></i>
+								</button>
+							</form>
+						</div>
+					{% endif %}
+				</div>
+
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+
+	<div id="pseudo_sticky_block"></div>
+
+	<div id="sticky_header" class="header_row__2">
+		<div class="header_row__2_1 stick_banner" style="background-image: url( {{ 'kardone_top_banner.png' | asset_url }} );">
+			<div class="banner_text">
+				<h3><b>Upgrade</b> to a Fully-fledged <b>Kardone!</b></h3>
+				<h4>Featuring a additional pages, plugins, beautiful pictures and fully functionality!</h4>
+				<a href="https://www.templatemonster.com/shopify-themes/auto-parts-responsive-shopify-theme-62439.html" class="btn">SHOP NOW!</a>
+		</div>
+		</div>
+		<div class="page_container">
+			<div class="container">
+				{% if template == 'index' %}<h1>{% endif %}
+					{% case section.settings.logo_type %}
+						{% when 'txt' %}
+							<a class="header_logo" href="{{ shop.url }}">{{ shop.name }}</a>
+
+						{% when 'img' %}
+							{% if section.settings.logo_main.size > 0 %}
+								<a class="header_logo" href="{{ shop.url }}">
+									<img src="{{ section.settings.logo_main | img_url: 'x40' }}" alt="{{ shop.name }}">
+								</a>
+							{% else %}
+								<a class="header_logo" href="{{ shop.url }}">{{ shop.name }}</a>
+							{% endif %}
+
+					{% endcase %}
+				{% if template == 'index' %}</h1>{% endif %}
+
+				{% if section.settings.megamenu_toggle %}
+					<nav id="megamenu" class="megamenu">
+						<h2 id="megamenu_mobile_toggle" title="{{ 'layout.header.menu' | t }}"><i class="fa fa-bars" aria-hidden="true"></i></h2>
+
+						<div id="megamenu_mobile_close">
+							<div class="close_icon"></div>
+						</div>
+
+						<ul id="megamenu_level__1" class="level_1">
+							{% for block in section.blocks %}
+								{% assign canonical_url_trim = canonical_url | replace: shop.url %}
+								{% assign block_url_trim = block.settings.link | replace: shop.url %}
+
+								<li class="level_1__item {% case block.type %}{% when 'link-linklist' %}level_2__small{% when 'link-4linklists' %}level_2__links{% when 'link-products' %}level_2__products{% when 'link-blog' %}level_2__blog{% endcase %}">
+									<a class="level_1__link {% if block_url_trim == canonical_url_trim %}active{% endif %}" href="{{ block.settings.link }}">{{ block.settings.title }}
+										{% if block.settings.links.size > 0 or block.settings.links_1.size > 0 or block.settings.links_2.size > 0 or block.settings.links_3.size > 0 or block.settings.links_4.size > 0 or block.settings.products.size > 0 or block.settings.blog.size > 0 %}<i class="level_1__trigger megamenu_trigger" data-submenu="menu_{{ block.id }}"></i>{% endif  %}
+									</a>
+
+									{% case block.type %}
+										{% when 'link-linklist' %}
+											{% if block.settings.links.size > 0 %}
+												<ul class="level_2" id="menu_{{ block.id }}">
+													<li>
+														<div>
+															{%- assign links_small = block.settings.links -%}
+															<ul class="level_3">
+																{% for link in linklists[links_small].links %}
+																	<li class="level_3__item">
+																		<a class="level_3__link" href="{{ link.url }}">{{ link.title }}</a>
+																	</li>
+																{% endfor %}
+															</ul>
+														</div>
+													</li>
+												</ul>
+											{% endif %}
+
+										{% when 'link-4linklists' %}
+											{% if block.settings.links_1.size > 0 or block.settings.links_2.size > 0 or block.settings.links_3.size > 0 or block.settings.links_4.size > 0 %}
+												<ul class="level_2" id="menu_{{ block.id }}">
+													<li class="container">
+														{% for i in (1..4) %}
+															{% capture list %}links_{{ i }}{% endcapture %}
+															{%- assign list = block.settings[list] -%}
+
+															<div class="megamenu_col__item">
+																<h3>{{ linklists[list].title }} <i class="level_2__trigger megamenu_trigger" data-submenu="menu_{{ block.id }}-{{ i }}"></i></h3>
+
+																<ul class="level_3" id="menu_{{ block.id }}-{{ i }}">
+																	{% for link in linklists[list].links %}
+																		<li class="level_3__item">
+																			<a class="level_3__link" href="{{ link.url }}">{{ link.title }}</a>
+																		</li>
+																	{% endfor %}
+																</ul>
+															</div>
+														{% endfor %}
+													</li>
+												</ul>
+											{% endif %}
+
+										{% when 'link-products' %}
+											{%- assign products = block.settings.products -%}
+
+											{% if products.size > 0 %}
+												<ul class="level_2" id="menu_{{ block.id }}">
+													<li class="container">
+														{% for product in collections[products].products limit:4 %}
+															<div class="megamenu_col__item">
+																<div class="product">
+																	<div class="product_img">
+																		<a href="{{ product.url | within: collection }}">
+																			<img src="{{ product.featured_image.src | img_url: '255x' }}" alt="{{ product.title }}" />
+																		</a>
+																	</div>
+
+																	<div class="product_info">
+																		<p class="product_name">
+																			<a href="{{ product.url | within: collection }}">{{ product.title | truncate:50 }}</a>
+																		</p>
+
+																		<p class="product_price">
+																			<span class="money">{{ product.price | money }}</span>
+
+																			{% if product.compare_at_price and product.compare_at_price > product.price %}
+																				<span class="money money_sale">{{ product.compare_at_price | money }}</span>
+																			{% endif %}
+																		</p>
+																	</div>
+																</div>
+															</div>
+														{% endfor %}
+													</li>
+												</ul>
+											{% endif %}
+
+										{% when 'link-blog' %}
+											{%- assign item_blog = block.settings.blog -%}
+
+											{% if item_blog.size > 0 %}
+												<ul class="level_2" id="menu_{{ block.id }}">
+													<li class="container">
+														{% for article in blogs[item_blog].articles limit:3 %}
+														<div class="megamenu_col__item">
+															{% if article.image %}
+																<div class="blog_img">
+																	<img src="{{ article.image.src | img_url: '350x196', crop: 'center' }}" alt="{{ article.image.alt }}">
+																</div>
+															{% endif %}
+
+															<div class="blog_info">
+																<p class="blog_date">
+																	<time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">{{ article.published_at | date: '%A, %B %d, %Y' }}</time>
+																</p>
+
+																<h3 class="blog_title"><a href="{{ article.url }}">{{ article.title | truncate:55 }}</a></h3>
+
+																<a class="btn btn_inverted blog_btn" href="{{ article.url }}">{{ 'blog.articles.read_more' | t }}</a>
+															</div>
+														</div>
+														{% endfor %}
+													</li>
+												</ul>
+											{% endif %}
+
+									{% endcase %}
+
+								</li>
+
+							{% endfor %}
+						</ul>
+					</nav>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</header>
+
+{% schema %}
+{
+	"name": "Header",
+	"max_blocks": 6,
+	"settings": [
+
+
+		// MAIN LOGO //////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "header",
+			"content": "Main Logo"
+		},
+		{
+			"type": "radio",
+			"id": "logo_type",
+			"label": "Logo type",
+			"options": [
+				{
+					"value": "txt",
+					"label": "Text logo"
+				},
+				{
+					"value": "img",
+					"label": "Image logo"
+				}
+			]
+		},
+		{
+			"type": "image_picker",
+			"id": "logo_main",
+			"label": "Logo image",
+			"info": "Will be scaled to 40px height"
+		},
+		// {
+		// 	"type": "text",
+		// 	"id": "logo_slogan",
+		// 	"label": "Logo slogan"
+		// },
+
+
+		// CURRENCY SELECTOR //////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "header",
+			"content": "Currency selector"
+		},
+		{
+			"type": "checkbox",
+			"id": "currency_selector",
+			"label": "Show currency selector"
+		},
+		{
+			"type": "text",
+			"id": "supported_currencies",
+			"label": "Currencies you wish to support",
+			"info": "Separate your currency codes with a space. Use the ISO 4217 3-letter currency code. [CLICK HERE](http:\/\/www.xe.com\/iso4217.php) for a complete list of currency codes. Example: CAD USD."
+		},
+
+
+		// SHOPPING CART //////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "header",
+			"content": "Shopping cart"
+		},
+		{
+			"type": "checkbox",
+			"id": "header_cart",
+			"label": "Show cart"
+		},
+
+
+		// ACCOUNT LINKS //////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "header",
+			"content": "Account links"
+		},
+		{
+			"type": "checkbox",
+			"id": "header_user",
+			"label": "Account links",
+			"info": "Customer Accounts must be enabled at \"Settings → Checkout\""
+		},
+
+
+		// SEARCH /////////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "header",
+			"content": "Search form"
+		},
+		{
+			"type": "checkbox",
+			"id": "header_search",
+			"label": "Show search form"
+		},
+
+
+		// MEGAMENU ///////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "header",
+			"content": "Megamenu"
+		},
+		{
+			"type": "checkbox",
+			"id": "megamenu_toggle",
+			"label": "Show megamenu"
+		}
+
+	],
+	"blocks": [
+
+
+		// LINK ///////////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "link-simple",
+			"name": "Simple link",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title",
+					"default": "Item"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link"
+				}
+			]
+		},
+
+
+		// LINK + LINKLIST ////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "link-linklist",
+			"name": "Link + linklist",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title",
+					"default": "Item"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link"
+				},
+				{
+					"type": "link_list",
+					"id": "links",
+					"label": "Choose linklist"
+				}
+			]
+		},
+
+
+		// LINK + 4 LINKLISTS /////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "link-4linklists",
+			"name": "Link + 4 linklists",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title",
+					"default": "Item"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link"
+				},
+				{
+					"type": "link_list",
+					"id": "links_1",
+					"label": "Linklist #1"
+				},
+				{
+					"type": "link_list",
+					"id": "links_2",
+					"label": "Linklist #2"
+				},
+				{
+					"type": "link_list",
+					"id": "links_3",
+					"label": "Linklist #3"
+				},
+				{
+					"type": "link_list",
+					"id": "links_4",
+					"label": "Linklist #4"
+				}
+			]
+		},
+
+
+		// LINK + PRODUCTS ////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "link-products",
+			"name": "Link + products listing",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title",
+					"default": "Item"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link"
+				},
+				{
+					"type": "collection",
+					"id": "products",
+					"label": "Choose collection"
+				}
+			]
+		},
+
+
+		// LINK + BLOG ////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "link-blog",
+			"name": "Link + blog listing",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title",
+					"default": "Item"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link"
+				},
+				{
+					"type": "blog",
+					"id": "blog",
+					"label": "Choose blog"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% javascript %}
+(function($) {
+
+	// CURRENCY SELECTOR ////////////////////////////////////////////////////////////////////////////////////////
+	if ( typeof theme.shopCurrency != 'undefined' ) {
+
+		var shopCurrency = theme.shopCurrency;
+
+		var currencyActive = $('#currency_active');
+		var currencySelector = $('#currency_selector');
+		var currencySelectorItem = $('.currency_selector__item');
+
+		// Sometimes merchants change their shop currency, let's tell our JavaScript file
+		Currency.money_with_currency_format[shopCurrency] = theme.moneyFormatCurrency;
+		Currency.money_format[shopCurrency] = theme.moneyFormat;
+
+		// Cookie currency
+		var cookieCurrency = Currency.cookie.read();
+
+		// Saving the current price
+		$('span.money').each(function() {
+			$(this).attr( 'data-currency-' + theme.shopCurrency, $(this).html() );
+		});
+
+		// If there's no cookie.
+		if ( cookieCurrency == null ) {
+			Currency.currentCurrency = shopCurrency;
+		}
+		// If the cookie value does not correspond to any value in the currency dropdown.
+		else if ( $('#currency_selector li[data-value=' + cookieCurrency + ']').length === 0 ) {
+			Currency.currentCurrency = shopCurrency;
+			Currency.cookie.write(shopCurrency);
+		}
+		else if ( cookieCurrency === shopCurrency ) {
+			Currency.currentCurrency = shopCurrency;
+		}
+		else {
+			Currency.convertAll( shopCurrency, cookieCurrency, 'span.money', 'money_format' );
+		};
+
+		currencySelectorItem.on('click', function(e) {
+			var newCurrency = $(this).data('value');
+			Currency.convertAll( Currency.currentCurrency, newCurrency, 'span.money', 'money_format' );
+			currencyActive.text(newCurrency);
+
+			currencyActive.removeClass('opened');
+			currencySelector.removeClass('opened');
+
+		});
+
+		currencySelectorItem.each(function() {
+			var currencyValue = $(this).data('value');
+
+			if ( currencyValue == cookieCurrency ) {
+				currencyActive.text(currencyValue);
+			};
+
+		});
+
+		currencyActive.on('click', function() {
+			if ( currencyActive.hasClass('opened') ) {
+				currencyActive.removeClass('opened');
+				currencySelector.removeClass('opened');
+			}
+			else {
+				currencyActive.addClass('opened');
+				currencySelector.addClass('opened');
+			};
+		});
+
+		$(document).on('click', function(){
+			if ( currencyActive.hasClass('opened') ) {
+				currencyActive.removeClass('opened');
+				currencySelector.removeClass('opened');
+			};
+		});
+
+		currencyActive.on('click', function(e) {
+			e.stopPropagation();
+		});
+
+	};
+
+
+
+
+	// MEGAMENU /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	var mobFlag = 0;
+
+	megamenuToggle = function() {
+		if ( $(window).width() > 991 ) {
+			$('#megamenu').removeClass('megamenu_mobile').addClass('megamenu_desktop');
+
+			$('#megamenu_level__1').superfish();
+
+			$('#megamenu .level_1, #megamenu .level_2, #megamenu .level_3').removeAttr('style');
+
+			$('#megamenu_mobile_toggle, .megamenu_trigger').off('.mobileMenu').removeClass('off active');
+
+			$('#megamenu_level__1, #megamenu_mobile_close').removeClass('on');
+
+			$('html, body').css('overflow', 'auto');
+
+			mobFlag = 0;
+		}
+		else {
+			$('#megamenu_level__1, #megamenu_mobile_close').hide();
+			$('#megamenu').removeClass('megamenu_desktop').addClass('megamenu_mobile');
+
+			$('#megamenu_level__1').superfish('destroy');
+
+			if ( mobFlag == 0 ) {
+				menuMobile();
+				mobFlag = 1;
+			};
+		};
+	};
+
+	menuMobile = function() {
+		$('#megamenu_mobile_toggle').on('click.mobileMenu', function(){
+			$('#megamenu_level__1, #megamenu_mobile_close').show().addClass('on');
+
+			$('html, body').css('overflow', 'hidden');
+
+		});
+
+		$('#megamenu_mobile_close').on('click', function() {
+			$('#megamenu_level__1, #megamenu_mobile_close').removeClass('on');
+
+			$('html, body').css('overflow', 'auto');
+
+		});
+
+		$('.megamenu_trigger').on('click.mobileMenu', function() {
+			var targetMenu = '#' + $(this).data('submenu');
+
+			$(targetMenu).slideToggle(300);
+
+			$(this).toggleClass('active');
+
+			return false;
+		});
+
+	};
+
+
+
+
+	// STICKY MENU //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	stickyHeader = function() {
+
+		var target = $('#sticky_header');
+		var pseudo = $('#pseudo_sticky_block');
+		var stick_class = 'megamenu_stuck';
+
+		$(window).on('load scroll resize', function() {
+
+			if ( $(window).width() > 991 ) {
+				var scrolledValue = parseInt( $(window).scrollTop() );
+				var offsetValue = parseInt( pseudo.offset().top );
+				var headHeight = target.outerHeight();
+
+				if ( scrolledValue > offsetValue ) {
+					target.addClass( stick_class );
+					pseudo.css({ 'height' : headHeight });
+				}
+				else {
+					target.removeClass( stick_class );
+					pseudo.css({ 'height' : 0 });
+				};
+			}
+			else {
+				target.removeClass( stick_class );
+				pseudo.css({ 'height' : 0 });
+			};
+
+		});
+
+	};
+
+	stickyHeader();
+
+
+
+
+	$(window).on('load resize', function() {
+		megamenuToggle();
+		$(document).trigger('scroll');
+	});
+
+
+
+
+	$(document).on('shopify:section:load', '#shopify-section-header', function() {
+		stickyHeader();
+		megamenuToggle();
+	});
+
+
+
+
+	// HEADER SEARCH ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	$('#header_search__input').on('focus', function() {
+		$('#header_search__form').addClass('focused');
+	}).on('blur', function() {
+		$('#header_search__form').removeClass('focused');
+	});
+
+
+
+
+})(jQuery);
+{% endjavascript %}

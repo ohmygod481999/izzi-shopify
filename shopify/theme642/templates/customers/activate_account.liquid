@@ -1,0 +1,40 @@
+<div class="template_customer template_customer__activate-account">
+	<div class="container">
+		<h1 class="page_heading">{{ page_title }}</h1>
+
+		<div id="account_section__activation" class="account_section account_section__activation">
+			<h4>{{ 'customer.activate_account.title' | t }}</h4>
+
+			<div class="form-horizontal">
+				{% form 'activate_customer_password' %}
+					{{ form.errors | default_errors }}
+
+					<div class="clearfix form-group">
+						<label for="password_1" class="col-sm-4">{{ 'customer.activate_account.password' | t }}</label>
+						<div class="col-sm-4">
+							<input type="password" value="" name="customer[password]" id="password_1">
+						</div>
+					</div>
+
+					<div class="clearfix form-group">
+						<label for="password_2" class="col-sm-4">{{ 'customer.activate_account.confirm_password' | t }}</label>
+						<div class="col-sm-4">
+							<input type="password" value="" name="customer[password_confirmation]" id="password_2">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-offset-4 col-sm-4">
+							<button class="btn" type="submit">{{ 'customer.activate_account.submit' | t }}</button>
+							<button class="btn" type="submit" name="decline">{{ 'customer.activate_account.decline' | t }}</button>
+						</div>
+					</div>
+				{% endform %}
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	theme.loginForms = true;
+</script>

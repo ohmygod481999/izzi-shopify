@@ -1,0 +1,55 @@
+{% if settings.base_font contains 'google_fonts' or settings.heading_font contains 'google_fonts' %}
+
+	{% capture fonts %}{{ settings.base_font }}|{{ settings.heading_font }}{% endcapture %}
+
+	{% assign fonts = fonts | split: '|' %}
+
+	{% for i in fonts %}
+		{% if i contains 'google_fonts' %}
+			{% assign font = i | replace:'google_fonts:', '' | replace:' ', '+' %}
+
+			{% case font %}
+				{% when 'Lato' %}
+					{% assign font = 'Lato:100,100i,300,300i,400,400i,700,700i,900,900i' %}
+				{% when 'Lora' %}
+					{% assign font = 'Lora:400,400i,700,700i' %}
+				{% when 'Montserrat' %}
+					{% assign font = 'Montserrat:400,700' %}
+				{% when 'Open+Sans' %}
+					{% assign font = 'Open+Sans:400,400i,600,600i,700,700i,800,800i' %}
+				{% when 'Open+Sans+Condensed' %}
+					{% assign font = 'Open+Sans+Condensed:300,300i,700' %}
+				{% when 'Oswald' %}
+					{% assign font = 'Oswald:300,400,700' %}
+				{% when 'Roboto' %}
+					{% assign font = 'Roboto:300,300i,400,400i,500,500i,700,700i,900,900i' %}
+				{% when 'Roboto+Slab' %}
+					{% assign font = 'Roboto+Slab:100,300,400,700' %}
+				{% when 'Ubuntu' %}
+					{% assign font = 'Ubuntu:300,300i,400,400i,500,500i,700,700i' %}
+				{% when 'Ubuntu+Condensed' %}
+					{% assign font = 'Ubuntu+Condensed' %}
+			{% endcase %}
+
+			{% case forloop.index %}
+				{% when 1 %}
+					{% assign font_1 = font %}
+				{% when 2 %}
+					{% assign font_2 = font %}
+			{% endcase %}
+		{% endif %}
+	{% endfor %}
+
+	{% if font_1.size > 0 and font_2.size == 0 %}
+		{% assign font = '//fonts.googleapis.com/css?family=' | append: font_1 %}
+	{% elsif font_1.size > 0 and font_2.size > 0 and font_1 == font_2 %}
+		{% assign font = '//fonts.googleapis.com/css?family=' | append: font_1 %}
+	{% elsif font_1.size > 0 and font_2.size > 0 and font_1 != font_2 %}
+		{% assign font = '//fonts.googleapis.com/css?family=' | append: font_1 | append: '%7C' | append: font_2 %}
+	{% else %}
+		{% assign font = '//fonts.googleapis.com/css?family=' | append: font_2 %}
+	{% endif %}
+
+	<link href="{{ font | append: '&amp;subset=cyrillic' }}" rel="stylesheet" type="text/css">
+
+{% endif %}

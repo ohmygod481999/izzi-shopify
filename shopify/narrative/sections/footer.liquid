@@ -1,0 +1,501 @@
+{%- assign social_icons = false -%}
+{%- assign menu_enabled = false -%}
+
+{% if
+  settings.social_twitter_link != blank
+  or settings.social_facebook_link != blank
+  or settings.social_pinterest_link != blank
+  or settings.social_instagram_link != blank
+  or settings.social_tumblr_link != blank
+  or settings.social_snapchat_link != blank
+  or settings.social_youtube_link != blank
+  or settings.social_vimeo_link != blank
+  or request.page_type == 'article'
+  or request.page_type == 'blog'
+%}
+  {%- assign social_icons = true -%}
+{% endif %}
+
+{%- for block in section.blocks -%}
+  {%- if block.type == 'menu' -%}
+    {%- assign menu_enabled = true -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<footer class="site-footer" role="contentinfo" data-section-type="footer" data-section-id="{{ section.id }}" {% if section.settings.enable_parallax %}data-footer-parallax{% endif %} data-section-id="{{ section.id }}" data-section-type="footer">
+  <div class="page-width">
+    {% if menu_enabled or section.settings.show_newsletter %}
+      <div class="flex-footer{% unless section.settings.show_newsletter %} flex-footer--full text-center{% endunless %}">
+        {% for block in section.blocks %}
+          <div class="flex-footer__item flex-footer__item--{{ block.type }}" {{ block.shopify_attributes }}>
+            {% case block.type %}
+            {% when 'menu' %}
+              {%- assign link_list = block.settings.link_list -%}
+              <ul class="site-footer__linklist">
+                {% for link in linklists[link_list].links %}
+                  <li class="site-footer__linklist-item h6">
+                    <a href="{{ link.url }}">{{ link.title }}</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endcase %}
+          </div>
+        {% endfor %}
+
+        {% if section.settings.show_newsletter %}
+          <div class="flex-footer__item flex-footer__item--newsletter">
+            <div class="site-footer__newsletter">
+              {% form 'customer' %}
+                <input type="hidden" name="contact[tags]" value="newsletter">
+                <label for="NewsletterEmail" class="site-footer__newsletter-label">{{ section.settings.newsletter_heading }}</label>
+                <div class="site-footer__newsletter-subheading">{{ section.settings.newsletter_subheading }}</div>
+                <div class="input-group--underline">
+                  <input type="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.newsletter_form.newsletter_placeholder' | t }}" name="contact[email]" id="NewsletterEmail" class="input-group__field site-footer__newsletter-input" aria-label="{{ 'general.newsletter_form.newsletter_placeholder' | t }}" autocorrect="off" autocapitalize="off">
+                  <div class="input-group__btn input-group__btn--newsletter">
+                    <button type="submit" class="btn--newsletter__submit">
+                      {{ 'general.newsletter_form.submit' | t }}
+                      {% include 'icon-arrow-right' %}
+                    </button>
+                  </div>
+                </div>
+                <div class="site-footer__newsletter-message" aria-role="alert">
+                  {% if form.posted_successfully? %}
+                    <p class="form-success" aria-role="alert">{{ 'general.newsletter_form.confirmation' | t }}</p>
+                  {% endif %}
+                  {{ form.errors | default_errors }}</div>
+              {% endform %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="site-footer__bottom{% unless section.settings.show_social_icons or section.settings.show_payment_icons %} site-footer__bottom--center{% endunless %}">
+      {% if section.settings.show_social_icons %}
+        <div class="site-footer__social-icons flex-footer__item--one-third">
+          {% include 'social-links', disableTab: true, largeIcons: false %}
+        </div>
+      {% endif %}
+
+      <div class="site-footer__copyright flex-footer__item--one-third">
+        <small>{{ 'layout.footer.copyright' | t }} &copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url }}.</small>
+        <small class="site-footer__powered-by">{{ powered_by_link }}</small>
+      </div>
+
+      {%- if section.settings.show_payment_icons -%}
+        <div class="site-footer__payment-icons flex-footer__item--one-third">
+          {%- unless shop.enabled_payment_types == empty -%}
+            <span class="visually-hidden">{{ 'general.payment.method' | t }}</span>
+            <ul class="payment-icons list--inline">
+              {%- for type in shop.enabled_payment_types -%}
+                <li class="payment-icon">
+                  {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endunless -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {% if section.settings.enable_parallax %}
+    <div class="site-footer__drawer-cover"></div>
+  {% endif %}
+</footer>
+
+{% schema %}
+{
+  "name": {
+    "cs": "Zápatí",
+    "da": "Sidefod",
+    "de": "Fußzeile",
+    "en": "Footer",
+    "es": "Pie de página",
+    "fi": "Alatunniste",
+    "fr": "Pied de page",
+    "it": "Footer",
+    "ja": "フッター",
+    "ko": "바닥글",
+    "nb": "Footer",
+    "nl": "Voettekst",
+    "pl": "Stopka",
+    "pt-BR": "Rodapé",
+    "pt-PT": "Rodapé",
+    "sv": "Sidfot",
+    "th": "ส่วนท้าย",
+    "tr": "Altbilgi",
+    "vi": "Chân trang",
+    "zh-CN": "页脚",
+    "zh-TW": "頁尾"
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_social_icons",
+      "label": {
+        "cs": "Zobrazit ikony sociálních sítí",
+        "da": "Vis ikoner for sociale medier",
+        "de": "Social-Media-Symbole anzeigen",
+        "en": "Show social icons",
+        "es": "Mostrar íconos de redes sociales",
+        "fi": "Näytä some-kuvakkeet",
+        "fr": "Afficher les icônes de médias sociaux",
+        "it": "Mostra icone social",
+        "ja": "ソーシャルアイコンを表示する",
+        "ko": "소셜 아이콘 표시",
+        "nb": "Vis ikoner for sosiale medier",
+        "nl": "Socialmediapictogrammen weergeven",
+        "pl": "Pokaż ikony mediów społecznościowych",
+        "pt-BR": "Exibir ícones de redes sociais",
+        "pt-PT": "Mostrar ícones de redes sociais",
+        "sv": "Visa sociala ikoner",
+        "th": "แสดงไอคอนโซเชียลมีเดีย",
+        "tr": "Sosyal medya simgeleri göster",
+        "vi": "Hiển thị biểu tượng mạng xã hội",
+        "zh-CN": "显示社交图标",
+        "zh-TW": "顯示社群媒體圖示"
+      },
+      "info": {
+        "cs": "Vyplňte svoje odkazy na sociální sítě v obecném nastavení.",
+        "da": "Udfyld dine links til sociale medier under Generelle indstillinger",
+        "de": "Gib in den allgemeinen Einstellungen deine Social-Media-Links ein",
+        "en": "Fill out your social links in the general settings",
+        "es": "Completa tus enlaces de redes sociales en la configuración General.",
+        "fi": "Täytä sosiaalisen median linkit yleisissä asetuksissa",
+        "fr": "Remplissez vos liens de médias sociaux dans les paramètres généraux",
+        "it": "Inserisci i dati dei link social nelle impostazioni generali.",
+        "ja": "一般設定でソーシャルリンクを記入してください。",
+        "ko": "일반 설정에서 소셜 링크 채우기",
+        "nb": "Fyll ut de sosiale koblingene i de generelle innstillingene",
+        "nl": "Stel je links voor delen via social media in de algemene instellingen in",
+        "pl": "Wypełnij linki mediów społecznościowych w ustawieniach ogólnych",
+        "pt-BR": "Preencha seus links de redes sociais nas configurações gerais",
+        "pt-PT": "Preencha as suas ligações de redes sociais nas definições gerais",
+        "sv": "Fyll i dina sociala länkar i de allmänna inställningarna",
+        "th": "ใส่ลิงก์โซเชียลมีเดียของคุณในการตั้งค่าทั่วไป",
+        "tr": "Genel ayarlardan sosyal medya bağlantılarınızı girin",
+        "vi": "Điền liên kết mạng xã hội trong cài đặt chung",
+        "zh-CN": "在“通用”设置中填写您的社交链接",
+        "zh-TW": "前往一般設定填寫社群連結"
+      },
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": {
+        "cs": "Zobrazit ikony plateb",
+        "da": "Vis betalingsikoner",
+        "de": "Zahlungssymbole anzeigen",
+        "en": "Show payment icons",
+        "es": "Mostrar iconos de pago",
+        "fi": "Näytä maksukuvakkeet",
+        "fr": "Afficher les icônes de paiement",
+        "it": "Mostra le icone di pagamento",
+        "ja": "支払いアイコンを表示する",
+        "ko": "결제 아이콘 표시",
+        "nb": "Vis betalingsikoner",
+        "nl": "Betalingspictogrammen weergeven",
+        "pl": "Pokaż ikony płatności",
+        "pt-BR": "Exibir ícones de pagamento",
+        "pt-PT": "Mostrar ícones de pagamento",
+        "sv": "Visa betalningsikoner",
+        "th": "แสดงไอคอนการชำระเงิน",
+        "tr": "Ödeme simgelerini göster",
+        "vi": "Hiển thị biểu tượng thanh toán",
+        "zh-CN": "显示付款图标",
+        "zh-TW": "顯示付款圖示"
+      },
+      "info": {
+        "cs": "Svoje nastavení plateb aktualizujte v sekci Nastavení/Platby svého obchodu.",
+        "da": "Opdater dine betalingsindstillinger under din butiks Indstillinger / Betalinger",
+        "de": "Aktualisiere unter Einstellungen/Zahlungen deine Zahlungseinstellungen",
+        "en": "Update your payment settings in your store's Settings / Payments",
+        "es": "Actualiza tu configuración de pagos en Configuración/Pagos de tu tienda.",
+        "fi": "Päivitä maksuasetukset kaupan asetuksissa/maksuissa",
+        "fr": "Mettez à jour vos paramètres de paiement dans les paramètres/paiements de votre boutique",
+        "it": "Aggiorna le impostazioni di pagamento nella sezione Impostazioni / Pagamenti del tuo negozio",
+        "ja": "ストアの「設定/決済」で決済設定を更新する",
+        "ko": "스토어 설정 / 결제에서 결제 설정을 업데이트하십시오.",
+        "nb": "Oppdater betalingsinnstillingene i butikkens Innstillinger/Betalinger",
+        "nl": "Werk je betalingsinstelling bij in de secties Instellingen / Betalingen van je winkel",
+        "pl": "Aktualizuj ustawienia płatności w Ustawieniach sklepu / Płatności",
+        "pt-BR": "Atualize suas configurações de pagamento nas configurações/pagamentos da sua loja",
+        "pt-PT": "Atualize as suas definições de pagamento na secção Definições/Pagamentos da sua loja",
+        "sv": "Uppdatera dina betalningsinställningar i butikens inställningar / betalningar",
+        "th": "อัปเดตการตั้งค่าการชำระเงินของคุณในการตั้งค่า / การชำระเงินของร้านค้า",
+        "tr": "Mağazanızın Ayarlar/Ödemeler bölümünden ödeme ayarlarınızı güncelleyin",
+        "vi": "Cập nhật cài đặt thanh toán trong Cài đặt/Thanh toán của cửa hàng",
+        "zh-CN": "更新商店设置/付款中的付款设置",
+        "zh-TW": "前往您商店的設定 / 付款更新付款設定"
+      },
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_parallax",
+      "label": {
+        "cs": "Povolit efekt paralaxního skrolování v zápatí",
+        "da": "Aktivér parallakse effekter til rulning i sidefod",
+        "de": "Aktiviere den Parallax-Effekt für den Fußzeilen-Scroll",
+        "en": "Enable footer scrolling parallax effect",
+        "es": "Navegación de paralaje para el desplazamiento del pie de página",
+        "fi": "Ota käyttöön alatunnisteen parallaksivieritys",
+        "fr": "Activer l'effet de défilement parallaxe du pied de page",
+        "it": "Abilita effetto parallasse scorrimento footer",
+        "ja": "フッターのスクロールするパララックス効果を有効にする",
+        "ko": "푸터 스크롤 패럴랙스 효과 사용",
+        "nb": "Aktiver parallakserulleeffekt for bunntekst",
+        "nl": "Parallax-effect voor scrollen door voettekst inschakelen",
+        "pl": "Włączenie efektu paralaksy przewijania stopki",
+        "pt-BR": "Habilitar o efeito de rolagem de paralaxe no rodapé",
+        "pt-PT": "Ativar o efeito de paralaxe de deslocamento do rodapé",
+        "sv": "Aktivera parallaxeffekten på sidfot",
+        "th": "เปิดใช้เอฟเฟ็กต์พารัลแลกซ์การเลื่อนส่วนท้าย",
+        "tr": "Altbilgi kaydırma paralaks efektini etkinleştir",
+        "vi": "Bật hiệu ứng parallex cuộn chân trang",
+        "zh-CN": "启用页脚滚动视差效果",
+        "zh-TW": "啟用頁尾捲動視差效果"
+      },
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": {
+        "cs": "Novinky",
+        "da": "Nyhedsbrev",
+        "de": "Newsletter",
+        "en": "Newsletter",
+        "es": "Boletín",
+        "fi": "Uutiskirje",
+        "fr": "Newsletter",
+        "it": "Newsletter",
+        "ja": "ニュースレター",
+        "ko": "뉴스레터",
+        "nb": "Nyhetsbrev",
+        "nl": "Nieuwsbrief",
+        "pl": "Newsletter",
+        "pt-BR": "Newsletter",
+        "pt-PT": "Newsletter",
+        "sv": "Nyhetsbrev",
+        "th": "จดหมายข่าว",
+        "tr": "Bülten",
+        "vi": "Bản tin",
+        "zh-CN": "新闻通讯",
+        "zh-TW": "電子報"
+      }
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": {
+        "cs": "Zobrazit přihlášení k odběru novinek",
+        "da": "Vis tilmelding til nyhedsbrev",
+        "de": "Newsletter Signup anzeigen",
+        "en": "Show newsletter signup",
+        "es": "Suscríbete al boletín",
+        "fi": "Näytä uutiskirjeen tilaus",
+        "fr": "Afficher l'inscription à la newsletter",
+        "it": "Mostra iscrizione alla Newsletter",
+        "ja": "ニュースレターの登録を表示する",
+        "ko": "뉴스레터 신청 표시",
+        "nb": "Vis nyhetsbrev-registrering",
+        "nl": "Aanmelden voor nieuwsbrief weergeven",
+        "pl": "Pokaż rejestrację do newslettera",
+        "pt-BR": "Exibir assinatura da newsletter",
+        "pt-PT": "Mostrar registo na newsletter",
+        "sv": "Visa nyhetsbrevsregistrering",
+        "th": "แสดงการสมัครรับจดหมายข่าว",
+        "tr": "Bülten aboneliğini göster",
+        "vi": "Hiển thị đăng ký nhận bản tin",
+        "zh-CN": "显示新闻通讯注册",
+        "zh-TW": "顯示訂閱電子報"
+      },
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": {
+        "cs": "Nadpis",
+        "da": "Overskrift",
+        "de": "Titel",
+        "en": "Heading",
+        "es": "Título",
+        "fi": "Otsake",
+        "fr": "Titre",
+        "it": "Heading",
+        "ja": "見出し",
+        "ko": "제목",
+        "nb": "Overskrift",
+        "nl": "Kop",
+        "pl": "Nagłówek",
+        "pt-BR": "Título",
+        "pt-PT": "Título",
+        "sv": "Rubrik",
+        "th": "ส่วนหัว",
+        "tr": "Başlık",
+        "vi": "Tiêu đề",
+        "zh-CN": "标题",
+        "zh-TW": "標題"
+      },
+      "default": {
+        "cs": "Zaregistrujte se k aktualizacím",
+        "da": "Tilmeld dig opdateringer",
+        "de": "Registriere dich für Aktualisierungen",
+        "en": "Sign up for updates",
+        "es": "Regístrate para recibir actualizaciones",
+        "fi": "Tilaa päivitykset",
+        "fr": "S'inscrire pour recevoir les mises à jour",
+        "it": "Iscriviti per ricevere aggiornamenti",
+        "ja": "サインアップして更新する",
+        "ko": "업데이트 등록하기",
+        "nb": "Registrere deg for oppdateringer",
+        "nl": "Aanmelden voor updates",
+        "pl": "Zarejestruj się, aby być na bieżąco",
+        "pt-BR": "Inscreva-se para receber atualizações",
+        "pt-PT": "Registe-se para receber atualizações",
+        "sv": "Registrera dig för uppdateringar",
+        "th": "ลงทะเบียนเพื่อรับการอัปเดต",
+        "tr": "Güncellemeler için kaydolun",
+        "vi": "Đăng ký thông tin cập nhật",
+        "zh-CN": "注册以获取更新",
+        "zh-TW": "註冊接收最新消息"
+      }
+    },
+    {
+      "type": "richtext",
+      "id": "newsletter_subheading",
+      "label": {
+        "cs": "Podnadpis",
+        "da": "Underoverskrift",
+        "de": "Unter-Überschrift",
+        "en": "Subheading",
+        "es": "Subtítulo",
+        "fi": "Alaotsikko",
+        "fr": "Sous-titre",
+        "it": "Sottotitolo",
+        "ja": "小見出し",
+        "ko": "소제목",
+        "nb": "Underoverskrift",
+        "nl": "Subkop",
+        "pl": "Nagłówek podrzędny",
+        "pt-BR": "Subtítulo",
+        "pt-PT": "Subtítulo",
+        "sv": "Underrubrik",
+        "th": "หัวเรื่องย่อย",
+        "tr": "Alt başlık",
+        "vi": "Tiêu đề phụ",
+        "zh-CN": "副标题",
+        "zh-TW": "子標題"
+      },
+      "default": {
+        "cs": "<p>Získejte informace o propagačních akcích, nových produktech a slevách – přímo do své schránky.</p>",
+        "da": "<p>Reklamer, nye produkter og salg. Direkte i din indbakke.</p>",
+        "de": "<p>Werbeaktionen, neue Produkte und Sonderangebote. Direkt in deinem Posteingang.</p>",
+        "en": "<p>Promotions, new products and sales. Directly to your inbox.</p>",
+        "es": "<p>Promociones, nuevos productos y ventas. Directamente a tu bandeja de entrada.</p>",
+        "fi": "<p>Kampanjat, uudet tuotteet ja myynti. Suoraan saapuneet-kansioosi</p>",
+        "fr": "<p>Promotions, nouveaux produits et soldes. Directement dans votre boîte de réception.</p>",
+        "it": "<p>Promozioni, nuovi prodotti e offerte. Direttamente nella tua casella di posta.</p>",
+        "ja": "<p>新商品やセール情報などのお得な情報をお届けします。</p>",
+        "ko": "<p>프로모션, 신제품, 판매. 받은 편지함으로 바로 이동.</p>",
+        "nb": "<p>Kampanjer, nye produkter og salg. Direkte i innboksen din.</p>",
+        "nl": "<p>Promoties, nieuwe producten en uitverkoop rechtstreeks in je inbox.</p>",
+        "pl": "<p>Promocje, nowe produkty i wyprzedaże. Bezpośrednio do Twojej skrzynki odbiorczej.</p>",
+        "pt-BR": "<p>Promoções, novos produtos e vendas. Diretamente para sua caixa de entrada.</p>",
+        "pt-PT": "<p>Promoções, novos produtos e ofertas. Diretamente na sua caixa de entrada.</p>",
+        "sv": "<p>Kampanjer, nya produkter och försäljning. Direkt till din inkorg.</p>",
+        "th": "<p>โปรโมชัน สินค้าใหม่ และการลดราคา ตรงสู่กล่องจดหมายเข้าของคุณ</p>",
+        "tr": "<p>Promosyonlar, yeni ürünler ve indirimler. Doğrudan gelen kutunuzda.</p>",
+        "vi": "<p>Khuyến mãi, sản phẩm mới và chương trình giảm giá. Trực tiếp vào hộp thư đến của bạn.</p>",
+        "zh-CN": "<p>促销、新产品和销售。直接发送到您的收件箱。</p>",
+        "zh-TW": "<p>讓您直接在收件匣內收取促銷活動、最新產品和特賣活動訊息。</p>"
+      }
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": {
+        "cs": "Nabídka",
+        "da": "Menu",
+        "de": "Menü",
+        "en": "Menu",
+        "es": "Menú",
+        "fi": "Valikko",
+        "fr": "Menu",
+        "it": "Menu",
+        "ja": "メニュー",
+        "ko": "메뉴",
+        "nb": "Meny",
+        "nl": "Menu",
+        "pl": "Menu",
+        "pt-BR": "Menu",
+        "pt-PT": "Menu",
+        "sv": "Meny",
+        "th": "เมนู",
+        "tr": "Menü",
+        "vi": "Menu",
+        "zh-CN": "菜单",
+        "zh-TW": "選單"
+      },
+      "limit": 2,
+      "settings": [
+        {
+          "id": "link_list",
+          "type": "link_list",
+          "label": {
+            "cs": "Nabídka",
+            "da": "Menu",
+            "de": "Menü",
+            "en": "Menu",
+            "es": "Menú",
+            "fi": "Valikko",
+            "fr": "Menu",
+            "it": "Menu",
+            "ja": "メニュー",
+            "ko": "메뉴",
+            "nb": "Meny",
+            "nl": "Menu",
+            "pl": "Menu",
+            "pt-BR": "Menu",
+            "pt-PT": "Menu",
+            "sv": "Meny",
+            "th": "เมนู",
+            "tr": "Menü",
+            "vi": "Menu",
+            "zh-CN": "菜单",
+            "zh-TW": "選單"
+          },
+          "default": "footer",
+          "info": {
+            "cs": "V této nabídce se nezobrazí položky rozevíracího seznamu",
+            "da": "Denne menu viser ikke rullemenupunkter",
+            "de": "Dieses Menü zeigt keine Dropdowns an",
+            "en": "This menu won't show dropdown items",
+            "es": "Este menú no mostrará elementos desplegables",
+            "fi": "Tämä valikko ei näytä pudotuskohteita",
+            "fr": "Ce menu n'affichera pas les éléments des menus déroulants",
+            "it": "Questo menu non mostrerà elementi a discesa",
+            "ja": "このメニューにはドロップダウンアイテムは表示されません",
+            "ko": "이 메뉴는 드롭 다운 항목을 표시하지 않습니다.",
+            "nb": "Denne menyen vil ikke vise rullegardinelementer",
+            "nl": "Dit menu laat geen vervolgkeuze-artikelen zien.",
+            "pl": "W tym menu pozycje rozwijane nie będą wyświetlane",
+            "pt-BR": "Este menu não mostra itens suspensos",
+            "pt-PT": "Este menu não mostra itens suspensos",
+            "sv": "Den här menyn kommer inte att visa objekt i rullgardinsmeny",
+            "th": "เมนูนี้จะไม่แสดงรายการดรอปดาวน์",
+            "tr": "Bu menü açılır öğeleri göstermez",
+            "vi": "Menu này sẽ không hiển thị các mục thả xuống",
+            "zh-CN": "此菜单不会显示下拉项",
+            "zh-TW": "這個選單不會顯示下拉式項目"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,130 @@
+{% case section.settings.img_size %}
+	{% when 'xsmall' %}{%- assign img_size = '270x90' -%}
+	{% when 'small'  %}{%- assign img_size = '270x151' -%}
+	{% when 'medium' %}{%- assign img_size = '270x270' -%}
+{% endcase %}
+
+<div class="section section_homepage section_logo-list">
+	<div class="container">
+		{% if section.settings.title.size > 0 %}
+			<h2 class="section_heading split_words">{{ section.settings.title | escape }}</h2>
+		{% endif %}
+
+		<div class="row">
+			{% for block in section.blocks %}
+				<div class="col-xs-3 {% cycle 'step4': 'item_4_1', '', '', '' %} {% cycle 'step2': 'item_2_1', '' %}">
+					<div class="logo_item">
+						{% if block.settings.link.size > 0 %}
+							<a href="{{ block.settings.link }}" class="logo-bar__link">
+						{% endif %}
+
+						{% if block.settings.image.size > 0 %}
+							<img src="{{ block.settings.image | img_url: img_size, crop: section.settings.img_alignment }}" alt="{{ section.settings.image.alt }}">
+						{% else %}
+							<div class="img_placeholder__wrap img_placeholder__{{ section.settings.img_size }}">
+								{{ 'logo' | placeholder_svg_tag: 'img_placeholder' }}
+							</div>
+						{% endif %}
+
+						{% if block.settings.link.size > 0 %}
+							</a>
+						{% endif %}
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% schema %}
+{
+	"name": "Logo list",
+	"class": "index-section",
+	"max_blocks": 20,
+	"settings": [
+		{
+			"type": "text",
+			"id": "title",
+			"label": "Heading",
+			"default": "Logo list"
+		},
+		{
+			"type": "select",
+			"id": "img_size",
+			"label": "Image size",
+			"options": [
+				{
+					"value": "xsmall",
+					"label": "Extra Small (270x90)"
+				},
+				{
+					"value": "small",
+					"label": "Small (270x151)"
+				},
+				{
+					"value": "medium",
+					"label": "Medium (270x270)"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "img_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		}
+	],
+	"blocks": [
+		{
+			"type": "logo_image",
+			"name": "Logo",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link",
+					"info": "Optional"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Logo list",
+			"category": "Image",
+			"blocks": [
+				{
+					"type": "logo_image"
+				},
+				{
+					"type": "logo_image"
+				},
+				{
+					"type": "logo_image"
+				},
+				{
+					"type": "logo_image"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

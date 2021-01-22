@@ -1,0 +1,49 @@
+<div class="pagination">
+	{% if paginate.pages > 1 %}
+		{% assign A = paginate.current_offset | plus:1 %}
+		{% assign B = paginate.items %}
+		{% assign C = paginate.current_offset | plus:paginate.page_size %}
+
+		{% if paginate.current_page == paginate.pages %}
+			{% if A == B %}
+				<p>{{ A }} {{ pagination_items }} {{ paginate.items }}</p>
+			{% else %}
+				<p>{{ A }} – {{ B }} {{ pagination_items }} {{ paginate.items }}</p>
+			{% endif %}
+		{% else %}
+			<p>{{ A }} – {{ C }} {{ pagination_items }} {{ paginate.items }}</p>
+		{% endif %}
+
+		<ul>
+			<li class="pagination_prev">
+				{% if paginate.previous.is_link %}
+					<a href="{{ paginate.previous.url }}"><i class="fa fa-angle-left" aria-hidden="true"></i>{{ 'layout.pagination.previous' | t }}</a>
+				{% else %}
+					<span><i class="fa fa-angle-left" aria-hidden="true"></i>{{ 'layout.pagination.previous' | t }}</span>
+				{% endif %}
+			</li>
+
+			{% for part in paginate.parts %}
+				{% if part.is_link %}
+					<li><a href="{{ part.url }}">{{ part.title }}</a></li>
+				{% else %}
+					{% if part.title == paginate.current_page %}
+						<li class="pagination_current"><span>{{ part.title }}</span></li>
+					{% else %}
+						<li><span>{{ part.title }}</span></li>
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+
+			<li class="pagination_next">
+				{% if paginate.next.is_link %}
+					<a href="{{ paginate.next.url }}">{{ 'layout.pagination.next' | t }}<i class="fa fa-angle-right" aria-hidden="true"></i></a>
+				{% else %}
+					<span>{{ 'layout.pagination.next' | t }}<i class="fa fa-angle-right" aria-hidden="true"></i></span>
+				{% endif %}
+			</li>
+		</ul>
+	{% else %}
+		<p>1 – {{ paginate.items }} {{ pagination_items }} {{ paginate.items }}</p>
+	{% endif %}
+</div>

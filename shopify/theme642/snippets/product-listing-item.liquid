@@ -1,0 +1,101 @@
+{% comment %}Is this product on sale?{% endcomment %}
+{% assign on_sale = false %}
+{% if product.compare_at_price > product.price %}
+	{% assign on_sale = true %}
+{% endif %}
+
+<div class="product_item">
+	<div class="product_img">
+		<a href="{{ product.url | within: collection }}">
+			<img src="{{ product.featured_image.src | product_img_url: img_size, crop: img_alignment }}" alt="{{ product.featured_image.alt | escape }}">
+
+			{% if on_sale %}<span>SALE</span>{% endif %}
+		</a>
+	</div>
+
+	<div class="product_info">
+		<p class="product_name">
+			{% if template == 'index' %}
+				<a href="{{ product.url }}">{{ product.title | truncate:50 }}</a>
+			{% else %}
+				<a href="{{ product.url | within: collection }}">{{ product.title | truncate:50 }}</a>
+			{% endif %}
+		</p>
+
+		{% if product.description.size > 0 %}
+			<p class="product_desc product_desc__short">{{ product.description | strip_html | truncate: 100 }}</p>
+			<p class="product_desc product_desc__long">{{ product.description | strip_html | truncate: 500 }}</p>
+		{% endif %}
+
+		{% comment %}<div class="product_options">{% endcomment %}
+			<div class="product_price">
+				{% if product.available %}
+					{% if product.variants.size == 1 %}
+						<span class="money">{{ product.price | money }}</span>
+
+						{% if on_sale %}
+							<span class="money money_sale">{{ product.compare_at_price | money }}</span>
+						{% endif %}
+					{% else %}
+						{% assign prices_sorted = product.variants | sort: 'price' %}
+						<span class="money">{{ prices_sorted.first.price | money }}</span> <span class="money_like">–</span> <span class="money">{{ prices_sorted.last.price | money }}</span>
+						<span class="money_variants">({{ product.variants | size }} {{ 'layout.product.variants' | t }})</span>
+					{% endif %}
+				{% else %}
+					<span class="money">{{ product.price | money }}</span>
+
+					{% if on_sale %}
+						<span class="money money_sale">{{ product.compare_at_price | money }}</span>
+					{% endif %}
+				{% endif %}
+			</div>
+
+			<div class="product_links">
+				{% if product.available %}
+					{% if product.variants.size == 1 %}
+						<form method="post" action="/cart/add">
+							<input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+							<button class="btn btn-cart" type="submit"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i><span>{{ 'layout.product.add_to_cart' | t }}</span></button>
+						</form>
+					{% else %}
+						<a class="btn" href="{{ product.url }}"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i><span>{{ 'layout.product.add_to_cart' | t }}</span></a>
+					{% endif %}
+				{% else %}
+					<button class="btn" disabled><i class="fa fa-cart-arrow-down" aria-hidden="true"></i><span>{{ 'layout.product.unavailable' | t }}</span></button>
+				{% endif %}
+			</div>
+		{% comment %}</div>{% endcomment %}
+
+	</div>
+
+	<div class="clearfix"></div>
+</div>
+
+{% comment %}
+		<p class="product_price">
+			<span class="money">{{ product.price | money }}</span>
+
+			{% if on_sale %}
+				<span class="money money_sale">{{ product.compare_at_price | money }}</span>
+			{% endif %}
+		</p>
+{% endcomment %}
+
+{% comment %}
+		<div class="product_links">
+			<form method="post" action="/cart/add">
+				{% if product.available %}
+					{% if product.variants.size == 1 %}
+						{% for variant in product.variants limit:1 %}
+							<input type="hidden" name="id" value="{{ variant.id }}" />
+							<button class="btn btn-cart" type="submit">{{ 'layout.product.add_to_cart' | t }}</button>
+						{% endfor %}
+					{% else %}
+						<a class="btn" href="{{ product.url }}">{{ 'layout.product.add_to_cart' | t }}</a>
+					{% endif %}
+				{% else %}
+					<button class="btn" disabled>{{ 'layout.product.unavailable' | t }}</button>
+				{% endif %}
+			</form>
+		</div>
+{% endcomment %}

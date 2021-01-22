@@ -7,6 +7,7 @@ const config = require("./config");
 const url = require("url");
 const https = require("https");
 const sizeOf = require("image-size");
+const sass = require("node-sass");
 
 const formatDate = (date) => {
     var formatedDate = new Date(date);
@@ -333,7 +334,13 @@ const getGlobalObject = async (inputFolderPath) => {
     return dataToParse;
 };
 
-const getPage = async (engine, inputFolderPath, templateName, inputData) => {
+const getPage = async (
+    engine,
+    inputFolderPath,
+    templateName,
+    inputData,
+    globalObject
+) => {
     const raw = fs
         .readFileSync(
             path.join(
@@ -347,7 +354,9 @@ const getPage = async (engine, inputFolderPath, templateName, inputData) => {
         .toString();
 
     const templateLiquid = getTemplate(inputFolderPath, templateName);
-    const globalObject = await getGlobalObject(inputFolderPath);
+    if (!globalObject) {
+        globalObject = await getGlobalObject(inputFolderPath);
+    }
 
     let parseData = globalObject;
     if (templateName === "index") {
@@ -377,6 +386,36 @@ const getPage = async (engine, inputFolderPath, templateName, inputData) => {
     return result;
 };
 
+const exportSassFromCss = (inputFolderPath) => {
+    const scssFilePaths = [];
+    fs.readdirSync(path.join(inputFolderPath, "assets")).forEach((fname) => {
+        if (path.extname(fname) === ".scss") {
+            scssFilePaths.push(fname);
+        }
+    });
+
+    console.log(scssFilePaths);
+
+    scssFilePaths.forEach((scssFile) => {
+        sass.render(
+            {
+                file: path.join(inputFolderPath, "assets", scssFile),
+            },
+            function (err, result) {
+                if (err) return console.error(err);
+                const css = result.css;
+                fs.writeFile(
+                    path.join(inputFolderPath, "assets", scssFile + ".css"),
+                    css,
+                    function (err) {
+                        if (err) console.error(err);
+                    }
+                );
+            }
+        );
+    });
+};
+
 exports.formatDate = formatDate;
 exports.cropImage = cropImage;
 exports.getSettings = getSettings;
@@ -390,3 +429,4 @@ exports.getPage = getPage;
 exports.getGlobalObject = getGlobalObject;
 exports.getImageObject = getImageObject;
 exports.getImagesObject = getImagesObject;
+exports.exportSassFromCss = exportSassFromCss;

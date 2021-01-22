@@ -1,0 +1,72 @@
+{% javascript %}
+jQuery(document).ready(function($) {
+	if ( $('#create_customer').find('.alert').length ) {
+		$('#account_section__register').show();
+		$('#account_section__wrapper').hide();
+	}
+	else if ( $('#account_section__reset').find('.alert').length ) {
+		$('#account_section__reset').show();
+	};
+
+
+	$('#account_register__link').on('click', function(e) {
+		e.preventDefault();
+
+		$('#account_section__wrapper').slideUp();
+		$('#account_section__register').slideDown();
+
+		if ( $('#account_section__reset').is(':visible') ) {
+			$('#account_section__reset').slideUp();
+		};
+
+	});
+
+
+	$('.account_register__close').on('click', function(e) {
+		e.preventDefault();
+
+		$('#account_section__register').slideUp();
+		$('#account_section__wrapper').slideDown();
+
+	});
+
+
+	$('#account_reset__link').on('click', function(e) {
+		e.preventDefault();
+
+		if ( $('#account_section__reset').is(':hidden') ) {
+			$('#account_section__reset').slideDown();
+		};
+
+	});
+
+
+	$('.account_reset__cancel').on('click', function(e) {
+		e.preventDefault();
+
+		$('#account_section__reset').slideUp();
+	});
+
+
+	if ( document.location.href.indexOf( '#recover' ) !== -1 ) {
+		$('#account_section__reset').removeClass('account_section__hidden');
+	};
+
+
+	$('#create_customer').formValidation();
+
+	$('#create_customer').on('submit', function() {
+		$('#password_confirmed').val( $('#password_1').val() );
+	});
+
+
+	$('#customer_login').formValidation();
+
+
+	$('#account_section__activation form').formValidation();
+
+
+	$('#account_section__reset-account form').formValidation();
+
+});
+{% endjavascript %}

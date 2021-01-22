@@ -1,0 +1,84 @@
+{% case section.settings.img_size %}
+	{% when 'small'  %}{%- assign img_size = '270x151' -%}
+	{% when 'medium' %}{%- assign img_size = '270x270' -%}
+	{% when 'large'  %}{%- assign img_size = '270x360' -%}
+{% endcase %}
+
+{%- assign img_alignment = section.settings.img_alignment -%}
+
+<div class="section_template section_template__collections-listing">
+	<div class="container">
+		<h1 class="page_heading">{{ page_title }}</h1>
+
+		<div class="row collection_listing__main">
+			{% for collection in collections %}
+				<div class="col-xs-3 {% cycle 'step4': 'item_4_1', '', '', '' %} {% cycle 'step2': 'item_2_1', '' %}">
+					<div class="collection_item flexible_block flexible_block__{{ section.settings.text_position }} {% unless collection.empty? %}flexible_block__hover{% endunless %} flexible_block__{{ section.settings.section_image }}">
+						{% include 'collection-listing-item' with img_size %}
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% schema %}
+{
+	"name": "Collection listing",
+	"settings": [
+		{
+			"type": "select",
+			"id": "img_size",
+			"label": "Image size",
+			"options": [
+				{
+					"value": "small",
+					"label": "Small (270x151)"
+				},
+				{
+					"value": "medium",
+					"label": "Medium (270x270)"
+				},
+				{
+					"value": "large",
+					"label": "Large (270x360)"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "img_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "text_position",
+			"label": "Text position",
+			"options": [
+				{
+					"value": "normal",
+					"label": "Normal"
+				},
+				{
+					"value": "overlay",
+					"label": "Overlay"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

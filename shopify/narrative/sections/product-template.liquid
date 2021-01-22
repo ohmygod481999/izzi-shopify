@@ -1,0 +1,581 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign current_variant_sale = false -%}
+{% if current_variant.compare_at_price > current_variant.price %}
+  {%- assign current_variant_sale = true -%}
+{% endif %}
+{% assign featured_media = current_variant.featured_media | default: product.featured_media %}
+
+<div class="product-template" data-section-id="{{ section.id }}" data-section-type="product-template" data-variant-id="{{ current_variant.id }}" itemscope itemtype="http://schema.org/Product">
+  <meta itemprop="name" content="{{ product.title }}">
+  <meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
+  <meta itemprop="image" content="{{ featured_media | img_url: 'grande' }}">
+
+  {% comment %}
+  ------------------------------------------------------------------------------
+  Product Featured Media
+  ------------------------------------------------------------------------------
+  {% endcomment %}
+  <div class="page-width page-width--no-gutter">
+    {% assign variant_media_ids = '' %}
+
+    {%- unless product.has_only_default_variant -%}
+
+      {% for variant in product.variants %}
+        {% assign variant_media = variant.featured_media %}
+
+        {%- if variant_media -%}
+
+          {%- if variant_media_ids contains variant_media.id -%}
+            {% continue %}
+          {%- endif -%}
+
+          {% assign variant_media_ids = variant_media_ids | append: variant_media.id | append: ' ' %}
+          {% assign featured = false %}
+          {%- if featured_media == variant_media -%}
+            {% assign featured = true %}
+          {%- endif -%}
+
+          {% include 'product-preview-image' with media: variant_media, featured_media: featured, gallery_type: 'media', data_image: 'data-variant-media-image' %}
+        {%- endif -%}
+
+      {% endfor %}
+    {%- endunless -%}
+
+    {% unless featured_media and variant_media_ids contains featured_media.id %}
+      {% include 'product-preview-image' with media: featured_media, featured_media: true, gallery_type: 'media', data_image: 'data-variant-media-image' %}
+    {%- endunless -%}
+
+    {% include 'shopify-xr-button' %}
+  </div>
+
+  {% comment %}
+  ------------------------------------------------------------------------------
+  Product Form & Description
+  ------------------------------------------------------------------------------
+  {% endcomment %}
+  <div class="product__content page-width">
+    <div class="grid">
+      <div class="grid__item medium-up--push-one-twelfth medium-up--ten-twelfths">
+        <div class="product__content-header">
+
+          {% if section.settings.show_vendor %}
+            <span class="product__vendor text-small text-center" itemprop="brand">{{ product.vendor }}</span>
+          {% endif %}
+
+          <h1 class="product__title h2 text-center" itemprop="name">{{ product.title }}</h1>
+          <p class="product__price text-center{% if current_variant_sale %} product__price--sale{% endif %}" data-product-price aria-live="polite">
+
+            <span class="product__sale-price-label visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+            <span class="product__regular-price-label visually-hidden">{{ 'products.product.price' | t }}</span>
+            <span class="product__current-price" data-regular-price>{{ current_variant.price | money }}</span>
+
+            <span class="product__compare-price-label visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+            <s class="product__compare-price" data-compare-price>{{ current_variant.compare_at_price | money }}</s>
+
+            {% include 'product-unit-price', variant: current_variant %}
+          </p>
+
+          {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+            <div class="product__policies rte">
+              {%- if shop.taxes_included -%}
+                {{ 'products.product.include_taxes' | t }}
+              {%- endif -%}
+              {%- if shop.shipping_policy.body != blank -%}
+                {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+        </div>
+
+        <div class="product__content-main">
+          <div class="product__description rte" itemprop="description" class="rte">
+            {{ product.description }}
+          </div>
+
+          <div class="product__form-container" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+            <div class="product__form-wrapper">
+              <meta itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}">
+              <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+              <link itemprop="availability" href="http://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}">
+
+              {% include 'product-form' %}
+
+              {% if section.settings.show_share_buttons %}
+                {% if settings.share_facebook or settings.share_twitter or settings.share_pinterest %}
+                  <div class="product__share-wrapper small--hide">
+                    <div class="product__share">
+                        {% include 'social-sharing', type: "product", links: 'bottom' share_title: product.title, share_permalink: product.url, share_image: featured_media %}
+                    </div>
+                  </div>
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% comment %}
+  ------------------------------------------------------------------------------
+  Product Share Buttons
+  ------------------------------------------------------------------------------
+  {% endcomment %}
+  {% if section.settings.show_share_buttons %}
+    {% if settings.share_facebook or settings.share_twitter or settings.share_pinterest %}
+      <div class="product__share-wrapper product__share-wrapper--mobile medium-up--hide">
+        <div class="product__share">
+            {% include 'social-sharing', type: 'mobile', share_title: product.title, share_permalink: product.url, share_image: featured_media %}
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+
+
+  {% comment %}
+  ------------------------------------------------------------------------------
+  Product Media Gallery
+  ------------------------------------------------------------------------------
+  {% endcomment %}
+  {%- if product.media.size > 1 -%}
+
+    {% comment %}
+      If we are hiding variant media which are displayed at the top of the
+      page, then find total number media not set as a variant media or as the
+      featured media.
+
+      We need the total number of media to be displayed so that we know what
+      arrangement the media need to be positioned in, i.e. rows of 3 or 2
+      media.
+    {% endcomment %}
+
+    {%- if section.settings.hide_variant_media -%}
+      {% assign variant_media_ids_array = variant_media_ids | split: ' ' %}
+      {% assign total_media = product.media.size | minus: variant_media_ids_array.size %}
+    {%- else -%}
+      {% assign total_media = product.media.size %}
+    {%- endif -%}
+
+    {% comment %}
+      Insert images into rows of 3 and/or 2 depending on the total number of
+      images.
+    {% endcomment %}
+    {% assign total_modulus = total_media | modulo: 3 %}
+
+    {% if total_media == 1 %}<div class="page-width">{% endif %}
+
+    <div class="product__submedia-list product__submedia-list--r{{ total_modulus }}{% if total_media == 1 %} product__submedia-list--single{% endif %}">
+
+      {% for media in product.media %}
+
+        {% unless variant_media_ids contains media.id and section.settings.hide_variant_media %}
+          {% capture data_image %}
+            data-parent-fit="cover"
+          {% endcapture %}
+
+          {% include 'product-preview-image' with media, featured_media: false, gallery_type: 'submedia', data_image: data_image %}
+
+        {% endunless %}
+      {% endfor %}
+    </div>
+
+    {% if total_media == 1 %}</div>{% endif %}
+  {% endif %}
+
+  {% comment %}
+  ------------------------------------------------------------------------------
+  Product Slideshow
+  ------------------------------------------------------------------------------
+  {% endcomment %}
+  {% unless product.media.size == 0 %}
+    <div class="product-slideshow{% if product.media.size == 1 %} product-slideshow--single{% endif %} critical-hide" data-product-slideshow data-media-group aria-hidden="true">
+      <button class="product-slideshow__close btn btn--clear btn--square" tabindex="-1" data-product-slideshow-close>{% include 'icon-close' %}</button>
+
+      <div class="product-slideshow__content">
+        <div class="product-slideshow__slide-list slider" data-product-slider>
+          {% for media in product.media %}
+            {%- capture product_media_wrapper_class -%}
+              product-slideshow__slide slider__slide{%- if forloop.first %} slider__slide--active {%- endif -%}
+            {%- endcapture -%}
+
+            {% include 'media' with media,
+              section_type: 'slideshow',
+              parent_fit: 'contain',
+              featured_media: true,
+              data_image: 'data-product-slideshow-image',
+              product_media_wrapper_class: product_media_wrapper_class,
+              product_media_wrapper_data: 'data-product-slideshow-slide',
+              image_class: 'fade-in'
+            %}
+          {% endfor %}
+        </div>
+
+        {% include 'shopify-xr-button' %}
+
+        {% unless product.media.size == 1 %}
+          <div class="product-slideshow__controls">
+            <button class="product-slideshow__arrow product-slideshow__arrow--previous btn btn--secondary btn--square"
+              tabindex="-1"
+              data-product-slideshow-previous>
+
+              {% include 'icon-arrow-left' %}
+              <span class="visually-hidden">{{ 'general.pagination.previous' | t }}</span>
+            </button>
+
+            <button class="product-slideshow__arrow product-slideshow__arrow--next btn btn--secondary btn--square"
+              tabindex="-1"
+              data-product-slideshow-next>
+
+              {% include 'icon-arrow-right' %}
+              <span class="visually-hidden">{{ 'general.pagination.next' | t }}</span>
+            </button>
+
+            <div class="product-slideshow__slide-select-list">
+              {% for media in product.media %}
+                <button class="product-slideshow__slide-select {% if forloop.first %} product-slideshow__slide-select--active{% endif %}" tabindex="-1" data-product-slideshow-select="{{ forloop.index0 }}">
+                  <span class="visually-hidden">{{ 'sections.product_template.slide' | t: number: forloop.index }}</span>
+                </button>
+              {% endfor %}
+            </div>
+          </div>
+        {% endunless %}
+      </div>
+    </div>
+  {% endunless %}
+
+  {% comment %}
+  ------------------------------------------------------------------------------
+  Product Data
+  ------------------------------------------------------------------------------
+  {% endcomment %}
+  <script type="application/json" data-product-json>
+    {{ product | json }}
+  </script>
+
+  <script type="application/json" data-model-json="{{ section.id }}">
+    {{ product.media | where: 'media_type', 'model' | json }}
+  </script>
+</div>
+
+{% schema %}
+{
+  "name": {
+    "cs": "Stránky produktu",
+    "da": "Produktsider",
+    "de": "Produktseiten",
+    "en": "Product pages",
+    "es": "Páginas de productos",
+    "fi": "Tuotesivut",
+    "fr": "Pages de produits",
+    "it": "Pagine di prodotto",
+    "ja": "商品ページ",
+    "ko": "제품 페이지",
+    "nb": "Produktsider",
+    "nl": "Productpagina's",
+    "pl": "Strony produktu",
+    "pt-BR": "Páginas de produtos",
+    "pt-PT": "Páginas de produtos",
+    "sv": "Produktsidor",
+    "th": "หน้าสินค้า",
+    "tr": "Ürün sayfaları",
+    "vi": "Trang sản phẩm",
+    "zh-CN": "产品页面",
+    "zh-TW": "產品頁面"
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_quantity_selector",
+      "label": {
+        "cs": "Zobrazit výběr množství",
+        "da": "Vis antalsvælger",
+        "de": "Mengenauswahl anzeigen",
+        "en": "Show quantity selector",
+        "es": "Mostrar selector de cantidad",
+        "fi": "Näytä määrän valitsin",
+        "fr": "Afficher le sélecteur de quantité",
+        "it": "Mostra selettore quantità",
+        "ja": "数量セレクターを表示する",
+        "ko": "수량 선택기 표시",
+        "nb": "Vis mengdevelger",
+        "nl": "Hoeveelheidskiezer weergeven",
+        "pl": "Pokaż selektor ilości",
+        "pt-BR": "Exiba um seletor de quantidade",
+        "pt-PT": "Mostrar seletor de quantidade",
+        "sv": "Visa kvantitetsväljare",
+        "th": "แสดงตัวเลือกจำนวน",
+        "tr": "Adet seçiciyi göster",
+        "vi": "Hiển thị hộp chọn số lượng",
+        "zh-CN": "显示数量选择器",
+        "zh-TW": "顯示數量選擇器"
+      },
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_variant_labels",
+      "label": {
+        "cs": "Zobrazit popisky variant",
+        "da": "Vis variantlabels",
+        "de": "Varianten-Etiketten anzeigen",
+        "en": "Show variant labels",
+        "es": "Mostrar etiquetas de variantes",
+        "fi": "Näytä vaihtoehtoiset tarrat",
+        "fr": "Afficher le nom des variantes",
+        "it": "Mostra etichette varianti",
+        "ja": "バリエーションのラベルを表示する",
+        "ko": "이형 상품 레이블 표시",
+        "nb": "Vis variantetiketter",
+        "nl": "Variantlabels weergeven",
+        "pl": "Pokaż etykiety wariantów",
+        "pt-BR": "Exibir etiquetas de variantes",
+        "pt-PT": "Mostrar etiquetas de variantes",
+        "sv": "Visa variantetiketter",
+        "th": "แสดงป้ายกำกับตัวเลือกสินค้า",
+        "tr": "Varyasyon etiketlerini göster",
+        "vi": "Hiển thị nhãn mẫu mã",
+        "zh-CN": "显示多属性标签",
+        "zh-TW": "顯示子類選項標籤"
+      },
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": {
+        "cs": "Zobrazit dodavatele produktu",
+        "da": "Vis produktleverandør",
+        "de": "Produktanbieter anzeigen",
+        "en": "Show product vendor",
+        "es": "Mostrar proveedor del producto",
+        "fi": "Näytä tuotteen myyjä",
+        "fr": "Afficher le distributeur du produit",
+        "it": "Indica fornitore prodotto",
+        "ja": "商品の販売元を表示する",
+        "ko": "제품 공급 업체 표시",
+        "nb": "Vis produktleverandør",
+        "nl": "Productleverancier weergeven",
+        "pl": "Pokaż dostawcę produktu",
+        "pt-BR": "Exiba o fornecedor do produto",
+        "pt-PT": "Mostrar fornecedor do produto",
+        "sv": "Visa produktleverantör",
+        "th": "แสดงผู้ขายสินค้า",
+        "tr": "Ürün satıcısını göster",
+        "vi": "Hiển thị nhà cung cấp sản phẩm",
+        "zh-CN": "显示产品厂商",
+        "zh-TW": "顯示產品廠商"
+      },
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_payment_button",
+      "label": {
+        "cs": "Zobrazit dynamické tlačítko pokladny",
+        "da": "Vis dynamisk betalingsknap",
+        "de": "Dynamischen Checkout Button anzeigen",
+        "en": "Show dynamic checkout button",
+        "es": "Mostrar botón de pago dinámico",
+        "fi": "Näytä dynaaminen kassapainike",
+        "fr": "Afficher le bouton de paiement dynamique",
+        "it": "Mostra pulsante di check-out dinamico",
+        "ja": "動的チェックアウトボタンを表示する",
+        "ko": "동적 결제 버튼 표시",
+        "nb": "Vis dynamisk knapp for å gå til kassen",
+        "nl": "Dynamische betaalknop weergeven",
+        "pl": "Pokaż dynamiczny przycisk realizacji zakupu",
+        "pt-BR": "Exibir botão de checkout dinâmico",
+        "pt-PT": "Mostrar botão dinâmico de finalização da compra",
+        "sv": "Visa dynamiska betalningsknappar",
+        "th": "แสดงปุ่มชำระเงินแบบไดนามิก",
+        "tr": "Dinamik ödeme düğmesini göster",
+        "vi": "Hiển thị nút thanh toán động",
+        "zh-CN": "显示动态结账按钮",
+        "zh-TW": "顯示動態結帳按鈕"
+      },
+      "info": {
+        "cs": "Každý zákazník uvidí platební metodu, kterou ze všech metod dostupných v obchodě (například PayPal nebo Apple Pay) nejvíce preferuje. [Další informace](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "da": "Den enkelte kunde vil se sin foretrukne betalingsmetode blandt dem, der er tilgængelige i din butik, f.eks. PayPal eller Apple Pay. [Få mere at vide](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "de": "Jeder Kunde sieht seine bevorzugte Zahlungsmethode aus den in deinem Shop verfügbaren Zahlungsmethoden wie PayPal oder Apple Pay. [Mehr Informationen](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "en": "Each customer will see their preferred payment method from those available on your store, such as PayPal or Apple Pay. [Learn more](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "es": "Cada cliente verá su forma de pago preferida entre las disponibles en tu tienda, como PayPal o Apple Pay. [Más información](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "fi": "Kukin asiakas näkee ensisijaisen valintansa kauppasi tarjoamista maksutavoista, esim. PayPal tai Apple Pay. [Lisätietoja](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "fr": "Chaque client verra son moyen de paiement préféré parmi ceux qui sont proposés sur votre boutique, tels que PayPal ou Apple Pay. [En savoir plus](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "it": "Ogni cliente vedrà il suo metodo di pagamento preferito tra quelli disponibili nel tuo negozio, come PayPal o Apple Pay. [Maggiori informazioni](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "ja": "PayPalやApple Payなど、ストアで利用可能な希望の決済方法がお客様に表示されます。[詳細情報](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "ko": "각 고객은 PayPal 또는 Apple Pay와 같이 스토어에서 사용 가능한 지불 방법을 확인할 수 있습니다. [자세히 알아보기](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "nb": "Hver enkelt kunde vil se sin foretrukne betalingsmåte blant de som er tilgjengelig i butikken din, som PayPal eller Apple Pay. [Finn ut mer](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "nl": "Elke klant ziet zijn of haar beschikbare voorkeursmethode om af te rekenen, zoals PayPal of Apple Pay. [Meer informatie](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "pl": "Każdy klient zobaczy swoją preferowaną metodę płatności wśród metod dostępnych w Twoim sklepie, np. PayPal lub Apple Pay. [Dowiedz się więcej ](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "pt-BR": "Cada cliente verá a forma de pagamento preferencial dele dentre as disponíveis na loja, como PayPal ou Apple Pay. [Saiba mais](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "pt-PT": "Cada cliente irá ver o seu método de pagamento preferido entre os disponíveis na loja, como o PayPal ou Apple Pay. [Saiba mais](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "sv": "Varje kund kommer att se den föredragna betalningsmetoden från de som finns tillgängliga i din butik, till exempel PayPal eller Apple Pay. [Läs mer](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "th": "ลูกค้าแต่ละรายจะเห็นวิธีการชำระเงินที่ต้องการจากวิธีที่ใช้ได้ในร้านค้าของคุณ เช่น PayPal หรือ Apple Pay [ดูข้อมูลเพิ่มเติม](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "tr": "Her müşteri, mağazanız sunulanlar arasından tercih ettikleri ödeme yöntemini görür (ör. PayPal veya Apple Pay). [Daha fazla bilgi edinin](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "vi": "Mỗi khách hàng sẽ thấy phương thức thanh toán ưu tiên của họ trong những phương thức thanh toán được hỗ trợ tại cửa hàng như PayPal hoặc Apple Pay. [Tìm hiểu thêm](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "zh-CN": "每位客户都可在您商店提供的付款方式中看到他们的首选付款方式，例如 PayPal 或 Apple Pay。[了解详细信息](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)",
+        "zh-TW": "每位顧客都可以在您商店內開放使用的付款方式中看見他們偏好使用的方式，如 PayPal、Apple Pay 等。[深入瞭解](https://help.shopify.com/manual/using-themes/change-the-layout/dynamic-checkout)"
+      },
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share_buttons",
+      "label": {
+        "cs": "Zobrazit tlačítka pro sdílení na sociálních sítích",
+        "da": "Vis knapper til deling på sociale medier",
+        "de": "Buttons für Social Media anzeigen",
+        "en": "Show social sharing buttons",
+        "es": "Mostrar botones para compartir en redes sociales",
+        "fi": "Näytä sosiaalisen median jakamispainikkeet",
+        "fr": "Afficher les boutons de partage sur les médias sociaux",
+        "it": "Mostra i pulsanti per la condivisione sui social",
+        "ja": "ソーシャルメディアでの共有ボタンを表示する",
+        "ko": "소셜 공유 버튼 표시",
+        "nb": "Vis knapper for deling på sosiale medier",
+        "nl": "Knoppen voor delen via social media weergeven",
+        "pl": "Pokaż przyciski udostępniania w mediach społecznościowych",
+        "pt-BR": "Exibir botões de compartilhamento em redes sociais",
+        "pt-PT": "Mostrar botões de partilha nas redes sociais",
+        "sv": "Visa knappar för delning i sociala medier",
+        "th": "แสดงปุ่มสำหรับแชร์ลงโซเชียล",
+        "tr": "Sosyal medya paylaşım düğmelerini göster",
+        "vi": "Hiển thị nút chia sẻ qua mạng xã hội",
+        "zh-CN": "显示社交分享按钮",
+        "zh-TW": "顯示社群分享按鈕"
+      },
+      "info": {
+        "cs": "Nezapomeňte povolit sdílení na sociálních sítích v obecném nastavení.",
+        "da": "Sørg for, at du har aktiveret deling på sociale medier under Generelle indstillinger",
+        "de": "Vergewissere dich, dass du in den allgemeinen Einstellungen das Teilen in sozialen Netzwerken aktiviert hast",
+        "en": "Make sure you have enabled social sharing in general settings",
+        "es": "Asegúrate de haber habilitado la opción para compartir en redes sociales en la configuración general.",
+        "fi": "Varmista, että olet ottanut sosiaalisen median jakamisen käyttöön yleisissä asetuksissa",
+        "fr": "Assurez-vous d'avoir activé le partage social dans les paramètres généraux",
+        "it": "Assicurati di aver abilitato la condivisione sui social nelle impostazioni generali",
+        "ja": "一般設定でソーシャルメディアでの共有を有効にしていることを確認してください。",
+        "ko": "일반 설정에서 소셜 공유가 되었는지 확인하십시오.",
+        "nb": "Sørg for at du har aktivert sosial deling i generelle innstillinger",
+        "nl": "Zorg ervoor dat je delen via social media hebt ingeschakeld in de algemene instellingen",
+        "pl": "Upewnij się, że włączyłeś(-aś) udostępnianie w mediach społecznościowych w ustawieniach ogólnych",
+        "pt-BR": "Verifique se você habilitou o compartilhamento em redes sociais nas configurações gerais",
+        "pt-PT": "Certifique-se de que ativou a partilha nas redes sociais nas definições gerais",
+        "sv": "Se till att du har aktiverat social delning i allmänna inställningar",
+        "th": "ตรวจสอบให้แน่ใจว่าคุณได้เปิดใช้การแชร์บนโซเชียลในการตั้งค่าทั่วไป",
+        "tr": "Genel ayarlardan sosyal paylaşımı etkinleştirdiğinizden emin olun",
+        "vi": "Đảm bảo bạn đã bật chia sẻ qua mạng xã hội trong cài đặt chung",
+        "zh-CN": "确保您在“通用”设置中启用了社交分享",
+        "zh-TW": "請確定您已在一般設定內啟用社群分享功能"
+      },
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": {
+        "cs": "Multimédia",
+        "da": "Medie",
+        "de": "Medien",
+        "en": "Media",
+        "es": "Elementos multimedia",
+        "fi": "Media",
+        "fr": "Médias",
+        "it": "Media",
+        "ja": "メディア",
+        "ko": "미디어",
+        "nb": "Medier",
+        "nl": "Media",
+        "pl": "Multimedia",
+        "pt-BR": "Mídia",
+        "pt-PT": "Multimédia",
+        "sv": "Media",
+        "th": "สื่อ",
+        "tr": "Medya",
+        "vi": "Phương tiện",
+        "zh-CN": "媒体",
+        "zh-TW": "媒體"
+      },
+      "info": {
+        "cs": "Další informace o [typech multimédií](https://help.shopify.com/manual/products/product-media)",
+        "da": "Få mere at vide om [media types](https://help.shopify.com/manual/products/product-media)",
+        "de": "Mehr Informationen über [Medientypen ](https://help.shopify.com/manual/products/product-media)",
+        "en": "Learn more about [media types](https://help.shopify.com/manual/products/product-media)",
+        "es": "Más información sobre [tipos de archivos multimedia](https://help.shopify.com/manual/products/product-media)",
+        "fi": "Lue lisää [mediatyypeistä](https://help.shopify.com/manual/products/product-media)",
+        "fr": "En savoir plus sur les [types de supports multimédia](https://help.shopify.com/manual/products/product-media)",
+        "it": "Scopri di più sulle [tipologie di file multimediali](https://help.shopify.com/manual/products/product-media)",
+        "ja": "[メディアのタイプ](https://help.shopify.com/manual/products/product-media) について詳しくはこちら",
+        "ko": "[미디어 유형](https://help.shopify.com/manual/products/product-media)에 대해 자세히 알아보기",
+        "nb": "Lær mer om [medietyper](https://help.shopify.com/manual/products/product-media)",
+        "nl": "Meer informatie over [mediatypen](https://help.shopify.com/manual/products/product-media)",
+        "pl": "Dowiedz się więcej o [typach multimediów](https://help.shopify.com/manual/products/product-media)",
+        "pt-BR": "Saiba mais sobre [tipos de mídia](https://help.shopify.com/manual/products/product-media)",
+        "pt-PT": "Saiba mais sobre [media types](https://help.shopify.com/manual/products/product-media)",
+        "sv": "Läs mer om [mediatyper](https://help.shopify.com/manual/products/product-media)",
+        "th": "ดูข้อมูลเพิ่มเติมเกี่ยวกับ [ประเภทของสื่อ](https://help.shopify.com/manual/products/product-media)",
+        "tr": "[Medya türleri](https://help.shopify.com/manual/products/product-media) hakkında daha fazla bilgi edinin",
+        "vi": "Tìm hiểu thêm về [loại phương tiện](https://help.shopify.com/manual/products/product-media)",
+        "zh-CN": "详细了解[媒体类型](https://help.shopify.com/manual/products/product-media)",
+        "zh-TW": "深入瞭解 [媒體類型](https://help.shopify.com/manual/products/product-media)"
+      }
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_looping",
+      "label": {
+        "cs": "Povolit smyčky videa",
+        "da": "Aktivér looping af videoer",
+        "de": "Videoschleife aktivieren",
+        "en": "Enable video looping",
+        "es": "Habilitar la reproducción de video en bucle",
+        "fi": "Ota käyttöön videosilmukka",
+        "fr": "Activer le bouclage de la vidéo",
+        "it": "Abilita la riproduzione in loop dei video",
+        "ja": "ビデオのループを有効にする",
+        "ko": "동영상 루프 활성화",
+        "nb": "Aktiver løkkeavspilling av video",
+        "nl": "Video-looping inschakelen",
+        "pl": "Włącz zapętlanie filmu",
+        "pt-BR": "Habilitar loop de vídeo",
+        "pt-PT": "Ativar ciclo de vídeo",
+        "sv": "Aktivera video-loopning",
+        "th": "เปิดใช้การวนซ้ำวิดีโอ",
+        "tr": "Video döngüsünü etkinleştir",
+        "vi": "Bật vòng lặp video",
+        "zh-CN": "启用视频循环",
+        "zh-TW": "啟用影片循環功能"
+      },
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_variant_media",
+      "label": {
+        "cs": "Skrýt varianty multimédií v galerii",
+        "da": "Skjul variantmedie i galleriet",
+        "de": "Medienvarianten in der Galerie ausblenden",
+        "en": "Hide variant media in gallery",
+        "es": "Ocultar elementos multimedia de variantes en la galería",
+        "fi": "Piilota versioiden aineisto galleriassa",
+        "fr": "Masquer les supports multimédia des variantes dans la galerie",
+        "it": "Nascondi le varianti dei file nella galleria",
+        "ja": "ギャラリーのバリエーションメディアを非表示にする",
+        "ko": "갤러리의 이형 상품 미디어 숨기기",
+        "nb": "Skjul variantmedier i galleriet",
+        "nl": "Verschillende media verbergen in galerie",
+        "pl": "Ukryj multimedia wariantów w galerii",
+        "pt-BR": "Ocultar mídia variante na galeria",
+        "pt-PT": "Ocultar multimédia variante na galeria",
+        "sv": "Dölj variantmedia i galleriet",
+        "th": "ซ่อนสื่อสำหรับตัวเลือกสินค้าในแกลเลอรี",
+        "tr": "Galeride varyasyon medyasını gizle",
+        "vi": "Ẩn phương tiện mẫu mã trong bộ sưu tập ảnh",
+        "zh-CN": "在图库中隐藏多属性媒体",
+        "zh-TW": "在圖庫中隱藏子類選項多媒體檔案"
+      },
+      "default": true
+    }
+  ]
+}
+{% endschema %}

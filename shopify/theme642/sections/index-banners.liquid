@@ -1,0 +1,123 @@
+<div class="container">
+	<div class="row">
+		{% for block in section.blocks %}
+			<div class="col-xs-6 col-sm-4 {% cycle 'step2': 'item_2_1', '' %} {% cycle 'step3': 'item_3_1', '', '' %}">
+				<div class="banner_item">
+					{% if block.settings.link.size > 0 %}
+						<a class="banner_item__info align_{{ section.settings.text_align }} color_{{ section.settings.text_color }}" href="{{ block.settings.link }}">
+					{% else %}
+						<div class="banner_item__info align_{{ section.settings.text_align }} color_{{ section.settings.text_color }}">
+					{% endif %}
+					
+					{% if block.settings.image.size > 0 %}
+						<div class="banner_item__img" style="background-image: url( {{ block.settings.image | img_url: '370x210', crop: 'center' }} );"></div>
+					{% else %}
+						<div class="banner_item__img">
+							{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+						</div>
+					{% endif %}
+
+					{% if block.settings.text.size > 0 %}
+						<span class="banner_item__text">
+							<span class="split_words">{{ block.settings.text }}</span>
+						</span>
+					{% endif %}
+
+					{% if block.settings.link.size > 0 %}
+						</a>
+					{% else %}
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		{% endfor %}	
+	</div>
+</div>
+
+{% schema %}
+{
+	"name": "Homepage banners",
+	"class": "section section_homepage section_banners",
+	"max_blocks": 9,	
+	"settings": [
+		{
+			"type": "select",
+			"id": "text_color",
+			"label": "Text color",
+			"default": "dark",
+			"options": [
+				{
+					"value": "dark",
+					"label": "Dark"
+				},
+				{
+					"value": "light",
+					"label": "Light"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "text_align",
+			"label": "Text alignment",
+			"default": "left",
+			"options": [
+				{
+					"value": "left",
+					"label": "Left"
+				},
+				{
+					"value": "center",
+					"label": "Centered"
+				},
+				{
+					"value": "right",
+					"label": "Right"
+				}
+			]
+		}
+	],
+	"blocks": [
+		{
+			"type": "banner",
+			"name": "Banner",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image",
+					"info": "Will be resized to 370x210px"
+				},
+				{
+					"type": "text",
+					"id": "text",
+					"label": "Text",
+					"default": "Banner text"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Homepage banners",
+			"category": "Image",
+			"blocks": [
+				{
+					"type": "banner"
+				},
+				{
+					"type": "banner"
+				},
+				{
+					"type": "banner"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

@@ -1,0 +1,69 @@
+{% comment %}
+  Renders a media element for the product gallery.
+  Media types include: image, video, external_video and model.
+  Accepts:
+  - media: {Object} Media Liquid object (required)
+  - featured_media: {Object} Media Liquid object (required) - featured media of a given product or variant
+  - parent_fit: {String} Indicates the 'fit' of the image (required)
+  - product_media_wrapper_data: {String} A set of data attributes for the product-media container
+  - product_media_wrapper_class: {String} A set of classes for the product-media container
+  - data_image: {String} A data attribute for the image element
+  - section_type: {String} indicated the type of section this snippet is being added to
+
+  Usage:
+  {%- for media in product.media -%}
+    {% include 'media', media: media, featured_media: featured_media %}
+  {%- endfor -%}
+{% endcomment %}
+
+{% capture media_id %}{{ section.id }}-{{ media.id }}{% endcapture %}
+{% capture media_wrapper_id %}{{ media_id }}-wrapper{% endcapture %}
+{% capture media_style %}
+  {% unless media.media_type == 'model' %}
+    style="padding-top: {{ 1 | divided_by: media.aspect_ratio | times: 100}}%;"
+  {% else %}
+    style="padding-top: 100%"
+  {% endunless %}
+{% endcapture %}
+
+<div id="{{ media_wrapper_id }}"
+    class="{{ product_media_wrapper_class }}{% unless featured_media %} hide{% endunless %}"
+    {% if media.media_type == 'video' or media.media_type == 'external_video' %} data-product-media-type-video data-enable-video-looping="{{ section.settings.enable_video_looping }}"{% endif %}
+    {% if media.media_type == 'model' %} data-product-media-type-model{% endif %}
+    {% if media.media_type == 'external_video' %} data-video-id="{{ media.external_id }}"{% endif %}
+    data-product-media-wrapper
+    data-media-id="{{ section.id }}-{{ media.id }}"
+    {{ product_media_wrapper_data }}
+    tabindex="-1">
+
+  <div class="product-media product-media--{{ section_type }} product-media--{{ media.media_type }}"
+    {% unless section_type == 'slideshow' or media.media_type == 'image' %} {{ media_style }}{% endunless %}
+    {% if section_type == 'slideshow' and media.media_type == 'video' %} data-plyr-aspect-ratio="{{ media.aspect_ratio }}" {% endif %}>
+
+    {% case media.media_type %}
+      {% when 'image' %}
+        {% assign img_url = media | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+        <img class="product-media__image product-media__image--{{ section_type }} lazyload {{ image_class }}"
+            {% if featured %}src="{{ media | img_url: '300x'}}"{% endif %}
+            data-src="{{ img_url }}"
+            data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+            data-aspectratio="{{ media.aspect_ratio }}"
+            data-sizes="auto"
+            data-parent-fit="{{ parent_fit }}"
+            {{ data_image }}
+            alt="{{ media.alt | escape }}">
+
+        {% if section_type == 'slideshow' %}{% include 'spinner' %}{% endif %}
+      {% when 'external_video' %}
+        {{ media | external_video_tag }}
+      {% when 'video' %}
+        {% if section_type == 'slideshow' %}<div class="product-media__video-wrapper" {{ media_style }}>{% endif %}
+        {{ media | video_tag: class: 'media-video', image_size: '2048x2048' }}
+        {% if section_type == 'slideshow' %}</div>{% endif %}
+      {% when 'model' %}
+        {{ media | model_viewer_tag: image_size: '2048x2048', reveal: 'interaction', toggleable: true, data-model-id: media.id }}
+      {% else %}
+        {{ media | media_tag: class: 'media-item', image_size: '2048x2048' }}
+    {% endcase %}
+  </div>
+</div>

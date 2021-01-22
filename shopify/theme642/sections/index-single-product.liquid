@@ -1,0 +1,563 @@
+{%- assign single_product = all_products[section.settings.single_product] -%}
+
+{% if single_product.empty? %}
+	{%- assign single_product_exist = false -%}
+{% else %}
+	{%- assign single_product_exist = true -%}
+{% endif %}
+
+{% if single_product_exist %}
+
+	{% case section.settings.image_size %}
+		{% when 'small' %}
+			{% assign product_img_block = 'col-xs-6 col-md-4' %}
+			{% assign product_info_block = 'col-xs-6 col-md-8' %}
+			{% assign img_size = '370x370' %}
+			{% assign thumb_size = '110x110' %}
+
+		{% when 'medium' %}
+			{% assign product_img_block = 'col-xs-6' %}
+			{% assign product_info_block = 'col-xs-6' %}
+			{% assign img_size = '570x570' %}
+			{% assign thumb_size = '98x98' %}
+
+		{% when 'full' %}
+			{% assign product_img_block = 'col-xs-6 col-md-12' %}
+			{% assign product_info_block = 'col-xs-6 col-md-12' %}
+			{% assign img_size = '1170x520' %}
+			{% assign thumb_size = '150x150' %}
+
+	{% endcase %}
+
+	{% if single_product.images.size == 0 %}
+		{% assign product_img_block = '' %}
+		{% assign product_info_block = 'col-sm-12' %}
+	{% endif %}
+
+	<div class="section section_homepage section_single-product section_product" data-section="{{ section.id }}">
+		<script type="application/json" id="product_json_{{ section.id }}">
+			{{ single_product | json }}
+		</script>
+
+		<script type="application/json" id="variant_weights_{{ section.id }}">
+			{% raw %}{{% endraw %}{% for variant in single_product.variants %}{% if forloop.last %}"{{ variant.id }}":"{{ variant.weight | weight_with_unit: variant.weight_unit }}"{% else %}"{{ variant.id }}":"{{ variant.weight | weight_with_unit: variant.weight_unit }}",{% endif %}{% endfor %}{% raw %}}{% endraw %}
+		</script>
+
+		<div class="container">
+			<div class="row">
+				<div class="single_product__img {{ product_img_block }}">
+					{% case single_product.images.size %}
+						{% when 0 %}
+
+						{% when 1 %}
+							<img src="{{ single_product.featured_image.src | product_img_url: img_size, crop: section.settings.image_alignment }}" alt="">
+
+						{% else %}
+							<div id="gallery_big-{{ section.id }}" class="gallery_big swiper-container">
+								<div class="swiper-wrapper">
+									<div class="swiper-slide">
+										<img id="primary_img_{{ section.id }}" src="{{ single_product.images.first | product_img_url: img_size, crop: section.settings.image_alignment }}" alt="{{ single_product.images.first.alt }}">
+									</div>
+
+									{% for image in single_product.images offset:1 %}
+										<div class="swiper-slide">
+											<img src="{{ image.src | product_img_url: img_size, crop: section.settings.image_alignment }}" alt="">
+										</div>
+									{% endfor %}
+								</div>
+
+					        	<div id="prev_{{ section.id }}" class="swiper_btn swiper_btn__prev"></div>
+								<div id="next_{{ section.id }}" class="swiper_btn swiper_btn__next"></div>
+							</div>
+
+							<div id="gallery_thumbs-{{ section.id }}" class="gallery_thumbs gallery_thumbs__{{ section.settings.image_size }} swiper-container">
+								<div class="swiper-wrapper">
+									{% for image in single_product.images %}
+										<div class="swiper-slide">
+											<img src="{{ image.src | product_img_url: thumb_size, crop: section.settings.image_alignment }}" alt="">
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+
+					{% endcase %}
+
+				</div>
+
+				<div class="single_product__info {{ product_info_block }} {{ section.settings.image_size }} {% if single_product.images.size == 0 %}no_img{% endif %}">
+					<h2 class="single_product__title">{{ single_product.title }}</h2>
+
+					<div class="single_product__details">
+						<form action="/cart/add" method="post" enctype="multipart/form-data" data-section="{{ section.id }}">
+							<div class="single_product__options {% if single_product.variants.size == 1 and single_product.variants.first.title contains 'Default' %}hidden{% endif %}">
+								<select name="id" id="product_select_{{ section.id }}">
+									{% for variant in single_product.variants %}
+										{% comment %}<option value="{{ variant.id }}">{{ variant.title | escape }} - {{ variant.price | money }}</option>{% endcomment %}
+										<option value="{{ variant.id }}">{{ variant.title | escape }}</option>
+									{% endfor %}
+								</select>
+							</div>
+
+							<div class="clearfix"></div>
+							<div class="details_separator"></div>
+
+							<div class="details_wrapper">
+								<div class="details_left">
+									{% if section.settings.show_weight %}
+										<p class="single_product__weight">
+											<b>{{ 'layout.product.weight' | t }}:</b>
+											<span id="single_product__weight-{{ section.id }}"></span>
+										</p>
+									{% endif %}
+
+									{% if section.settings.show_sku %}
+										<p class="single_product__sku">
+											<b>{{ 'layout.product.sku' | t }}:</b>
+											<span id="single_product__sku-{{ section.id }}"></span>
+										</p>
+									{% endif %}
+
+									{% if section.settings.show_barcode %}
+										<p class="single_product__barcode">
+											<b>{{ 'layout.product.barcode' | t }}:</b>
+											<span id="single_product__barcode-{{ section.id }}"></span>
+										</p>
+									{% endif %}
+
+									{% if section.settings.show_collections %}
+										<p class="single_product__collections">
+											<b>{{ 'layout.product.collections' | t }}:</b>
+
+											{% if single_product.collections.size > 0 %}
+												<a href="{{ single_product.collections.first.url }}">{{ single_product.collections.first.title }}</a>{% for collection in single_product.collections offset:1 %}, <a href="{{ collection.url }}">{{ collection.title }}</a>{% endfor %}
+											{% else %}
+												—
+											{% endif %}
+										</p>
+									{% endif %}
+
+									{% if section.settings.show_product_types %}
+										<p class="single_product__type">
+											<b>{{ 'layout.product.product_type' | t }}:</b>
+
+											<span>
+												{% if single_product.type.size > 0 %}
+													{{ single_product.type }}
+												{% else %}
+													—
+												{% endif %}
+											</span>
+										</p>
+									{% endif %}
+
+									{% if section.settings.show_vendor %}
+										<p class="single_product__vendor">
+											<b>{{ 'layout.product.vendor' | t }}:</b>
+											<span>{{ single_product.vendor }}</span>
+										</p>
+									{% endif %}
+
+									{% if section.settings.show_tags %}
+										<p class="single_product__tags">
+											<b>{{ 'layout.product.tags' | t }}:</b>
+
+											{% if single_product.tags.size > 0 %}
+												<span>{{ single_product.tags | first }}</span>{% for tag in single_product.tags offset:1 %}, <span>{{ tag }}</span>{% endfor %}
+											{% else %}
+												—
+											{% endif %}
+										</p>
+									{% endif %}
+								</div>
+
+								<div class="details_right">
+									<p class="single_product__availability">
+										<b>{{ 'layout.product.availability' | t }}:</b>
+
+										<span id="single_product__availability-{{ section.id }}"></span>
+									</p>
+
+									{% comment %}<p class="single_product__price"><span id="single_product__price-{{ section.id }}">{{ single_product.price | money }}</span></p>{% endcomment %}
+									<p class="single_product__price"><span id="single_product__price-{{ section.id }}"></span></p>
+
+									<div class="single_product__quantity">
+										<label for="single_product__quantity-{{ section.id }}">{{ 'layout.product.quantity' | t }}: </label>
+
+										<div class="quantity_box">
+											<input id="single_product__quantity-{{ section.id }}" class="quantity_input" type="text" name="quantity" value="1">
+
+											<span class="quantity_down"><i class="fa fa-minus" aria-hidden="true"></i></span>
+											<span class="quantity_up"><i class="fa fa-plus" aria-hidden="true"></i></span>
+
+											<button type="submit" name="add" class="btn" id="single_product__addtocart-{{ section.id }}">{{ 'layout.product.add_to_cart' | t }}</button>
+										</div>
+									</div>
+
+									{% if section.settings.show_share_buttons %}
+										{% include 'widget-social-sharing', share_title: single_product.title, share_link: single_product.url, share_image: single_product %}
+									{% endif %}
+								</div>
+							</div>
+
+						</form>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			{% if section.settings.show_desc %}
+				<div class="product_description rte">
+					<div>{{ single_product.description }}</div>
+				</div>
+			{% endif %}
+
+		</div>
+
+	</div>
+
+{% endif %}
+
+{% schema %}
+{
+	"name": "Single product",
+	"class": "index-section",
+	"settings": [
+
+
+		// PRODUCT //////////////////////////////////////////////////////////
+		{
+			"type": "header",
+			"content": "Product"
+		},
+		{
+			"type": "product",
+			"id": "single_product",
+			"label": "Choose product"
+		},
+
+
+		// IMAGES ///////////////////////////////////////////////////////////
+		{
+			"type": "header",
+			"content": "Images"
+		},
+		{
+			"type": "select",
+			"id": "image_size",
+			"label": "Image size",
+			"options": [
+				{
+					"value": "small",
+					"label": "Small (370x370)"
+				},
+				{
+					"value": "medium",
+					"label": "Medium (570x570)"
+				},
+				{
+					"value": "full",
+					"label": "Full-width (1170x520)"
+				}
+			],
+			"default": "medium"
+		},
+		{
+			"type": "select",
+			"id": "image_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		},
+
+
+		// SETTINGS /////////////////////////////////////////////////////////
+		{
+			"type": "header",
+			"content": "Settings"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_weight",
+			"label": "Show weight"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_sku",
+			"label": "Show SKU"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_barcode",
+			"label": "Show barcode"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_collections",
+			"label": "Show collections"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_product_types",
+			"label": "Show product types"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_vendor",
+			"label": "Show vendor"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_tags",
+			"label": "Show tags"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_share_buttons",
+			"label": "Show social sharing buttons"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_desc",
+			"label": "Show description"
+		}
+	],
+	"presets": [
+		{
+			"name": "Single product",
+			"category": "Products"
+		}
+	]
+}
+{% endschema %}
+
+<script>
+	var producText = {
+		available: {{ 'layout.product.available' | t | json }},
+		unavailable: {{ 'layout.product.unavailable' | t | json }},
+		items: {{ 'layout.product.items' | t | json }},
+	};
+</script>
+
+{% javascript %}
+jQuery(document).ready(function($) {
+	$('.section_product').each(function() {
+		var sectionID = $(this).data('section');
+
+		var productLoad = function() {
+
+
+			// PRODUCT IMAGES
+			var primaryImg = $('#primary_img_' + sectionID);
+
+			var galleryImages = $('#gallery_big-' + sectionID);
+			var galleryImagesPrev = $('#prev_' + sectionID);
+			var galleryImagesNext = $('#next_' + sectionID);
+
+			var galleryThumbs = $('#gallery_thumbs-' + sectionID);
+
+			if ( galleryThumbs.hasClass('gallery_thumbs__small') ) {
+				var thumbsCount = 3;
+			}
+			else if ( galleryThumbs.hasClass('gallery_thumbs__medium') ) {
+				var thumbsCount = 5;
+			}
+			else {
+				var thumbsCount = 7;
+			};
+
+			var galleryImageSlider = new Swiper(galleryImages, {
+				prevButton: galleryImagesPrev,
+				nextButton: galleryImagesNext,
+			});
+
+			var galleryThumbSlider = new Swiper(galleryThumbs, {
+				slidesPerView: thumbsCount,
+				breakpoints: {
+					991: {
+						slidesPerView: 3
+					}
+				},
+				spaceBetween: 20,
+				centeredSlides: true,
+				touchRatio: 0.2,
+				slideToClickedSlide: true
+			});
+
+
+			$(window).on('load', function() {
+				galleryImageSlider.onResize(); // updating swiper after loading
+				galleryThumbSlider.onResize(); // updating swiper after loading
+			});
+
+			galleryImageSlider.params.control = galleryThumbSlider;
+			galleryThumbSlider.params.control = galleryImageSlider;
+
+
+			// PRODUCT OPTIONS
+			var productSelect = 'product_select_' + sectionID;
+
+			var productArray = JSON.parse( $('#product_json_' + sectionID).html() );
+			var variantWeights = JSON.parse( $('#variant_weights_' + sectionID).html() );
+
+			var productWeight = $('#single_product__weight-' + sectionID);
+			var productSKU = $('#single_product__sku-' + sectionID);
+			var productBarcode = $('#single_product__barcode-' + sectionID);
+
+			var productAvailability = $('#single_product__availability-' + sectionID);
+			var productPrice = $('#single_product__price-' + sectionID);
+
+			var productQuantity = $('#single_product__quantity-' + sectionID);
+			var productAdd = $('#single_product__addtocart-' + sectionID);
+
+
+			selectCallback = function(variant, selector) {
+				if ( variant && variant.available ) {
+
+
+					// VARIANT WEIGHT
+					if ( variant.requires_shipping == true ) {
+
+						for ( var i in variantWeights ) {
+							var i = parseInt(i);
+
+							if ( i == variant.id ) {
+								productWeight.html( variantWeights[i] );
+							};
+						};
+					}
+					else {
+						productWeight.html( '—' );
+					};
+
+
+					// VARIANT SKU
+					if ( variant.sku && variant.sku.length ) {
+						productSKU.html( variant.sku );
+					}
+					else {
+						productSKU.html( '—' );
+					};
+
+
+					// VARIANT BARCODE
+					if ( variant.barcode != null ) {
+						productBarcode.html( variant.barcode );
+					}
+					else {
+						productBarcode.html( '—' );
+					};
+
+
+					// VARIANT AVAILABILITY
+					if ( variant.inventory_management != null ) {
+
+						if ( ( variant.inventory_quantity == 0 ) && ( variant.inventory_policy == 'continue' ) ) {
+							productAvailability.removeClass('notify_danger').addClass('notify_success').html( producText.available );
+						}
+						else {
+							productAvailability.removeClass('notify_danger').addClass('notify_success').html( variant.inventory_quantity + ' ' + producText.items );
+						};
+
+					}
+					else {
+						productAvailability.removeClass('notify_danger').addClass('notify_success').html( producText.available );
+					};
+
+
+					// VARIANT PRICE
+					if ( variant.price < variant.compare_at_price ) {
+						productPrice.html( '<span class="money">' + Shopify.formatMoney(variant.price, theme.moneyFormat) + '</span>' + '<span class="money money_sale">' + Shopify.formatMoney(variant.compare_at_price, theme.moneyFormat) + '</span><span class="money_sale_percent">– ' + parseInt( 100 - ( variant.price*100 )/variant.compare_at_price ) + '%</span>');
+					}
+					else {
+						productPrice.html( '<span class="money">' + Shopify.formatMoney(variant.price, theme.moneyFormat) + '</span>' );
+					};
+
+
+					// VARIANT QUANTITY
+					productQuantity.removeAttr('disabled', 'disabled');
+
+
+					// VARIANT ADD TO CART BUTTON
+					productAdd.removeAttr('disabled', 'disabled');
+
+
+					// SWITCH VARIANT IMAGE
+					var newImage = variant.featured_image;
+					var element = primaryImg[0];
+
+					Shopify.Image.switchImage(newImage, element, function(newImageSizedSrc, newImage, element) {
+						galleryImageSlider.slides.each(function(i) {
+							var thumb = $(this).find('img').attr('src').replace('_crop_top', '').replace('_crop_center', '').replace('_crop_bottom', '').replace(/\?v=.*/ , '');
+							var newImg = newImageSizedSrc.replace(/\?v=.*/ , '');
+
+							if ( thumb == newImg ) {
+								galleryImageSlider.slideTo(i);
+							};
+						});
+					});
+
+				}
+				else {
+					// VARIANT AVAILABILITY
+					productAvailability.removeClass('notify_success').addClass('notify_danger').html( producText.unavailable );
+
+
+					// VARIANT QUANTITY
+					productQuantity.attr('disabled', 'disabled');
+
+
+					// VARIANT ADD TO CART BUTTON
+					productAdd.attr('disabled', 'disabled');
+
+				};
+
+
+				// SWITCH CURRENCY
+				if ( typeof theme.shopCurrency != 'undefined' ) {
+					var newCurrency = Currency.cookie.read();
+					var moneySelector = productPrice.find('span.money');
+					Currency.convertAll( theme.shopCurrency, newCurrency, moneySelector, 'money_format' );
+
+				};
+
+			};
+
+			new Shopify.OptionSelectors( productSelect, {
+				product: productArray,
+				onVariantSelected: selectCallback,
+				enableHistoryState: false 
+			});
+
+		};
+
+
+		// LOADING PRODUCTS
+		productLoadTrigger = true;
+
+		$(document).on('shopify:section:load', '#shopify-section-' + sectionID, function() {
+			productLoad();
+			productLoadTrigger = false;
+		});
+
+		if ( productLoadTrigger = true ) {
+			productLoad();
+		};
+
+	});
+
+});
+{% endjavascript %}

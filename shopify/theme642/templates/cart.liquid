@@ -1,0 +1,127 @@
+<div class="template_cart">
+	<div class="container">
+		<h1 class="page_heading">{{ page_title }}</h1>
+
+		{% if cart.item_count > 0 %}
+			<form action="/cart" method="post" novalidate class="cart">
+				<table class="table table-bordered cart_items">
+					<thead>
+						<tr>
+							<th class="column_product" colspan="2">{{ 'pages.cart.product' | t }}</th>
+							<th class="column_price">{{ 'pages.cart.product_price' | t }}</th>
+							<th class="column_quantity">{{ 'pages.cart.product_quantity' | t }}</th>
+							<th class="column_total">{{ 'pages.cart.product_total' | t }}</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						{% for item in cart.items %}
+							<tr>
+								<td class="column_product_img">
+									<a href="{{ item.url | within: collections.all }}">
+										<img class="cart__image" src="{{ item | img_url: '200x' }}" alt="{{ item.title | escape }}">
+									</a>
+								</td>
+
+								<td class="column_product_info">
+									<p class="cart_item__name product_name">
+										<a href="{{ item.url }}">{{ item.product.title }}</a>
+									</p>
+
+									{% unless item.variant.title contains 'Default' %}
+										<p class="cart_item__variant">
+											{% for option in item.product.options %}
+												<span><b>{{ option }}</b>: {{ item.variant.options[forloop.index0] }}</span>
+											{% endfor %}
+										</p>
+									{% endunless %}
+
+									<div class="cart_item__details">
+										<p class="item_type"><b>{{ 'pages.cart.product_type' | t }}:</b> {{ item.product.type }}</p>
+										<p class="item_vendor"><b>{{ 'pages.cart.product_vendor' | t }}:</b> {{ item.product.vendor }}</p>
+										<p class="item_weight"><b>{{ 'pages.cart.product_weight' | t }}:</b> {{ item.variant.weight | weight_with_unit: item.variant.weight_unit }}</p>
+									</div>
+
+									<a class="btn cart_item__remove" href="/cart/change?line={{ forloop.index }}&amp;quantity=0">{{ 'pages.cart.product_remove' | t }}</a>
+								</td>
+
+								<td class="column_price">
+									<span class="money">{{ item.price | money }}</span>
+								</td>
+
+								<td class="column_quantity">
+									<div class="quantity_box">
+										<input id="updates_{{ item.key }}" name="updates[]" value="{{ item.quantity }}" class="quantity_input" type="text">
+
+										<span class="quantity_down"><i class="fa fa-minus" aria-hidden="true"></i></span>
+										<span class="quantity_up"><i class="fa fa-plus" aria-hidden="true"></i></span>
+
+										<button type="submit" name="update" class="btn">{{ 'pages.cart.product_update' | t }}</button>
+									</div>
+								</td>
+
+								<td class="column_total">
+									<span class="money">{{ item.line_price | money }}</span>
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+
+					<tfoot>
+						<tr>
+							<td colspan="5">
+								<p class="cart_total">{{ 'pages.cart.total_weight' | t }} <span>{{ cart.total_weight | weight_with_unit }}</span></p>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="5">
+								<p class="cart_total">{{ 'pages.cart.total_price' | t }} <span class="money">{{ cart.total_price | money }}</span></p>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="5">
+								<label for="cart_note">{{ 'pages.cart.add_note' | t }}</label>
+								<textarea name="note" id="cart_note">{{ cart.note }}</textarea>
+
+								{% assign shop_name = shop.name | upcase %}
+								<p class="alert alert-warning">{{ 'pages.cart.currency_notification' | t: shop_name: shop_name, shop_currency: shop.currency }}</p>
+							</td>
+						</tr>
+
+						{% if additional_checkout_buttons %}
+							{% comment %}Paypal and Google checkout buttons{% endcomment %}
+							<tr>
+								<td colspan="5">
+									{{ content_for_additional_checkout_buttons }}
+								</td>
+							</tr>
+						{% endif %}
+
+						{% if cart.total_discounts > 0 %}
+							<tr>
+								<td colspan="5">
+									{{ 'cart.general.savings' | t }}
+									<span class="cart__savings-amount">{{ cart.total_discounts | money }}</span>
+								</td>
+							</tr>
+						{% endif %}
+
+						<tr>
+							<td colspan="5">
+								<a class="btn" href="/collections">{{ 'pages.cart.continue_shopping' | t }}</a>
+								<button type="submit" name="checkout" class="btn btn_alt">{{ 'pages.cart.proceed_to_checkout' | t }}</button>
+								<div class="clearfix"></div>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</form>
+		{% else %}
+			<div class="cart_empty">
+				<p class="alert alert-warning">{{ 'pages.cart.empty_cart_1' | t }}. <a href="/collections">{{ 'pages.cart.empty_cart_2' | t }}</a>.</p>
+			</div>
+		{% endif %}
+	</div>
+</div>
