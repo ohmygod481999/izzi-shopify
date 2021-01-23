@@ -9,20 +9,38 @@ const {
 } = require("./liquid/index");
 const utils = require("./utils/utils");
 const api = require("./utils/api");
+const redis = require("redis");
 
 const port = 5002;
+const REDIS_PORT = 6379;
 const app = express();
+
+const redisClient = redis.createClient(REDIS_PORT);
 
 if (process.argv.length < 3) {
     return console.log("Pls tell me the path to build folder you want to run");
 }
+
+let reload = false;
+if (process.argv.length > 3) {
+    reload = true;
+}
+
 const inputFolderPath = process.argv[2];
 
 let globalObject;
-console.log("getting global object");
-utils.getGlobalObject(inputFolderPath).then((value) => {
-    globalObject = value;
-    console.log("init done!");
+redisClient.get("globalObject", (err, data) => {
+    if (err) throw err;
+    if (!data || reload) {
+        console.log("getting global object");
+        utils.getGlobalObject(inputFolderPath).then((value) => {
+            globalObject = value;
+            redisClient.setex("globalObject", 3600, JSON.stringify(value));
+            console.log("init done!");
+        });
+    } else {
+        globalObject = JSON.parse(data);
+    }
 });
 
 const engine = new Liquid({
