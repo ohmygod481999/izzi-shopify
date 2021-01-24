@@ -8,11 +8,15 @@ const {
     preprocessLiquid,
 } = require("../liquid/index");
 const utils = require("../utils/utils");
+const redis = require("redis");
+
 
 const port = 5000;
+const REDIS_PORT = 6379;
 const app = express();
+const redisClient = redis.createClient(REDIS_PORT);
 
-const inputFolderPath = "build/narrative";
+const inputFolderPath = "build/boundless";
 const engine = new Liquid({
     extname: ".liquid",
     root: [
@@ -26,10 +30,18 @@ registCustomTag(engine, inputFolderPath);
 registCustomFilter(engine, inputFolderPath);
 
 let globalObject;
-console.log("getting global object");
-utils.getGlobalObject(inputFolderPath).then((value) => {
-    globalObject = value;
-    console.log("init done!");
+redisClient.get("globalObject", (err, data) => {
+    if (err) throw err;
+    if (!data) {
+        console.log("getting global object");
+        utils.getGlobalObject(inputFolderPath).then((value) => {
+            globalObject = value;
+            redisClient.setex("globalObject", 3600, JSON.stringify(value));
+            console.log("init done!");
+        });
+    } else {
+        globalObject = JSON.parse(data);
+    }
 });
 
 app.use("/public", express.static(path.join(__dirname, "public")));

@@ -23,7 +23,6 @@ const getProductParseDataById = async (productId) => {
         ]
     );
     const { product } = productGraph;
-    console.log(product);
 
     // build data
     const dataToParse = {
@@ -102,7 +101,6 @@ const getSearchData = async (terms) => {
 const getProductsByCollectionId = async (collectionId) => {
     const products = await eInstance.getProductsByCategory(collectionId);
 
-    console.log(products);
 
     const parentDataGraph = await graph.queryGraph(
         "single",

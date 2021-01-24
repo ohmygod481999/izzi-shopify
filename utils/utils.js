@@ -394,8 +394,6 @@ const exportSassFromCss = (inputFolderPath) => {
         }
     });
 
-    console.log(scssFilePaths);
-
     scssFilePaths.forEach((scssFile) => {
         sass.render(
             {
