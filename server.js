@@ -29,13 +29,14 @@ if (process.argv.length > 3) {
 const inputFolderPath = process.argv[2];
 
 let globalObject;
-redisClient.get("globalObject", (err, data) => {
+const gloablObjectKey = `GLOBAL-OBJECT-${inputFolderPath}`;
+redisClient.get(gloablObjectKey, (err, data) => {
     if (err) throw err;
     if (!data || reload) {
         console.log("getting global object");
         utils.getGlobalObject(inputFolderPath).then((value) => {
             globalObject = value;
-            redisClient.setex("globalObject", 3600, JSON.stringify(value));
+            redisClient.setex(gloablObjectKey, 3600, JSON.stringify(value));
             console.log("init done!");
         });
     } else {

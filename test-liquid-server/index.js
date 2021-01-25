@@ -10,7 +10,6 @@ const {
 const utils = require("../utils/utils");
 const redis = require("redis");
 
-
 const port = 5000;
 const REDIS_PORT = 6379;
 const app = express();
@@ -30,13 +29,14 @@ registCustomTag(engine, inputFolderPath);
 registCustomFilter(engine, inputFolderPath);
 
 let globalObject;
-redisClient.get("globalObject", (err, data) => {
+const gloablObjectKey = `GLOBAL-OBJECT-${inputFolderPath}`;
+redisClient.get(gloablObjectKey, (err, data) => {
     if (err) throw err;
     if (!data) {
         console.log("getting global object");
         utils.getGlobalObject(inputFolderPath).then((value) => {
             globalObject = value;
-            redisClient.setex("globalObject", 3600, JSON.stringify(value));
+            redisClient.setex(gloablObjectKey, 3600, JSON.stringify(value));
             console.log("init done!");
         });
     } else {
