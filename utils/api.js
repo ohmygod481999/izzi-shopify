@@ -31,6 +31,16 @@ const getProductParseDataById = async (productId) => {
             description: product.description,
             vendor: "vendor",
             price: product.price,
+            variants: [
+                {
+                    available: true,
+                    title: "variant 1",
+                },
+                {
+                    available: true,
+                    title: "variant 2",
+                },
+            ],
         },
     };
 
@@ -100,7 +110,6 @@ const getSearchData = async (terms) => {
 
 const getProductsByCollectionId = async (collectionId) => {
     const products = await eInstance.getProductsByCategory(collectionId);
-
 
     const parentDataGraph = await graph.queryGraph(
         "single",

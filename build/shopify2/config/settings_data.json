@@ -111,7 +111,14 @@
                     "slide-0": {
                         "type": "image",
                         "settings": {
-                            "slide": "https://cdn2.wpbeginner.com/wp-content/uploads/2017/08/fallbackthumbnail.png",
+                            "slide": "https://static.foodizzi.com/images/2020/6/26/2006260818_19.jpg",
+                            "link": ""
+                        }
+                    },
+                    "slide-1": {
+                        "type": "image",
+                        "settings": {
+                            "slide": "https://static.foodizzi.com/images/2020/6/26/2006262284_18.jpg",
                             "link": ""
                         }
                     }
@@ -127,11 +134,11 @@
                 "blocks": {
                     "collection-list-0": {
                         "type": "collection",
-                        "settings": { "collection": "" }
+                        "settings": { "collection": "bf4050fb-1bb4-3aca-ddec-aa608f54af8b" }
                     },
                     "collection-list-1": {
                         "type": "collection",
-                        "settings": { "collection": "" }
+                        "settings": { "collection": "06eabdcf-4063-eba4-693b-b7aceb780064" }
                     }
                 },
                 "block_order": ["collection-list-0", "collection-list-1"],
@@ -141,7 +148,7 @@
                 "type": "collection-rows",
                 "settings": {
                     "title": "Featured collection",
-                    "home_featured_row": "",
+                    "home_featured_row": "bf4050fb-1bb4-3aca-ddec-aa608f54af8b",
                     "grid": 4,
                     "rows": 1,
                     "product_show_saved_amount": true,
@@ -152,7 +159,7 @@
                 "type": "collection-rows",
                 "settings": {
                     "title": "Featured collection",
-                    "home_featured_row": "",
+                    "home_featured_row": "06eabdcf-4063-eba4-693b-b7aceb780064",
                     "grid": 4,
                     "rows": 1,
                     "product_show_saved_amount": true,
@@ -163,7 +170,7 @@
                 "type": "collection-rows",
                 "settings": {
                     "title": "Featured collection",
-                    "home_featured_row": "",
+                    "home_featured_row": "d91f1e64-1f14-898a-ed53-74646746b276",
                     "grid": 4,
                     "rows": 1,
                     "product_show_saved_amount": true,
@@ -173,7 +180,7 @@
             "featured-content": {
                 "type": "featured-content",
                 "settings": {
-                    "section_title": "Talk about your brand aaaaa",
+                    "section_title": "Talk about your brand",
                     "text": "<p>Anh Long dep chai</p>",
                     "text_size": "medium"
                 }
@@ -184,14 +191,14 @@
                     "slideshow-2-0": {
                         "type": "image",
                         "settings": {
-                            "slide": "https://cdn2.wpbeginner.com/wp-content/uploads/2017/08/fallbackthumbnail.png",
+                            "slide": "https://static.foodizzi.com/images/2020/6/26/2006262284_18.jpg",
                             "link": ""
                         }
                     },
                     "1598600343008": {
                         "type": "image",
                         "settings": {
-                            "slide": "shopify://shop_images/photo-1561736778-92e52a7769ef.jpeg",
+                            "slide": "https://static.foodizzi.com/images/2020/6/26/2006262284_18.jpg",
                             "link": ""
                         }
                     }

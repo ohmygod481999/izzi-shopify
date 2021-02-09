@@ -24,13 +24,19 @@ module.exports = function registCustomTag(engine, inputFolderPath) {
             };
             const setting = getSettings(inputFolderPath);
 
-            if (str === "header" || str === "footer") {
+            if (setting.current.sections[str]) {
                 sectionData.section = {
                     // Thieu section id
+                    id: str,
                     ...setting.current.sections[str],
                     blocks: getSettingBlock(
                         setting.current.sections[str].blocks
                     ),
+                };
+            } else {
+                sectionData.section = {
+                    // Thieu section id
+                    id: str,
                 };
             }
 

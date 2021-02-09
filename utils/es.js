@@ -264,6 +264,7 @@ class ElasticClient {
                         "subDescription",
                         "images",
                         "createdDate",
+                        "price"
                     ],
                 },
             },

@@ -98,7 +98,7 @@
                     "slider-0": {
                         "type": "image",
                         "settings": {
-                            "image": "https://sites.google.com/site/hinhanhdep24h/_/rsrc/1436687439788/home/hinh%20anh%20thien%20nhien%20dep%202015%20%281%29.jpeg",
+                            "image": "https://static.foodizzi.com/images/2020/6/26/2006260818_19.jpg",
                             "alignment": "center center",
                             "overlay_opacity": 30,
                             "color_text": "#ffffff",
@@ -111,7 +111,7 @@
                     "slider-1": {
                         "type": "image",
                         "settings": {
-                            "image": "https://tamnhinrong.org/tnr-9-hinh-anh-dep-ve-bien.jpg",
+                            "image": "https://static.foodizzi.com/images/2020/6/26/2006262284_18.jpg",
                             "alignment": "center center",
                             "overlay_opacity": 39,
                             "color_text": "#ffffff",
@@ -124,7 +124,7 @@
                     "slider-2": {
                         "type": "image",
                         "settings": {
-                            "image": "https://1.bp.blogspot.com/-fJOYWF8sRcc/XqPMUl5F0uI/AAAAAAAAipA/FOrgLq4mcqQ23Lp_hA4_QPcjGym-ez4agCLcBGAsYHQ/s1600/Hinh-anh-dep-nhat-the-gioi%2B%25281%2529.jpg",
+                            "image": "https://static.foodizzi.com/images/2020/6/26/2006264054_17.jpg",
                             "alignment": "center center",
                             "overlay_opacity": 30,
                             "color_text": "#ffffff",
@@ -137,7 +137,7 @@
                     "slider-3": {
                         "type": "image",
                         "settings": {
-                            "image": "https://media.healthplus.vn/Images/Uploaded/Share/2019/02/18/Ngam_nhung_hinh_anh_tuyet_dep_ve_Viet_Nam_tren_bao_Anh_01.jpg",
+                            "image": "https://static.foodizzi.com/images/2020/6/19/2006197236_maxresdefault.jpg",
                             "alignment": "center center",
                             "overlay_opacity": 30,
                             "color_text": "#ffffff",
@@ -194,19 +194,19 @@
                 "blocks": {
                     "collection-list-0": {
                         "type": "collection",
-                        "settings": { "collection": "576f8565-c9bc-3ec0-e228-0221514c26a3" }
+                        "settings": { "collection": "bf4050fb-1bb4-3aca-ddec-aa608f54af8b" }
                     },
                     "collection-list-1": {
                         "type": "collection",
-                        "settings": { "collection": "8d79cd98-2134-4508-afc2-5db767a2844f" }
+                        "settings": { "collection": "06eabdcf-4063-eba4-693b-b7aceb780064" }
                     },
                     "collection-list-2": {
                         "type": "collection",
-                        "settings": { "collection": "576f8565-c9bc-3ec0-e228-0221514c26a3" }
+                        "settings": { "collection": "d91f1e64-1f14-898a-ed53-74646746b276" }
                     },
                     "collection-list-3": {
                         "type": "collection",
-                        "settings": { "collection": "8d79cd98-2134-4508-afc2-5db767a2844f" }
+                        "settings": { "collection": "bf4050fb-1bb4-3aca-ddec-aa608f54af8b" }
                     }
                 },
                 "block_order": [
@@ -222,19 +222,19 @@
                 "blocks": {
                     "collection-list-1-0": {
                         "type": "collection",
-                        "settings": { "collection": "576f8565-c9bc-3ec0-e228-0221514c26a3" }
+                        "settings": { "collection": "bf4050fb-1bb4-3aca-ddec-aa608f54af8b" }
                     },
                     "collection-list-1-1": {
                         "type": "collection",
-                        "settings": { "collection": "8d79cd98-2134-4508-afc2-5db767a2844f" }
+                        "settings": { "collection": "06eabdcf-4063-eba4-693b-b7aceb780064" }
                     },
                     "collection-list-1-2": {
                         "type": "collection",
-                        "settings": { "collection": "576f8565-c9bc-3ec0-e228-0221514c26a3" }
+                        "settings": { "collection": "d91f1e64-1f14-898a-ed53-74646746b276" }
                     },
                     "collection-list-1-3": {
                         "type": "collection",
-                        "settings": { "collection": "8d79cd98-2134-4508-afc2-5db767a2844f" }
+                        "settings": { "collection": "bf4050fb-1bb4-3aca-ddec-aa608f54af8b" }
                     }
                 },
                 "block_order": [

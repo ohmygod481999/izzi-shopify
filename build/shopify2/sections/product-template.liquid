@@ -140,7 +140,7 @@
       <link itemprop="availability" href="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}">
 
       {% capture "form_class" -%}
-        addToCartForm{% if section.settings.enable_payment_button %} addToCartForm--payment-button{% endif %}
+        addToCartForm {% if section.settings.enable_payment_button %} addToCartForm--payment-button{% endif %}
       {%- endcapture %}
 
       {%- capture "form_id" -%}addToCartForm-{{ section.id }}{%- endcapture -%}
@@ -204,7 +204,7 @@
     </div>
 
     <div class="product-description rte" itemprop="description">
-      {{ product.description }}
+      {{ section | json }} {{ product.description }}
     </div>
 
     {% if section.settings.social_sharing_products %}

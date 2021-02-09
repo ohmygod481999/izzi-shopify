@@ -287,6 +287,7 @@ const getGlobalObject = async (inputFolderPath) => {
                 title: product.name,
                 ...imagesObject,
                 url: `/products/${product.id}`,
+                ...product,
             });
         }
         allCollectionsMap[collection.id].products = resultProducts;

@@ -6,7 +6,7 @@ const config = {
     },
     imageRoot: "https://static.foodizzi.com",
     imageDefault: "https://www.chanchao.com.tw/VIBS/images/default.jpg",
-    merchantId: "008d8d6a-14a1-4d17-9b1c-2b8c2f8f5eb3", ///'a402ecce-62cf-4fac-b4cb-df02bfbf7d65',
+    merchantId: "f3a3c7fc-3b3b-650a-b809-cc5ae54f7927", //"008d8d6a-14a1-4d17-9b1c-2b8c2f8f5eb3", ///'a402ecce-62cf-4fac-b4cb-df02bfbf7d65',
     themeId: "4e462311-6603-2e19-d1b8-1b0d7d4cf0f7", ///'a7682e0d-696c-836e-31e2-8cb916bdde04',
     pages: {
         home: "ca744958-6444-455b-b26a-ec5e2427b8bd",
